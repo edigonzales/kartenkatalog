@@ -50,7 +50,6 @@ public class MainController {
     @GetMapping("/product")
     public ModelAndView product() {
         List<Product> products = productService.findAll();
-        products.get(0).dtype()
         ModelAndView mav = new ModelAndView("product");
         mav.addObject("productList", products);
         return mav;
