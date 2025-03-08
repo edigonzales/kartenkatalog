@@ -14,8 +14,8 @@
         </td>
         <td>${product.id()}</td>
         <td>${product.title()}</td>
-        <td>${product.ident_part()}</td>
-        <td>${product.description()}</td>
+        <td><!--${product.ident_part()}--></td>
+        <td><!--${product.description()}--></td>
     </tr>
 @endfor
     

@@ -17,5 +17,6 @@ public record Product(
         String theme_title,
         String theme_ident,
         String org_name,
-        String permissions
+        String permissions,
+        Product[] children
         ) {}
