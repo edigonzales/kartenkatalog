@@ -56,7 +56,7 @@ public class ProductService {
         List<Product> finalList = parentMap.values().stream()
                 .sorted(Comparator.comparing(Product::title)) // Sort parents by title
                 .map(parent -> new Product(
-                    parent.id(), parent.dtype(), parent.description(), parent.remarks(),
+                    parent.id(), parent.dtype(), parent.description(), parent.description_override(), parent.description_model(), parent.remarks(),
                     parent.title(), parent.ident_part(), parent.derived_identifier(),
                     parent.keywords(), parent.synonyms(), parent.display_text(),
                     parent.style_server(), parent.service_download(),

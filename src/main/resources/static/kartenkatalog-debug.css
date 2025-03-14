@@ -1,6 +1,6 @@
 body {
 	/*font-family: FrutigerCondensed;*/
-	font-family: FrutigerCondensed, system-ui, Roboto, sans;
+	font-family: Frutiger, system-ui, Roboto, sans;
     color: #333333;
     font-size: 16px;
 }
@@ -35,3 +35,10 @@ tr:hover td {background:#F5F5F5;}
 .expanded {
     display: table-row;
 }
+
+.multi-line-ellipsis {
+    white-space:nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+

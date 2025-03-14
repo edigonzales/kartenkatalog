@@ -4,6 +4,8 @@ public record Product(
         String id, 
         String dtype, 
         String description, 
+        String description_override, 
+        String description_model, 
         String remarks, 
         String title, 
         String ident_part,

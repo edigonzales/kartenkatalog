@@ -27,7 +27,7 @@ java -jar /Users/stefan/apps/ili2duckdb-5.2.2/ili2duckdb-5.2.2.jar --dbfile kart
 
 
 ```
---ATTACH 'dbname=simi user=bjsvwzie password=333S.pellegrino host=geodb.rootso.org' AS simidb (TYPE postgres);
+--ATTACH 'dbname=simi user=bjsvwzie password=XXXXXXXXXXX host=geodb.rootso.org' AS simidb (TYPE postgres);
 
 
 --EXPLAIN
@@ -41,6 +41,8 @@ WITH parents AS
         dp.id,
         dp.dtype,
         dp.description,
+        pg.description_override,
+        pg.description_model,
         dp.remarks,
         dp.title,
         dp.ident_part,
@@ -74,12 +76,18 @@ WITH parents AS
         ON stp.theme_id = st.id
         LEFT JOIN simidb.simi.simitheme_org_unit AS sou 
         ON st.data_owner_id = sou.id
+
+        LEFT JOIN simidb.simi.simidata_table_view AS tv 
+        ON dp.id = tv.id 
+        LEFT JOIN simidb.simi.simidata_postgres_table AS pg 
+        ON tv.postgres_table_id = pg.id
+
     WHERE 
         dp.dtype NOT IN ('simiProduct_Map')
         AND
         ps.display_text IN ('WGC, QGIS u. WMS', 'Nur WMS', 'WGC u. QGIS')
     GROUP BY 
-        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18
 )
 ,
 children AS 
@@ -89,6 +97,8 @@ children AS
         dp.id,
         dp.dtype,
         dp.description,
+        pg.description_override,
+        pg.description_model,
         dp.remarks,
         dp.title,
         dp.ident_part,
@@ -126,13 +136,21 @@ children AS
         ON stp.theme_id = st.id
         LEFT JOIN simidb.simi.simitheme_org_unit AS sou 
         ON st.data_owner_id = sou.id
+
+        LEFT JOIN simidb.simi.simidata_table_view AS tv 
+        ON dp.id = tv.id 
+        LEFT JOIN simidb.simi.simidata_postgres_table AS pg 
+        ON tv.postgres_table_id = pg.id
+
     GROUP BY 
-        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19
 )
 SELECT 
     p.id AS p_id,
     p.dtype AS p_dtype,
     p.description AS p_description,
+    p.description_override AS p_description_override,
+    p.description_model AS p_description_model,
     p.remarks AS p_remarks,
     p.title AS p_title,
     p.ident_part AS p_ident_part,
@@ -150,6 +168,8 @@ SELECT
     c.id AS c_id,
     c.dtype AS c_dtype,
     c.description AS c_description,
+    c.description_override AS c_description_override,
+    c.description_model AS c_description_model,
     c.remarks AS c_remarks,
     c.title AS c_title,
     c.ident_part AS c_ident_part,
@@ -169,8 +189,7 @@ FROM
     LEFT JOIN children AS c
     ON p.id = c.lg_id
 ORDER BY 
-    p.title, c.title
-    
+    p.title, c.title   
 ;
 
 INSERT INTO 
@@ -179,6 +198,8 @@ INSERT INTO
     p_id,
     p_dtype,
     p_description,
+    p_description_override,
+    p_description_model,
     p_remarks,
     p_title,
     p_ident_part,
@@ -196,6 +217,8 @@ INSERT INTO
     c_id,
     c_dtype,
     c_description,
+    c_description_override,
+    c_description_model,
     c_remarks,
     c_title,
     c_ident_part,
@@ -215,6 +238,8 @@ SELECT
     p_id,
     p_dtype,
     p_description,
+    p_description_override,
+    p_description_model,
     p_remarks,
     p_title,
     p_ident_part,
@@ -232,6 +257,8 @@ SELECT
     c_id,
     c_dtype,
     c_description,
+    c_description_override,
+    c_description_model,
     c_remarks,
     c_title,
     c_ident_part,

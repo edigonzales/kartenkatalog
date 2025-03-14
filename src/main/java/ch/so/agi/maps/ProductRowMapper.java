@@ -14,6 +14,8 @@ public class ProductRowMapper implements RowMapper<Product> {
         String id = rs.getString("p_id");
         String dtype = rs.getString("p_dtype");
         String description = rs.getString("p_description");
+        String description_override = rs.getString("p_description_override");
+        String description_model = rs.getString("p_description_model");
         String remarks = rs.getString("p_remarks");
         String title = rs.getString("p_title");
         String identPart = rs.getString("p_ident_part");
@@ -34,6 +36,8 @@ public class ProductRowMapper implements RowMapper<Product> {
                 cId,
                 rs.getString("c_dtype"),
                 rs.getString("c_description"),
+                rs.getString("c_description_override"),
+                rs.getString("c_description_model"),
                 rs.getString("c_remarks"),
                 rs.getString("c_title"),
                 rs.getString("c_ident_part"),
@@ -52,7 +56,7 @@ public class ProductRowMapper implements RowMapper<Product> {
         ) : null;
 
         return new Product(
-                id, dtype, description, remarks, title, identPart, derivedIdentifier,
+                id, dtype, description, description_override, description_model, remarks, title, identPart, derivedIdentifier,
                 keywords, synonyms, displayText, styleServer, serviceDownload,
                 transparency, themeTitle, themeIdent, orgName, permissions,
                 (child != null) ? new Product[]{child} : new Product[0]

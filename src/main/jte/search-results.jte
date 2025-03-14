@@ -1,5 +1,6 @@
 @import java.util.List
 @import java.time.LocalDate
+@import java.lang.String
 @import ch.so.agi.maps.Product
 
 @param List<Product> productList
@@ -15,10 +16,18 @@
             @endif
         </td>
         <td>&nbsp;</td>
-        <td>${product.id()}</td>
+        <td><!--${product.id()}--></td>
         <td>${product.title()}</td>
         <td>${product.dtype()}</td>
-        <td>$unsafe{product.description()}</td>
+        <td>
+            @if(product.description() != null) 
+                $unsafe{product.description()}
+            @elseif(product.description_override() != null) 
+                $unsafe{product.description_override()}
+            @elseif(product.description_model() != null) 
+                $unsafe{product.description_model()}            
+            @endif
+        </td>
     </tr>
 
     @if(product.children().length > 0)
@@ -27,12 +36,20 @@
     <tr class="child-row-${product.id()} hidden">
         <td></td>
         <td><i class="material-icons-two-tone">layers</i></td>
-        <td>${child.id()}</td>
+        <td><!--${child.id()}--></td>
         <td>${child.title()}</td>
         <td>${child.dtype()}</td>
-        <td></td>
+        <td>
+            @if(child.description() != null) 
+                $unsafe{child.description()}
+            @elseif(child.description_override() != null) 
+                $unsafe{child.description_override()}
+            @elseif(child.description_model() != null) 
+                $unsafe{child.description_model()}            
+            @endif
+        </td>
     </tr>
-@endfor
+    @endfor
 
 
     @endif

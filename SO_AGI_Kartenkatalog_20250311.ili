@@ -20,6 +20,8 @@ VERSION "2025-03-11"  =
       p_id : INTERLIS.UUIDOID;
       p_dtype : TEXT;
       p_description : MTEXT;
+      p_description_override : MTEXT;
+      p_description_model : MTEXT;
       p_remarks : MTEXT;
       p_title : TEXT;
       p_ident_part : TEXT;
@@ -37,6 +39,8 @@ VERSION "2025-03-11"  =
       c_id : INTERLIS.UUIDOID;
       c_dtype : TEXT;
       c_description : MTEXT;
+      c_description_override : MTEXT;
+      c_description_model : MTEXT;
       c_remarks : MTEXT;
       c_title : TEXT;
       c_ident_part : TEXT;
