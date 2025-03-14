@@ -19,15 +19,15 @@ VERSION "2025-03-11"  =
     CLASS Produkt_Mutter_Kind = 
       p_id : INTERLIS.UUIDOID;
       p_dtype : TEXT;
-      p_description : TEXT;
-      p_remarks : TEXT;
+      p_description : MTEXT;
+      p_remarks : MTEXT;
       p_title : TEXT;
       p_ident_part : TEXT;
       p_derived_identifier : TEXT;
       p_keywords : TEXT;
       p_synonyms : TEXT;
       p_display_text : TEXT;
-      p_style_server : TEXT;
+      p_style_server : MTEXT;
       p_service_download : BOOLEAN;
       p_transparency : 0..100;
       p_theme_title : TEXT;
@@ -36,15 +36,15 @@ VERSION "2025-03-11"  =
       p_permissions : TEXT;
       c_id : INTERLIS.UUIDOID;
       c_dtype : TEXT;
-      c_description : TEXT;
-      c_remarks : TEXT;
+      c_description : MTEXT;
+      c_remarks : MTEXT;
       c_title : TEXT;
       c_ident_part : TEXT;
       c_derived_identifier : TEXT;
       c_keywords : TEXT;
       c_synonyms : TEXT;
       c_display_text : TEXT;
-      c_style_server : TEXT;
+      c_style_server : MTEXT;
       c_service_download : BOOLEAN;
       c_transparency : 0..100;
       c_theme_title : TEXT;

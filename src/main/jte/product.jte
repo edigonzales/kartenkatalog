@@ -20,20 +20,23 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@materializecss/materialize@2.2.1/dist/css/materialize.min.css">
     -->
     <script src="https://cdn.jsdelivr.net/npm/@materializecss/materialize@2.2.1/dist/js/materialize.min.js"></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp" rel="stylesheet">
 
     <link rel="stylesheet" href="/fonts.css">
     <link rel="stylesheet" href="/sodata.css">
+    <link rel="stylesheet" href="/kartenkatalog-debug.css">
+
 </head>
 
 <body>
     <div class="container">
+        <!--
         <div class="right-align" style="margin-top:10px;">
             <img src="/Logo.png" alt="Logo Kanton Solothurn">
         </div>
 
         <div class="left-align" style="margin-top:120px;">
-            <h3>Datenportal Kanton Solothurn</h3>
+            <h3>Kartenkatalog Kanton Solothurn <span class="blink-css" style="color:red;">(Debug Mode)</span></h3>
         </div>
 
         <div class="left-align" style="margin-top:30px; font-size: 16px; line-height: 1.42857143;">
@@ -55,11 +58,12 @@
         </div>
 
         <div>${productList.size()}</div>
-
-        <table border="1" class="responsive-table">
+        -->
+        <table class="responsive-table">
             <thead>
             <tr>
                 <th>foo</th>
+                <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
                 <th>id</th>
                 <th>title</th>
                 <th>ident_part</th>
