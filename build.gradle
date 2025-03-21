@@ -9,11 +9,14 @@ plugins {
 group = 'ch.so.agi'
 version = '0.0.1-SNAPSHOT'
 
+/*
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
     }
 }
+*/
+
 
 repositories {
     mavenCentral()
@@ -32,10 +35,14 @@ dependencies {
 }
 
 jte {
-    generate()
+    generate() 
     binaryStaticContent = true
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+graalvmNative {
+    toolchainDetection = false
 }

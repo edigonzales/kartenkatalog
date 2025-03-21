@@ -1,5 +1,10 @@
 # kartenkatalog
 
+
+-Dspring.profiles.active=prod
+
+
+
 TODO: Modell MTEXT!!!!! bei qgis? oder allen.
 
 
