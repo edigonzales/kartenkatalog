@@ -44,4 +44,9 @@ tasks.named('test') {
 
 graalvmNative {
     toolchainDetection = false
+    binaries {
+        main {
+            buildArgs.add('-march=compatibility')
+        }
+    }
 }

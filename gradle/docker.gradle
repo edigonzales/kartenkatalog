@@ -24,6 +24,7 @@ tasks.register('buildNativeDockerImage', Exec) {
     def githash = getCheckedOutGitCommitHash()
     def build_timestamp = getTimestamp()
 
+    // TODO add ghcr.io 
     workingDir "$projectDir/docker/image"
     commandLine 'docker', 'buildx', 'build',
                 '--platform', 'linux/amd64',
