@@ -2,9 +2,13 @@ package ch.so.agi.maps;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportRuntimeHints;
+import org.springframework.web.filter.ForwardedHeaderFilter;
 
 @ImportRuntimeHints(ResourceRuntimeHints.class)
+@Configuration
 @SpringBootApplication
 public class KartenkatalogApplication {
 
@@ -12,4 +16,8 @@ public class KartenkatalogApplication {
         SpringApplication.run(KartenkatalogApplication.class, args);
     }
 
+    @Bean
+    ForwardedHeaderFilter forwardedHeaderFilter() {
+        return new ForwardedHeaderFilter();
+    } 
 }
