@@ -38,7 +38,7 @@ tr:hover td {background:#F5F5F5;}
 
 .multi-line-ellipsis {
     white-space:nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
