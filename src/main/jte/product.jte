@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=0" />
     <meta name="mobile-web-app-capable" content="yes" />
 
-    <title>Datenportal • Kanton Solothurn</title>
+    <title>Kartenportal • Kanton Solothurn</title>
     
     <script src="https://unpkg.com/htmx.org@2.0.4"></script>
 
