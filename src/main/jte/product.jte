@@ -22,9 +22,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@materializecss/materialize@2.2.1/dist/js/materialize.min.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp" rel="stylesheet">
 
-    <link rel="stylesheet" href="/fonts.css">
-    <link rel="stylesheet" href="/sodata.css">
-    <link rel="stylesheet" href="/kartenkatalog-debug.css">
+    <link rel="stylesheet" href="fonts.css">
+    <link rel="stylesheet" href="sodata.css">
+    <link rel="stylesheet" href="kartenkatalog-debug.css">
 
 </head>
 
