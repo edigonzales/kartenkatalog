@@ -58,7 +58,7 @@ public class MainController {
         
         List<Product> products = productService.findAll();
         //log.info("{}", products);
-        ModelAndView mav = new ModelAndView("product");
+        ModelAndView mav = new ModelAndView("product2");
         mav.addObject("productList", products);
         return mav;
     }
