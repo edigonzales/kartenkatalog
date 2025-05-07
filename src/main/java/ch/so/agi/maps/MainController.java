@@ -47,7 +47,7 @@ public class MainController {
     }
     
     
-    @GetMapping("/product")
+    @GetMapping("/product2")
     public ModelAndView product(@RequestHeader Map<String, String> headers, HttpServletRequest request) {
         headers.forEach((key, value) -> {
             log.info(String.format("Header '%s' = %s", key, value));
@@ -63,6 +63,21 @@ public class MainController {
         return mav;
     }
     
+    @GetMapping("/product")
+    public ModelAndView product2(@RequestHeader Map<String, String> headers, HttpServletRequest request) {
+        headers.forEach((key, value) -> {
+            log.info(String.format("Header '%s' = %s", key, value));
+        });
+        
+        log.info("server name: " + request.getServerName());
+        log.info("context path: " + request.getContextPath());
+        
+        List<Product> products = productService.findAll();
+        //log.info("{}", products);
+        ModelAndView mav = new ModelAndView("product");
+        mav.addObject("productList", products);
+        return mav;
+    }
     
     
 }
