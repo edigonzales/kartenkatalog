@@ -29,12 +29,21 @@
 
 <body>
 
+@for (var product : productList) 
+
 <div class="card-container">
-  <!-- Beispiel für eine Kartenebene -->
   <div class="card">
     <div class="card-header">
-      <h2>Kartenebene 1</h2>
-      <p>Beschreibung der Kartenebene</p>
+      <h2>${product.title()}</h2>
+      <p>
+            @if(product.description() != null) 
+                $unsafe{product.description()}
+            @elseif(product.description_override() != null) 
+                $unsafe{product.description_override()}
+            @elseif(product.description_model() != null) 
+                $unsafe{product.description_model()}            
+            @endif      
+      </p>
       <button 
         hx-get="/kartenebenen/1/kinder"
         hx-target="#children-1"
@@ -47,6 +56,8 @@
     <div id="children-1" class="children"></div>
   </div>
 </div>
+
+@endfor
 
 </body>
 </html>
