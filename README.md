@@ -17,7 +17,7 @@ CTE:
 
 
 ```
-java -jar /Users/stefan/apps/ili2pg-5.2.1/ili2pg-5.2.1.jar --dbhost localhost --dbport 54322 --dbdatabase pub --dbusr ddluser --dbpwd ddluser --dbschema agi_kartenkatalog_pub_v1 --nameByTopic --defaultSrsCode 2056 --createFk --createFkIdx --createGeomIdx --strokeArcs --models SO_AGI_Kartenkatalog_20250311 --modeldir "../kartenkatalog;https://models.geo.admin.ch" --doSchemaImport --import ../kartenkatalog/kartenkatalog.xtf
+java -jar /Users/stefan/apps/ili2pg-5.3.0/ili2pg-5.3.0.jar --dbhost localhost --dbport 54322 --dbdatabase pub --dbusr ddluser --dbpwd ddluser --dbschema agi_kartenkatalog_pub_v1 --nameByTopic --defaultSrsCode 2056 --createFk --createFkIdx --createGeomIdx --strokeArcs --models SO_AGI_Kartenkatalog_20250311 --modeldir ".;https://models.geo.admin.ch" --doSchemaImport --import kartenkatalog.xtf
 ```
 
 

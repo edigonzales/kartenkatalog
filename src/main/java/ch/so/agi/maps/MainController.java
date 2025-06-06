@@ -37,12 +37,9 @@ public class MainController {
         headers.forEach((key, value) -> {
             log.info(String.format("Header '%s' = %s", key, value));
         });
-        
         log.info("server name: " + request.getServerName());
         log.info("context path: " + request.getContextPath());
-        
         log.info("ping"); 
-        
         return new ResponseEntity<String>("kartenkatalog", HttpStatus.OK);
     }
     
