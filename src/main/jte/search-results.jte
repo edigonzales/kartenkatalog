@@ -16,7 +16,8 @@
             @endif
         </td>
         <td colspan="2">${product.title()}</td>
-        <td>${product.dtype()}</td>
+        <!--<td>${product.dtype()}</td>-->
+        <td>${product.ident_part()}</td>
         <td>
             @if(product.description() != null) 
                 $unsafe{product.description()}
