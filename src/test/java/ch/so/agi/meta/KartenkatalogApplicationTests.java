@@ -1,4 +1,4 @@
-package ch.so.agi.maps;
+package ch.so.agi.meta;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

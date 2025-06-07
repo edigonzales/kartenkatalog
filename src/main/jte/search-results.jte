@@ -1,7 +1,7 @@
 @import java.util.List
 @import java.time.LocalDate
 @import java.lang.String
-@import ch.so.agi.maps.Product
+@import ch.so.agi.meta.Product
 
 @param List<Product> productList
 @param String baseUrl = "https://sos-ch-dk-2.exo.io/ch.so.agi.fubar1/"

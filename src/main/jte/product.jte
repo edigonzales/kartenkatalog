@@ -1,5 +1,5 @@
 @import java.util.List
-@import ch.so.agi.maps.Product
+@import ch.so.agi.meta.Product
 
 @param List<Product> productList
 

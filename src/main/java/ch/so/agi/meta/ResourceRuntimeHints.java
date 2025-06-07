@@ -1,4 +1,4 @@
-package ch.so.agi.maps;
+package ch.so.agi.meta;
 
 import org.springframework.aot.hint.MemberCategory;
 import org.springframework.aot.hint.RuntimeHints;

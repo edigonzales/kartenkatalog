@@ -1,4 +1,4 @@
-package ch.so.agi.maps;
+package ch.so.agi.meta;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -11,6 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Service;
+
+import ch.so.agi.meta.Product;
+import ch.so.agi.meta.ProductRowMapper;
 
 @Service
 public class ProductService {

@@ -1,4 +1,4 @@
-package ch.so.agi.maps;
+package ch.so.agi.meta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.servlet.ModelAndView;
 
+import ch.so.agi.meta.Product;
+import ch.so.agi.meta.ProductService;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Controller

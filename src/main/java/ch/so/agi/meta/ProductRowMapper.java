@@ -1,4 +1,4 @@
-package ch.so.agi.maps;
+package ch.so.agi.meta;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.jdbc.core.RowMapper;
+
+import ch.so.agi.meta.Product;
 
 public class ProductRowMapper implements RowMapper<Product> {
 

@@ -1,4 +1,6 @@
-package ch.so.agi.maps;
+package ch.so.agi.meta;
+
+import ch.so.agi.meta.Product;
 
 public record Product(
         String id, 
