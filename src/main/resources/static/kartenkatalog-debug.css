@@ -17,6 +17,7 @@ table {
     width: 85%;
     margin: auto;
     border-collapse: collapse;
+    table-layout: auto;
 }
 
 tr {
@@ -26,9 +27,9 @@ tr {
 th, td {
     border-top: 1px solid #ddd;
     padding-top: 20px;
-    padding-right: 8px;
+    padding-right: 16px;
     padding-bottom: 20px;
-    padding-left: 8px;
+    padding-left: 16px;
     vertical-align: top;
     text-align: left;
     background-color: white;
@@ -38,9 +39,9 @@ tr.hidden td {
     background-color: white;
     border-top: 0px solid white;
     padding-top: 10px;
-    padding-right: 8px;
+    padding-right: 16px;
     padding-bottom: 10px;
-    padding-left: 8px;
+    padding-left: 16px;
 }
 
 thead tr th {
@@ -69,3 +70,45 @@ tr:nth-child(even) {
     text-overflow: ellipsis;
 }
 
+.red-link {
+    overflow: hidden;
+    color: rgb(198, 40, 40);  
+}
+
+a.red-link:hover {
+    color: rgb(198, 40, 40);
+    text-decoration: underline;
+}  
+
+a.red-link:visited {
+    color: rgb(198, 40, 40); 
+}
+
+a:link {
+    color: rgb(198, 40, 40); 
+}
+
+a:visited {
+    color: rgb(198, 40, 40); 
+}
+
+a:hover {
+    color: rgb(198, 40, 40); 
+}
+
+a:active {
+    color: rgb(198, 40, 40); 
+} 
+
+.black-link {
+    overflow: hidden;
+    color: #333333; 
+}
+
+a.black-link:hover {
+    color: #333333;
+}  
+
+a.black-link:visited {
+    color: #333333; 
+}  

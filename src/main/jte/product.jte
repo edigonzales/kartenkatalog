@@ -59,12 +59,18 @@
         <div>${productList.size()}</div>
         -->
         <table class="responsive-table">
+            <colgroup>
+                <col style="width: 3%" />
+                <col style="width: 3%" />
+                <col style="width: 20%" />
+                <col style="width: 10%" />
+                <col style="width: 64%" />
+            </colgroup>
+
             <thead>
             <tr>
-                <th>foo</th>
-                <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                <th>id</th>
-                <th>title</th>
+                <th>ico</th>
+                <th colspan="2">title</th>
                 <th>ident_part</th>
                 <th>description</th>
             </tr>
