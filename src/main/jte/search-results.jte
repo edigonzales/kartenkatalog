@@ -14,7 +14,8 @@
             <!--@elseif(product.dtype().equals("simiProduct_ExternalWmsLayers"))
                 <i class="material-icons-two-tone">open_in_new</i>-->
             @else 
-                <i class="material-icons-two-tone">layers</i>
+                <!--<i class="material-icons-two-tone">map</i>-->
+                <i class="material-icons-outlined">map</i>
             @endif
         </td>
         <td colspan="2">${product.title()}</td>
@@ -28,7 +29,8 @@
                 $unsafe{product.description_model()}            
             @endif
         </td>
-        <td><a href="https://geo.so.ch/map?l=${product.ident_part()}" target="_blank">https://geo.so.ch/map?l=${product.ident_part()}</a></td>
+        <!--<td><a href="https://geo.so.ch/map?l=${product.ident_part()}" target="_blank">https://geo.so.ch/map?l=${product.ident_part()}</a></td>-->
+        <td>fubar</td>
     </tr>
 
     @if(product.children().length > 0)
@@ -36,7 +38,7 @@
         @for (var child : product.children())
         <tr class="child-row-${product.id()} hidden">
             <td></td>
-            <td  style="padding-right:0px;"><i class="material-icons-two-tone">layers</i></td>
+            <td  style="padding-right:0px;"><i class="material-icons-outlined">map</i></td>
             <td>${child.title()}</td>
             <td>
                 @if(child.description() != null) 
