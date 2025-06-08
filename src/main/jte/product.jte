@@ -60,19 +60,19 @@
         -->
         <table class="responsive-table">
             <colgroup>
-                <col style="width: 3%" />
-                <col style="width: 3%" />
-                <col style="width: 20%" />
-                <col style="width: 10%" />
+                <col style="width: 2%" />
+                <col style="width: 2%" />
+                <col style="width: 22%" />
                 <col style="width: 64%" />
+                <col style="width: 10%" />
             </colgroup>
 
             <thead>
             <tr>
-                <th>ico</th>
-                <th colspan="2">title</th>
-                <th>ident_part</th>
-                <th>description</th>
+                <th style="padding-right:0px;"></th>
+                <th colspan="2">Titel</th>
+                <th>Beschreibung</th>
+                <th>Web GIS Client</th>
             </tr>
             </thead>
             <tbody id="search-results">
