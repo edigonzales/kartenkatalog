@@ -113,7 +113,6 @@ a.black-link:visited {
     color: #333333; 
 }  
 
-
 .textedit-container {
   display: flex;
   flex-direction: column;
@@ -126,67 +125,29 @@ a.black-link:visited {
   margin-bottom: 0.3rem;
 }
 
-.textedit-input,
-.textedit-textarea {
-    font-family: Frutiger, system-ui, Roboto, sans;
-    color: #333333; 
-  padding: 1rem 0.75rem;
-  border: none;
+.textedit-display {
   border-radius: 4px;
-  background-color: #f0f0f0;
-  font-size: 1rem;
-  outline: none;
-  resize: vertical; /* For textarea */
-}
-
-/*
-.textedit-input {
-  height: 3rem;
-}
-*/
-
-/*
-.textedit-input:focus,
-.textedit-textarea:focus {
-  background-color: #e0e0e0;
-  box-shadow: 0 0 0 2px #ccc;
-}
-*/
-
-.textedit-input[readonly],
-.textedit-textarea[readonly] {
-  cursor: default;
   background-color: #eaeaea;
+  padding: 1.0rem 0.75rem;
+  /*min-height: 3rem;*/
+  font-size: 1rem;
+  color: #333;
+  cursor: default;
 }
 
-
-/*
-.textedit-container {
-  display: flex;
-  flex-direction: column;
-  margin: 1rem 0;
+.textedit-display a {
+  color: #0077cc;
+  text-decoration: underline;
 }
 
-.textedit-label {
-  font-size: 0.75rem; 
-  color: #555;
-  margin-bottom: 0.3rem;
+.badge {
+  display: inline-block;
+  padding: 0.3em 0.8em;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: rgb(198, 40, 40);
+  border: 1.5px solid rgb(198, 40, 40);
+  border-radius: 12px;
+  background: transparent;
+  user-select: none;
 }
-
-.textedit-input {
-    font-family: Frutiger, system-ui, Roboto, sans;
-    padding: 1rem 0.5rem;
-    border: none;
-    border-radius: 6px; 
-    background-color: #f0f0f0; 
-    font-size: 1rem;
-    outline: none;
-}
-*/
-
-/*
-.textedit-input:focus {
-  background-color: #e0e0e0;
-  box-shadow: 0 0 0 2px #ccc;
-}
-*/

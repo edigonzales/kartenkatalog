@@ -83,8 +83,6 @@ public class MainController {
     public ModelAndView product(@PathVariable(name = "id") String id) {
         List<Product> products = productService.findById(id);
         
-        log.info(id);
-        
         // Aufgrund des Datenmodelles können mehrere Objekte zurückgeliefert werden.
         // Dies kann jedoch nur bei Layergruppen der Fall sein, nicht bei Singlelayer.
         // Falls ein Sublayer einer Layergruppe requested wurde, gibt es nur
@@ -92,13 +90,11 @@ public class MainController {
         Product requestedProduct = null;
         for (var product : products) {
             if (id.equalsIgnoreCase(product.ident_part())) {
-                log.info("parent is equal");
                 requestedProduct = product;
                 break;
             } else {
                 for (var child : product.children()) {
                     if (id.equalsIgnoreCase(child.ident_part())) {
-                        log.info("child is equal");
                         requestedProduct = child;
                         break;
                     }
@@ -106,7 +102,7 @@ public class MainController {
             }
         }
         
-        //log.info(requestedProduct.toString());
+        log.info(requestedProduct.toString());
         
         ModelAndView mav = new ModelAndView("product_detail");
         mav.addObject("product", requestedProduct);

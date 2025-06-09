@@ -30,14 +30,12 @@
         </div>
 
         <div class="left-align" style="margin-top:100px;">
-            <h1>${product.title()}</h1>
+            <h1>${product.title()} <a href="https://geo.so.ch/map?l=${product.ident_part()}[${product.transparency()}]" target="_blank"><i class="material-icons-outlined black-link">open_in_new</i></a></h1>
         </div>
-                
-               
-        <p class="textedit-container">
-            <label class="textedit-label" for="custom-textarea">Beschreibung</label>
-            <textarea id="custom-textarea" class="textedit-textarea" rows="8" readonly>Achtung: Weil wir keine Textarea verwenden können, glaub wieder egal. Beschreibung in SQL herausfinden und ggf Herkunft als weiters Attribut. Oder fürs Erste im Java-Code, weil wir ja nur ein Product haben.</textarea>
-            <!--<textarea id="custom-textarea" class="textedit-textarea" rows="4" readonly>
+                                        
+        <div class="textedit-container">
+            <label class="textedit-label">Beschreibung</label>
+            <div class="textedit-display" style="min-height:100px;">
                 @if(product.description() != null)
                     $unsafe{product.description()}
                 @elseif(product.description_override() != null)
@@ -45,13 +43,50 @@
                 @elseif(product.description_model() != null)
                     $unsafe{product.description_model()}
                 @endif            
-            </textarea>-->
-        </p>
+            </div>
+        </div>
+
+        <div class="textedit-container">
+            <label class="textedit-label">Schlagwörter</label>
+            <div class="textedit-display" style="min-height:30px;">
+                @for (var keyword : product.keywords().split(","))
+                    <span class="badge">${keyword}</span>          
+                @endfor
+            </div>
+        </div>
+
+        <div class="textedit-container">
+            <label class="textedit-label">Synonyme</label>
+            <div class="textedit-display" style="min-height:30px;">
+                @if(product.synonyms() != null) 
+                    @for (var synonym : product.synonyms().split(","))
+                        <span class="badge">${synonym}</span>          
+                    @endfor
+                @endif
+            </div>
+        </div>
+
+               
+        <div class="textedit-container">
+            <label class="textedit-label">Organisation</label>
+            <div class="textedit-display">
+                ${product.org_name()}          
+            </div>
+        </div>
         
-        <p class="textedit-container">
-                <label class="textedit-label" for="custom-input">Organisation</label>
-                <input type="text" id="custom-input" class="textedit-input" value="Read-only input <br>" readonly />
-        </p>
+        <div class="textedit-container">
+            <label class="textedit-label">Typ</label>
+            <div class="textedit-display">
+                @if(product.children().length > 0)
+                    Layergruppe
+                @else
+                    Einzelayer / Fassadelayer
+                @endif 
+                        
+            </div>
+        </div>
+
+        
         
         <!--
         <table class="responsive-table">
