@@ -29,8 +29,14 @@
                 $unsafe{product.description_model()}            
             @endif
         </td>
-        <!--<td><a href="https://geo.so.ch/map?l=${product.ident_part()}" target="_blank">https://geo.so.ch/map?l=${product.ident_part()}</a></td>-->
-        <td>fubar</td>
+        <td>
+            @if(product.transparency() != null && !product.transparency().equals("0"))
+                <a href="https://geo.so.ch/map?l=${product.ident_part()}[${product.transparency()}]" target="_blank"><i class="material-icons-outlined black-link">open_in_new</i></a>
+            @else
+                <a href="https://geo.so.ch/map?l=${product.ident_part()}" target="_blank"><i class="material-icons-outlined black-link">open_in_new</i></a>                
+            @endif
+        </td>
+        <td><a href="product/${product.ident_part()}" target="_blank"><i class="material-icons-outlined black-link">info</i></a></td>
     </tr>
 
     @if(product.children().length > 0)
@@ -49,11 +55,16 @@
                     $unsafe{child.description_model()}            
                 @endif
             </td>
-            <td>${child.dtype()}</td>
+            <td>
+                @if(child.transparency() != null && !child.transparency().equals("0"))
+                    <a href="https://geo.so.ch/map?l=${child.ident_part()}[${child.transparency()}]" target="_blank"><i class="material-icons-outlined black-link">open_in_new</i></a>
+                @else
+                    <a href="https://geo.so.ch/map?l=${child.ident_part()}" target="_blank"><i class="material-icons-outlined black-link">open_in_new</i></a>                
+                @endif            
+            </td>
+            <td><a href="product/${child.ident_part()}" target="_blank"><i class="material-icons-outlined black-link">info</i></a></td>
         </tr>
         @endfor
-
-
     @endif
 @endfor
     

@@ -25,22 +25,24 @@ public class ProductService {
         this.jdbcClient = jdbcClient;
     }
 
-    public List<Product> findAll() {        
-//        List<Product> products = jdbcClient.sql(baseStatement).query(Product.class).list();
+    public List<Product> findById(String id) {
+        String whereStatement = baseStatement + " WHERE p_ident_part = :id OR c_ident_part = :id";
         
-        System.out.println(System.currentTimeMillis());
-
+        List<Product> products = jdbcClient.sql(whereStatement)
+                .param("id", id)
+                .query(new ProductRowMapper())
+                .list();
+        
+        return products;
+    }
+    
+    public List<Product> findAll() {        
         List<Product> productList = jdbcClient.sql(baseStatement)
                 .query(new ProductRowMapper())
                 .list();
-        System.out.println(System.currentTimeMillis());
-        
-        //log.info("{}", productList);
 
         Map<String, List<Product>> childrenMap = new HashMap<>();
         Map<String, Product> parentMap = new HashMap<>();
-        
-        System.out.println(System.currentTimeMillis());
 
         // Process rows into parent-child hierarchy
         for (Product product : productList) {
@@ -72,10 +74,6 @@ public class ProductService {
                 ))
                 .collect(Collectors.toList());
 
-
-        System.out.println(System.currentTimeMillis());
-        System.out.println("***********");
-        
         return finalList; 
     }
 

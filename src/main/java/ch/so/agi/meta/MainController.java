@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -47,7 +48,7 @@ public class MainController {
     
     
     @GetMapping("/product2")
-    public ModelAndView product(@RequestHeader Map<String, String> headers, HttpServletRequest request) {
+    public ModelAndView product2(@RequestHeader Map<String, String> headers, HttpServletRequest request) {
         headers.forEach((key, value) -> {
             log.info(String.format("Header '%s' = %s", key, value));
         });
@@ -63,7 +64,7 @@ public class MainController {
     }
     
     @GetMapping("/product")
-    public ModelAndView product2(@RequestHeader Map<String, String> headers, HttpServletRequest request) {
+    public ModelAndView products(@RequestHeader Map<String, String> headers, HttpServletRequest request) {
         headers.forEach((key, value) -> {
             log.info(String.format("Header '%s' = %s", key, value));
         });
@@ -77,6 +78,38 @@ public class MainController {
         mav.addObject("productList", products);
         return mav;
     }
+    
+    @GetMapping("/product/{id}")
+    public ModelAndView product(@PathVariable(name = "id") String id) {
+        List<Product> products = productService.findById(id);
+        //log.info(products.toString());
+        
+        Product requestedProduct = null;
+        for (var product : products) {
+            if (id.equalsIgnoreCase(product.ident_part())) {
+                log.info("parent is equal");
+                requestedProduct = product;
+                break;
+            } else {
+                for (var child : product.children()) {
+                    if (id.equalsIgnoreCase(child.ident_part())) {
+                        log.info("child is equal");
+                        requestedProduct = child;
+                        break;
+                    }
+                }
+            }
+            if (requestedProduct != null) break; 
+        }
+        
+        //log.info(requestedProduct.toString());
+        
+        ModelAndView mav = new ModelAndView("index");
+        mav.addObject("name", "Stefan");
+        mav.addObject("parent_id", products.get(0).ident_part());
+        return mav;
+    }
+    
     
     
 }

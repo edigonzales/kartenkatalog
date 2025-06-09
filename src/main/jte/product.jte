@@ -63,8 +63,9 @@
                 <col style="width: 2%" />
                 <col style="width: 2%" />
                 <col style="width: 22%" />
-                <col style="width: 64%" />
-                <col style="width: 10%" />
+                <col style="width: 58%" />
+                <col style="width: 8%" />
+                <col style="width: 8%" />
             </colgroup>
 
             <thead>
@@ -72,7 +73,8 @@
                 <th style="padding-right:0px;"></th>
                 <th colspan="2">Titel</th>
                 <th>Beschreibung</th>
-                <th>Web GIS Client</th>
+                <th>Karte</th>
+                <th>Details</th>
             </tr>
             </thead>
             <tbody id="search-results">
