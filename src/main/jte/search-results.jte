@@ -6,6 +6,10 @@
 @param List<Product> productList
 @param String baseUrl = "https://sos-ch-dk-2.exo.io/ch.so.agi.fubar1/"
 
+
+<!-- TODO: nicht alle haben einen WGC-Link, solche, die nur als WMS oder dataservice verfügbar sind -->
+
+
 @for (var product : productList) 
     <tr>
         <td  style="padding-right:0px;">

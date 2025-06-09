@@ -82,8 +82,13 @@ public class MainController {
     @GetMapping("/product/{id}")
     public ModelAndView product(@PathVariable(name = "id") String id) {
         List<Product> products = productService.findById(id);
-        //log.info(products.toString());
         
+        log.info(id);
+        
+        // Aufgrund des Datenmodelles können mehrere Objekte zurückgeliefert werden.
+        // Dies kann jedoch nur bei Layergruppen der Fall sein, nicht bei Singlelayer.
+        // Falls ein Sublayer einer Layergruppe requested wurde, gibt es nur
+        // ein Objekt.
         Product requestedProduct = null;
         for (var product : products) {
             if (id.equalsIgnoreCase(product.ident_part())) {
@@ -99,13 +104,12 @@ public class MainController {
                     }
                 }
             }
-            if (requestedProduct != null) break; 
         }
         
         //log.info(requestedProduct.toString());
         
-        ModelAndView mav = new ModelAndView("index");
-        mav.addObject("name", "Stefan");
+        ModelAndView mav = new ModelAndView("product_detail");
+        mav.addObject("product", requestedProduct);
         mav.addObject("parent_id", products.get(0).ident_part());
         return mav;
     }

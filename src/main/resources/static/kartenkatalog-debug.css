@@ -5,16 +5,8 @@ body {
     font-size: 16px;
 }
 
-@keyframes blink {
-    0% { opacity:1 } 75% { opacity:1 } 76% { opacity:0 } 100% { opacity:0 }
-}
-
-blink, .blink-css {
-    animation:blink 0.75s ease-in infinite alternate!important;
-}
-
 table {
-    width: 85%;
+    width: 100%;
     margin: auto;
     border-collapse: collapse;
     table-layout: auto;
@@ -50,12 +42,6 @@ thead tr th {
 
 tr:hover td {background:#eeeeee;}
 
-/*
-tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-*/
-
 .hidden {
     display: none;
 }
@@ -64,11 +50,25 @@ tr:nth-child(even) {
     display: table-row;
 }
 
+/*
 .multi-line-ellipsis {
     white-space:nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
+*/
+
+.container {
+    width: 85%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/*
+#product_detail > p {
+    margin-top: 50px;     
+}
+*/
 
 .red-link {
     overflow: hidden;
@@ -112,3 +112,81 @@ a.black-link:hover {
 a.black-link:visited {
     color: #333333; 
 }  
+
+
+.textedit-container {
+  display: flex;
+  flex-direction: column;
+  margin: 1rem 0;
+}
+
+.textedit-label {
+  font-size: 0.75rem;
+  color: #555;
+  margin-bottom: 0.3rem;
+}
+
+.textedit-input,
+.textedit-textarea {
+    font-family: Frutiger, system-ui, Roboto, sans;
+    color: #333333; 
+  padding: 1rem 0.75rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+  font-size: 1rem;
+  outline: none;
+  resize: vertical; /* For textarea */
+}
+
+/*
+.textedit-input {
+  height: 3rem;
+}
+*/
+
+/*
+.textedit-input:focus,
+.textedit-textarea:focus {
+  background-color: #e0e0e0;
+  box-shadow: 0 0 0 2px #ccc;
+}
+*/
+
+.textedit-input[readonly],
+.textedit-textarea[readonly] {
+  cursor: default;
+  background-color: #eaeaea;
+}
+
+
+/*
+.textedit-container {
+  display: flex;
+  flex-direction: column;
+  margin: 1rem 0;
+}
+
+.textedit-label {
+  font-size: 0.75rem; 
+  color: #555;
+  margin-bottom: 0.3rem;
+}
+
+.textedit-input {
+    font-family: Frutiger, system-ui, Roboto, sans;
+    padding: 1rem 0.5rem;
+    border: none;
+    border-radius: 6px; 
+    background-color: #f0f0f0; 
+    font-size: 1rem;
+    outline: none;
+}
+*/
+
+/*
+.textedit-input:focus {
+  background-color: #e0e0e0;
+  box-shadow: 0 0 0 2px #ccc;
+}
+*/

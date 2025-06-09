@@ -1,0 +1,91 @@
+@import ch.so.agi.meta.Product
+
+@param Product product
+@param String finalDescription = null
+                
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=0" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
+    <title>Kartenportal • Kanton Solothurn</title>
+    
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@materializecss/materialize@2.2.1/dist/js/materialize.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp" rel="stylesheet">
+
+    <link rel="stylesheet" href="../fonts.css">
+    <link rel="stylesheet" href="../kartenkatalog-debug.css">
+</head>
+
+<body>
+    <div id="product_detail" class="container">
+        <div style="margin-top:10px; text-align: right;">
+            <img src="../Logo.png" alt="Logo Kanton Solothurn">
+        </div>
+
+        <div class="left-align" style="margin-top:100px;">
+            <h1>${product.title()}</h1>
+        </div>
+                
+               
+        <p class="textedit-container">
+            <label class="textedit-label" for="custom-textarea">Beschreibung</label>
+            <textarea id="custom-textarea" class="textedit-textarea" rows="8" readonly>Achtung: Weil wir keine Textarea verwenden können, glaub wieder egal. Beschreibung in SQL herausfinden und ggf Herkunft als weiters Attribut. Oder fürs Erste im Java-Code, weil wir ja nur ein Product haben.</textarea>
+            <!--<textarea id="custom-textarea" class="textedit-textarea" rows="4" readonly>
+                @if(product.description() != null)
+                    $unsafe{product.description()}
+                @elseif(product.description_override() != null)
+                    $unsafe{product.description_override()}
+                @elseif(product.description_model() != null)
+                    $unsafe{product.description_model()}
+                @endif            
+            </textarea>-->
+        </p>
+        
+        <p class="textedit-container">
+                <label class="textedit-label" for="custom-input">Organisation</label>
+                <input type="text" id="custom-input" class="textedit-input" value="Read-only input <br>" readonly />
+        </p>
+        
+        <!--
+        <table class="responsive-table">
+            <colgroup>
+                <col style="width: 2%" />
+                <col style="width: 2%" />
+                <col style="width: 22%" />
+                <col style="width: 58%" />
+                <col style="width: 8%" />
+                <col style="width: 8%" />
+            </colgroup>
+
+            <thead>
+            <tr>
+                <th style="padding-right:0px;"></th>
+                <th colspan="2">Titel</th>
+                <th>Beschreibung</th>
+                <th>Karte</th>
+                <th>Details</th>
+            </tr>
+            </thead>
+            <tbody id="search-results">
+                @template.search-results(productList = productList)
+            </tbody>
+        </table>    
+        -->
+    </div>
+    
+    <script>
+        console.log("gaga");
+        document.getElementById('custom-textarea').addEventListener('input', function(e) {
+        console.log("fubar");
+            e.target.value = e.target.value.trim();
+        });
+    </script>
+</body>
+</html>
