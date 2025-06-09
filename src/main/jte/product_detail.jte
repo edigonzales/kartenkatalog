@@ -49,9 +49,11 @@
         <div class="textedit-container">
             <label class="textedit-label">Schlagwörter</label>
             <div class="textedit-display" style="min-height:30px;">
-                @for (var keyword : product.keywords().split(","))
-                    <span class="badge">${keyword}</span>          
-                @endfor
+                @if(product.synonyms() != null) 
+                    @for (var keyword : product.keywords().split(","))
+                        <span class="badge">${keyword}</span>          
+                    @endfor
+                @endif
             </div>
         </div>
 
