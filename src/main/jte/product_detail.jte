@@ -82,7 +82,7 @@
                 @if(product.children().length > 0)
                     Layergruppe
                 @else
-                    Einzelayer / Fassadelayer
+                    Einzellayer / Fassadelayer
                 @endif 
                         
             </div>
