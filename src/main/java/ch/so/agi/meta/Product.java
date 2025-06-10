@@ -4,6 +4,7 @@ import ch.so.agi.meta.Product;
 
 public record Product(
         String id, 
+        String parent_ident_part,
         String dtype, 
         String description, 
         String description_override, 

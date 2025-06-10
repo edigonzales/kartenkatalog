@@ -136,10 +136,12 @@ a.black-link:visited {
   cursor: default;
 }
 
+/*
 .textedit-display a {
   color: #0077cc;
   text-decoration: underline;
 }
+*/
 
 .badge {
   display: inline-block;

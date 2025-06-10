@@ -1,7 +1,10 @@
 package ch.so.agi.meta;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -88,57 +91,26 @@ public class MainController {
     
     @GetMapping("/product/{id}")
     public ModelAndView product(@PathVariable(name = "id") String id) {
-        List<Product> products = productService.findById(id);
-        
-        // Aufgrund des Datenmodelles können mehrere Objekte zurückgeliefert werden.
-        // Dies kann jedoch nur bei Layergruppen der Fall sein, nicht bei Singlelayer.
-        // Falls ein Sublayer einer Layergruppe requested wurde, gibt es nur
-        // ein Objekt.
-        Product requestedProduct = null;
-        for (var product : products) {
-            if (id.equalsIgnoreCase(product.ident_part())) {
-                requestedProduct = product;
-                break;
-            } else {
-                for (var child : product.children()) {
-                    if (id.equalsIgnoreCase(child.ident_part())) {
-                        requestedProduct = child;
-                        break;
-                    }
-                }
-            }
-        }
-        
-        log.info(requestedProduct.toString());
+        Product product = productService.findById(id);
         
         ModelAndView mav = new ModelAndView("product_detail");
-        mav.addObject("product", requestedProduct);
-        mav.addObject("parent_id", products.get(0).ident_part());
+        mav.addObject("product", product);
+        mav.addObject("parent_id", product.parent_ident_part());
         return mav;
     }
     
-    @PostMapping(value = "/download-string-form-post", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity<byte[]> downloadStringFormPost(@RequestParam("content") String content) {
-        String filename = "my_form_downloaded_string.txt";
-        MediaType mediaType = MediaType.TEXT_PLAIN;
-        
-        byte[] contentBytes = content.getBytes(StandardCharsets.UTF_8);
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-//        headers.setContentDisposition(ContentDisposition.builder("attachment").filename("foo.qml").build());
+    @GetMapping(value = "/product/{id}/style")
+    public ResponseEntity<?> downloadStringFormPost(@PathVariable(name = "id") String id) {
+        Product product = productService.findById(id);
+
+        byte[] contentBytes = product.style_server().getBytes(StandardCharsets.UTF_8);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=generated.pdf");
-        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-        headers.add("Pragma", "no-cache");
-        headers.add("Expires", "0");
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+id+".qml");
+        headers.setContentType(MediaType.TEXT_XML);
 
-        return ResponseEntity.ok()
-                .headers(headers)
-                .contentLength(contentBytes.length)
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(contentBytes);
+        return new ResponseEntity<>(contentBytes, headers, HttpStatus.OK);
     }    
-    
+        
     
 }

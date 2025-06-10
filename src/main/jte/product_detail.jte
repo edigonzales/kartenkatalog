@@ -29,7 +29,7 @@
             <img src="../Logo.png" alt="Logo Kanton Solothurn">
         </div>
 
-        <div class="left-align" style="margin-top:100px;">
+        <div class="left-align" style="margin-top:60px;">
             <h1>${product.title()} <a href="https://geo.so.ch/map?l=${product.ident_part()}[${product.transparency()}]" target="_blank"><i class="material-icons-outlined black-link">open_in_new</i></a></h1>
         </div>
                                         
@@ -75,6 +75,25 @@
                 ${product.org_name()}          
             </div>
         </div>
+        
+        <div class="textedit-container">
+            <label class="textedit-label">Layergruppe</label>
+            <div class="textedit-display" style="min-height:20px;">  <!-- TODO: class machen und anwenden, dito badge-->
+                ${product.parent_ident_part()}          
+            </div>
+        </div>
+
+
+        <p>&nbsp;</p>
+
+        <div class="textedit-container">
+            <label class="textedit-label">Thema</label>
+            <div class="textedit-display">
+                ${product.theme_title()}          
+            </div>
+        </div>
+
+        <p>&nbsp;</p>
 
         <div class="textedit-container">
             <label class="textedit-label">Typ</label>
@@ -96,26 +115,22 @@
         
         <div class="textedit-container">
             <label class="textedit-label">QML</label>
-            <div class="textedit-display">
-                <!--${product.style_server()}-->
-                
-                
-<button
-    hx-post="../download-string-form-post"
-    hx-vals='{"content": "fubar"}'
-    hx-target="body"
-    hx-swap="none"
->
-    Download Large String (via hx-vals as form data)
-</button>
-                          
+            <div class="textedit-display" style="vertical-align:center;">
+                <a href="../product/${product.ident_part()}/style" target="_blank">${product.ident_part()}.qml</a>
             </div>
         </div>
 
         <div class="textedit-container">
-            <label class="textedit-label">Thema</label>
+            <label class="textedit-label">Interne Bemerkungen</label>
             <div class="textedit-display">
-                ${product.theme_title()}          
+                ${product.remarks()}          
+            </div>
+        </div>
+
+        <div class="textedit-container">
+            <label class="textedit-label">Permissions</label>
+            <div class="textedit-display">
+                ${product.permissions()}          
             </div>
         </div>
         

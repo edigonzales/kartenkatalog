@@ -25,7 +25,7 @@ public class ProductService {
         this.jdbcClient = jdbcClient;
     }
 
-    public List<Product> findById(String id) {
+    public Product findById(String id) {
         String whereStatement = baseStatement + " WHERE p_ident_part = :id OR c_ident_part = :id";
         
         List<Product> products = jdbcClient.sql(whereStatement)
@@ -33,7 +33,26 @@ public class ProductService {
                 .query(new ProductRowMapper())
                 .list();
         
-        return products;
+        // Aufgrund des Datenmodelles können mehrere Objekte zurückgeliefert werden.
+        // Dies kann jedoch nur bei Layergruppen der Fall sein, nicht bei Singlelayer.
+        // Falls ein Sublayer einer Layergruppe requested wurde, gibt es nur
+        // ein Objekt.
+        Product requestedProduct = null;
+        for (var product : products) {
+            if (id.equalsIgnoreCase(product.ident_part())) {
+                requestedProduct = product;
+                break;
+            } else {
+                for (var child : product.children()) {
+                    if (id.equalsIgnoreCase(child.ident_part())) {
+                        requestedProduct = child;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        return requestedProduct;
     }
     
     public List<Product> findAll() {        
@@ -61,7 +80,7 @@ public class ProductService {
         List<Product> finalList = parentMap.values().stream()
                 .sorted(Comparator.comparing(Product::title)) // Sort parents by title
                 .map(parent -> new Product(
-                    parent.id(), parent.dtype(), parent.description(), parent.description_override(), parent.description_model(), parent.remarks(),
+                    parent.id(), parent.parent_ident_part(), parent.dtype(), parent.description(), parent.description_override(), parent.description_model(), parent.remarks(),
                     parent.title(), parent.ident_part(), parent.derived_identifier(),
                     parent.keywords(), parent.synonyms(), parent.display_text(),
                     parent.style_server(), parent.service_download(),
