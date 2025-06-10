@@ -1,7 +1,10 @@
 # kartenkatalog
 
 https://github.com/davidoesch/geoservice_harvester_poc/blob/main/index.html#L132
+https://dev.to/rpkr/different-ways-to-send-a-file-as-a-response-in-spring-boot-for-a-rest-api-43g7
 
+
+curl -X POST -F content=fubar http://localhost:8080/download-string-form-post
 
 -Dspring.profiles.active=prod
 

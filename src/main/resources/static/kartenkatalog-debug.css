@@ -127,7 +127,8 @@ a.black-link:visited {
 
 .textedit-display {
   border-radius: 4px;
-  background-color: #eaeaea;
+  background-color: #F4F4F4;
+  /*background-color: #eaeaea;*/
   padding: 1.0rem 0.75rem;
   /*min-height: 3rem;*/
   font-size: 1rem;

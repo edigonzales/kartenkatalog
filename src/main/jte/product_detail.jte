@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=0" />
     <meta name="mobile-web-app-capable" content="yes" />
 
-    <title>Kartenportal • Kanton Solothurn</title>
+    <title>${product.title()} • Kartenportal • Kanton Solothurn</title>
     
     <script src="https://unpkg.com/htmx.org@2.0.4"></script>
 
@@ -49,7 +49,7 @@
         <div class="textedit-container">
             <label class="textedit-label">Schlagwörter</label>
             <div class="textedit-display" style="min-height:30px;">
-                @if(product.synonyms() != null) 
+                @if(product.keywords() != null) 
                     @for (var keyword : product.keywords().split(","))
                         <span class="badge">${keyword}</span>          
                     @endfor
@@ -75,7 +75,7 @@
                 ${product.org_name()}          
             </div>
         </div>
-        
+
         <div class="textedit-container">
             <label class="textedit-label">Typ</label>
             <div class="textedit-display">
@@ -83,11 +83,41 @@
                     Layergruppe
                 @else
                     Einzellayer / Fassadelayer
-                @endif 
-                        
+                @endif       
             </div>
         </div>
 
+        <div class="textedit-container">
+            <label class="textedit-label">Verfügbarkeit</label>
+            <div class="textedit-display">
+                ${product.display_text()}          
+            </div>
+        </div>
+        
+        <div class="textedit-container">
+            <label class="textedit-label">QML</label>
+            <div class="textedit-display">
+                <!--${product.style_server()}-->
+                
+                
+<button
+    hx-post="../download-string-form-post"
+    hx-vals='{"content": "fubar"}'
+    hx-target="body"
+    hx-swap="none"
+>
+    Download Large String (via hx-vals as form data)
+</button>
+                          
+            </div>
+        </div>
+
+        <div class="textedit-container">
+            <label class="textedit-label">Thema</label>
+            <div class="textedit-display">
+                ${product.theme_title()}          
+            </div>
+        </div>
         
         
         <!--
@@ -115,14 +145,6 @@
             </tbody>
         </table>    
         -->
-    </div>
-    
-    <script>
-        console.log("gaga");
-        document.getElementById('custom-textarea').addEventListener('input', function(e) {
-        console.log("fubar");
-            e.target.value = e.target.value.trim();
-        });
-    </script>
+    </div>    
 </body>
 </html>

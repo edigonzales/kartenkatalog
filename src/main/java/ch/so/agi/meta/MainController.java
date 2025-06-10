@@ -1,18 +1,25 @@
 package ch.so.agi.meta;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import ch.so.agi.meta.Product;
@@ -110,6 +117,28 @@ public class MainController {
         return mav;
     }
     
+    @PostMapping(value = "/download-string-form-post", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public ResponseEntity<byte[]> downloadStringFormPost(@RequestParam("content") String content) {
+        String filename = "my_form_downloaded_string.txt";
+        MediaType mediaType = MediaType.TEXT_PLAIN;
+        
+        byte[] contentBytes = content.getBytes(StandardCharsets.UTF_8);
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+//        headers.setContentDisposition(ContentDisposition.builder("attachment").filename("foo.qml").build());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=generated.pdf");
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentLength(contentBytes.length)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(contentBytes);
+    }    
     
     
 }
