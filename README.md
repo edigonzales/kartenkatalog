@@ -19,6 +19,7 @@
 
 ## Technisches
 
+- Product braucht noch Titel/Name des Parents
 - Leere Felder zeigen? Damit klar ist == null
 - Klassen machen für min-height (badge, text).
 
