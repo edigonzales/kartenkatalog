@@ -76,13 +76,14 @@
             </div>
         </div>
         
-        <div class="textedit-container">
-            <label class="textedit-label">Layergruppe</label>
-            <div class="textedit-display" style="min-height:20px;">  <!-- TODO: class machen und anwenden, dito badge-->
-                ${product.parent_ident_part()}          
+        @if(product.parent_ident_part() != null)
+            <div class="textedit-container">
+                <label class="textedit-label">Layergruppe</label>
+                <div class="textedit-display" style="min-height:20px;"> 
+                    ${product.parent_ident_part()}          
+                </div>
             </div>
-        </div>
-
+        @endif
 
         <p>&nbsp;</p>
 
@@ -123,7 +124,7 @@
         <div class="textedit-container">
             <label class="textedit-label">Interne Bemerkungen</label>
             <div class="textedit-display">
-                ${product.remarks()}          
+                $unsafe{product.remarks()}          
             </div>
         </div>
 

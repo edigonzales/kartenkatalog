@@ -1,10 +1,31 @@
 # kartenkatalog
 
+## Fragen
+
+- Falls nicht einzeln publiziert, sollte man nicht einen Web GIS Client Link zur Verfügung stellen? Resp. den der Layergruppe?
+- Was soll gefixed werden / verbessert werden? Inhaltlich? Gibt es Muster? -> Zusammenfassung von Beschreibung der Einzellayer in der Layergruppe (z.B.). Soll die Zusammenfassung immer gleich beginne "die Layergruppe beinhaltet ..."
+- Was machen mit vielen leeren Beschreibungen?
+- Was machen mit Keywords / Synonmye?
+- Was darf in Beschreibung verwendet werden?
+- Ggf GIS-Koordinatoren fragen.
+- Was soll alles in die Liste? (ich glaube data service habe ich nicht, oder? Ah doch, muss ich mir noch anschauen, plus es gibt das Attribut in Product, schräg: "ch.so.afu.altlasten.standorte.data_v2" kann ich eingeloggt im WGC in der URL angeben und es lädt). -> falls "nur WMS" funktioniert es nicht, z.B. "Dataservice-Konfig für UPlusLuft-Anlagen". Ist wohl bei altlasten falsch konfiguriert und geht trotzdem irgendwo unter, damit es nicht in der Suche vorkommt.
+
+
+## Vorgaben
+
+- Immer gleiche Anführungszeichen.
+- Keine fetten Schriften
+
+
+## Technisches
+
+- Leere Felder zeigen? Damit klar ist == null
+- Klassen machen für min-height (badge, text).
+
+
 https://github.com/davidoesch/geoservice_harvester_poc/blob/main/index.html#L132
 https://dev.to/rpkr/different-ways-to-send-a-file-as-a-response-in-spring-boot-for-a-rest-api-43g7
 
-
-curl -X POST -F content=fubar http://localhost:8080/download-string-form-post
 
 -Dspring.profiles.active=prod
 
