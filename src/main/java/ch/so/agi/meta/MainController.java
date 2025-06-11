@@ -90,7 +90,7 @@ public class MainController {
     }
     
     @GetMapping("/product/{id}")
-    public ModelAndView showProductDetail(@RequestHeader Map<String, String> headers, HttpServletRequest request, @PathVariable(name = "id") String id) {
+    public ModelAndView showProductDetail(@PathVariable(name = "id") String id) {
         Product product = productService.findById(id);
         
         ModelAndView mav = new ModelAndView("productdetail");
