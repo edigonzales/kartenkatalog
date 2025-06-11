@@ -52,11 +52,11 @@ graalvmNative {
     binaries {
         main {
             buildArgs.add('-march=compatibility')
-            buildArgs.add("-H:IncludeLocales=de,en")
-            buildArgs.add("-Duser.country=CH")
-            buildArgs.add("-Duser.language=de")
-            jvmArgs.add("-Duser.country=CH")
-            jvmArgs.add("-Duser.language=de")
+            //buildArgs.add("-H:IncludeLocales=de,en")
+            //buildArgs.add("-Duser.country=CH")
+            //buildArgs.add("-Duser.language=de")
+            //jvmArgs.add("-Duser.country=CH")
+            //jvmArgs.add("-Duser.language=de")
 
             verbose = true
         }
