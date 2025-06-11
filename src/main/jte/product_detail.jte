@@ -35,7 +35,7 @@
                                         
         <div class="textedit-container">
             <label class="textedit-label">Beschreibung</label>
-            <div class="textedit-display" style="min-height:100px;">
+            <div class="textedit-display textedit-display-area">
                 @if(product.description() != null)
                     $unsafe{product.description()}
                 @elseif(product.description_override() != null)
@@ -48,7 +48,7 @@
 
         <div class="textedit-container">
             <label class="textedit-label">Schlagwörter</label>
-            <div class="textedit-display" style="min-height:30px;">
+            <div class="textedit-display textedit-display-badge">
                 @if(product.keywords() != null) 
                     @for (var keyword : product.keywords().split(","))
                         <span class="badge">${keyword}</span>          
@@ -59,7 +59,7 @@
 
         <div class="textedit-container">
             <label class="textedit-label">Synonyme</label>
-            <div class="textedit-display" style="min-height:30px;">
+            <div class="textedit-display textedit-display-badge">
                 @if(product.synonyms() != null) 
                     @for (var synonym : product.synonyms().split(","))
                         <span class="badge">${synonym}</span>          
@@ -68,28 +68,27 @@
             </div>
         </div>
 
-               
+        <div class="textedit-container">
+            <label class="textedit-label">Layergruppe</label>
+            <div class="textedit-display textedit-display-line"> 
+                @if(product.parent_ident_part() != null) 
+                    <a href="../product/${product.parent_ident_part()}" target="_blank">${product.parent_title()} / ${product.parent_ident_part()}</a>                
+                @endif
+            </div>
+        </div>
+
         <div class="textedit-container">
             <label class="textedit-label">Organisation</label>
-            <div class="textedit-display">
+            <div class="textedit-display textedit-display-line">
                 ${product.org_name()}          
             </div>
         </div>
-        
-        @if(product.parent_ident_part() != null)
-            <div class="textedit-container">
-                <label class="textedit-label">Layergruppe</label>
-                <div class="textedit-display" style="min-height:20px;"> 
-                    ${product.parent_ident_part()}          
-                </div>
-            </div>
-        @endif
 
         <p>&nbsp;</p>
 
         <div class="textedit-container">
             <label class="textedit-label">Thema</label>
-            <div class="textedit-display">
+            <div class="textedit-display textedit-display-line">
                 ${product.theme_title()}          
             </div>
         </div>
@@ -98,7 +97,7 @@
 
         <div class="textedit-container">
             <label class="textedit-label">Typ</label>
-            <div class="textedit-display">
+            <div class="textedit-display textedit-display-line">
                 @if(product.children().length > 0)
                     Layergruppe
                 @else
@@ -109,28 +108,30 @@
 
         <div class="textedit-container">
             <label class="textedit-label">Verfügbarkeit</label>
-            <div class="textedit-display">
+            <div class="textedit-display textedit-display-line">
                 ${product.display_text()}          
             </div>
         </div>
         
         <div class="textedit-container">
             <label class="textedit-label">QML</label>
-            <div class="textedit-display" style="vertical-align:center;">
-                <a href="../product/${product.ident_part()}/style" target="_blank">${product.ident_part()}.qml</a>
+            <div class="textedit-display textedit-display-line">
+                @if(product.style_server() != null)
+                    <a href="../product/${product.ident_part()}/style" target="_blank">${product.ident_part()}.qml</a>                
+                @endif
             </div>
         </div>
 
         <div class="textedit-container">
             <label class="textedit-label">Interne Bemerkungen</label>
-            <div class="textedit-display">
+            <div class="textedit-display textedit-display-line">
                 $unsafe{product.remarks()}          
             </div>
         </div>
 
         <div class="textedit-container">
             <label class="textedit-label">Permissions</label>
-            <div class="textedit-display">
+            <div class="textedit-display textedit-display-line">
                 ${product.permissions()}          
             </div>
         </div>

@@ -14,6 +14,7 @@ public class ProductRowMapper implements RowMapper<Product> {
     @Override
     public Product mapRow(ResultSet rs, int rowNum) throws SQLException {
         String id = rs.getString("p_id");
+        String parent_title = null;
         String parent_ident_part = null;
         String dtype = rs.getString("p_dtype");
         String description = rs.getString("p_description");
@@ -37,6 +38,7 @@ public class ProductRowMapper implements RowMapper<Product> {
         String cId = rs.getString("c_id");
         Product child = (cId != null) ? new Product(
                 cId,
+                title,
                 identPart,
                 rs.getString("c_dtype"),
                 rs.getString("c_description"),
@@ -60,7 +62,7 @@ public class ProductRowMapper implements RowMapper<Product> {
         ) : null;
 
         return new Product(
-                id, parent_ident_part, dtype, description, description_override, description_model, remarks, title, identPart, derivedIdentifier,
+                id, parent_title, parent_ident_part, dtype, description, description_override, description_model, remarks, title, identPart, derivedIdentifier,
                 keywords, synonyms, displayText, styleServer, serviceDownload,
                 transparency, themeTitle, themeIdent, orgName, permissions,
                 (child != null) ? new Product[]{child} : new Product[0]

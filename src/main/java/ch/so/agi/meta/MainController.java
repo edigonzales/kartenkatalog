@@ -95,7 +95,6 @@ public class MainController {
         
         ModelAndView mav = new ModelAndView("product_detail");
         mav.addObject("product", product);
-        mav.addObject("parent_id", product.parent_ident_part());
         return mav;
     }
     

@@ -15,6 +15,7 @@
 
 - Immer gleiche Anführungszeichen.
 - Keine fetten Schriften
+- keine leeren Strings, z.B. komische leere badges? (abwasser abwasserleitungen) (-> eher DB).
 
 
 ## Technisches

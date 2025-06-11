@@ -136,6 +136,18 @@ a.black-link:visited {
   cursor: default;
 }
 
+.textedit-display-area {
+    min-height: 100px;
+}
+
+.textedit-display-line {
+    min-height: 20px;
+}
+
+.textedit-display-badge {
+	min-height: 30px;
+}
+
 /*
 .textedit-display a {
   color: #0077cc;
