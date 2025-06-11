@@ -74,7 +74,7 @@ public class MainController {
     }
     
     @GetMapping("/product")
-    public ModelAndView products(@RequestHeader Map<String, String> headers, HttpServletRequest request) {
+    public ModelAndView showProducts(@RequestHeader Map<String, String> headers, HttpServletRequest request) {
         headers.forEach((key, value) -> {
             log.info(String.format("Header '%s' = %s", key, value));
         });
@@ -90,16 +90,16 @@ public class MainController {
     }
     
     @GetMapping("/product/{id}")
-    public ModelAndView product(@PathVariable(name = "id") String id) {
+    public ModelAndView showProductDetail(@RequestHeader Map<String, String> headers, HttpServletRequest request, @PathVariable(name = "id") String id) {
         Product product = productService.findById(id);
         
-        ModelAndView mav = new ModelAndView("product_detail");
+        ModelAndView mav = new ModelAndView("productdetail");
         mav.addObject("product", product);
         return mav;
     }
     
     @GetMapping(value = "/product/{id}/style")
-    public ResponseEntity<?> downloadStringFormPost(@PathVariable(name = "id") String id) {
+    public ResponseEntity<?> downloadStyle(@PathVariable(name = "id") String id) {
         Product product = productService.findById(id);
 
         byte[] contentBytes = product.style_server().getBytes(StandardCharsets.UTF_8);

@@ -42,6 +42,11 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+import org.springframework.boot.gradle.tasks.aot.ProcessAot
+tasks.withType(ProcessAot) {
+    args "--spring.profiles.active=${project.findProperty('aotProfiles') ?: 'default'}"
+}
+
 graalvmNative {
     toolchainDetection = false
     binaries {

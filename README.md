@@ -30,7 +30,10 @@ https://dev.to/rpkr/different-ways-to-send-a-file-as-a-response-in-spring-boot-f
 
 
 -Dspring.profiles.active=prod
+--spring.profiles.active=prod
 
+
+./build/native/nativeCompile/kartenkatalog --spring.datasource.url=jdbc:postgresql://geodb.rootso.org:5432/pub --spring.datasource.username=yyyyyyyyyy --spring.datasource.password=xxxxxxxxxxx --spring.profiles.active=prod --logging.level.org.springframework.web.servlet=trace
 
 
 TODO: Modell MTEXT!!!!! bei qgis? oder allen.
