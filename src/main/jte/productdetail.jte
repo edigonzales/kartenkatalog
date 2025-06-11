@@ -33,7 +33,7 @@
             <h1>${product.title()} <a href="https://geo.so.ch/map?l=${product.ident_part()}[${product.transparency()}]" target="_blank"><i class="material-icons-outlined black-link">open_in_new</i></a></h1>
         </div>
         
-        <div>${product.service_download()}</div>
+        <!--<div>${product.service_download()}</div>-->
                                         
         <div class="textedit-container">
             <label class="textedit-label">Beschreibung</label>
