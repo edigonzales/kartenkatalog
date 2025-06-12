@@ -31,6 +31,8 @@
 https://github.com/davidoesch/geoservice_harvester_poc/blob/main/index.html#L132
 https://dev.to/rpkr/different-ways-to-send-a-file-as-a-response-in-spring-boot-for-a-rest-api-43g7
 https://github.com/oracle/graal/issues/7444
+https://geo.ca/initiatives/mapml/
+https://www.w3.org/community/maps4html/
 
 -Dspring.profiles.active=prod
 --spring.profiles.active=prod

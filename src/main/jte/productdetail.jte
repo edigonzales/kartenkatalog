@@ -138,6 +138,58 @@
             </div>
         </div>
         
+        <p>&nbsp;</p>
+        
+        <!--
+        <mapml-viewer style="border:0px green solid;" height="600" projection="OSMTILE" zoom="10" lat="47.1943" lon="7.5411" controls> 
+            <map-layer label="Hintergrundkarte" opacity="0.66" checked>
+            
+  
+
+          <map-extent label="Landeskarte" units="OSMTILE" checked="checked" hidden="hidden">
+            <map-input name="z" type="zoom" min="0" max="16" step="1" />
+            <map-input name="x" type="location" units="tilematrix" axis="column" min="0" max="262144" />
+            <map-input name="y" type="location" units="tilematrix" axis="row" min="0" max="262144" />
+            <map-link
+              rel="tile"
+              tref="https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-grau/default/current/3857/{z}/{x}/{y}.jpeg"
+            />
+          </map-extent>
+            
+            
+            </map-layer>   
+        </mapml-viewer>
+-->
+
+<mapml-viewer style="border:0px green solid;" height="600" projection="OSMTILE" lat="47.2943" lon="7.6511" zoom="10" controls>
+  <map-layer label="Hintergrundkarte" checked>
+  
+    <map-extent label="Plan für das Grundbuch" units="OSMTILE" checked hidden>
+      <map-input name="z" type="zoom" value="24" min="17" max="24" step="1" />
+      <map-input name="xmin" type="location" rel="map" position="top-left" axis="easting"
+        units="pcrs" min="783975" max="926967" />
+      <map-input name="ymin" type="location" rel="map" position="bottom-left" axis="northing"
+        units="pcrs" min="5945675" max="6034311" />
+      <map-input name="xmax" type="location" rel="map" position="top-right" axis="easting"
+        units="pcrs" min="783975" max="926967" />
+      <map-input name="ymax" type="location" rel="map" position="top-left" axis="northing"
+        units="pcrs" min="5945675" max="6034311" />
+      <map-input name="w" type="width" min="1" max="6000" />
+      <map-input name="h" type="height" min="1" max="6000" />
+      <map-link rel="image" tref="https://geo.so.ch/wms?request=GetMap&amp;crs=EPSG:3857&amp;service=WMS&amp;bbox={xmin},{ymin},{xmax},{ymax}&amp;layers=ch.so.agi.hintergrundkarte_sw&amp;format=image/png&amp;width={w}&amp;styles=population&amp;language=en&amp;version=1.3.0&amp;transparent=true&amp;height={h}"></map-link> 
+    </map-extent>
+  
+    <map-extent label="Landeskarte" units="OSMTILE" opacity="0.66" checked hidden>
+      <map-input name="z" type="zoom" min="0" max="16"></map-input>
+      <map-input name="x" type="location" units="tilematrix" axis="column" min="0" max="262144"></map-input>
+      <map-input name="y" type="location" units="tilematrix" axis="row" min="0" max="262144"></map-input>
+      <map-link rel="tile" tref="https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-grau/default/current/3857/{z}/{x}/{y}.jpeg"></map-link>
+    </map-extent>
+  </map-layer>
+</mapml-viewer>
+
+
+
         
         <!--
         <table class="responsive-table">

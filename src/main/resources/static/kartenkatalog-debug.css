@@ -12,6 +12,10 @@ table {
     table-layout: auto;
 }
 
+table th {
+  letter-spacing: .1em;
+}
+
 tr {
 	height: 56px;
 }
@@ -165,4 +169,8 @@ a.black-link:visited {
   border-radius: 12px;
   background: transparent;
   user-select: none;
+}
+
+mapml-viewer {
+    width: 100%;
 }
