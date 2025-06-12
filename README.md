@@ -24,6 +24,7 @@
 ## Technisches
 
 - Eigentlich könnten man wohl die Layergruppe korrekt in der Karte in einzelne Layer aufsplitten (inkl. Transparenz)
+- Abstand zwischen Badges, falls es zwei Zeilen gibt: http://localhost:8080/product/ch.so.arp.arbeitszonenbewirtschaftung.grundnutzung
 - ~Product braucht noch Titel/Name des Parents~
 - ~Leere Felder zeigen? Damit klar ist == null~
 - ~Klassen machen für min-height (badge, text).~
