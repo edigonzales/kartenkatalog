@@ -1,9 +1,11 @@
 package ch.so.agi.meta;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -34,7 +36,7 @@ public class ProductService {
                 .list();
         
         // Aufgrund des Datenmodelles können mehrere Objekte zurückgeliefert werden.
-        // Dies kann jedoch nur bei Layergruppen der Fall sein, nicht bei Singlelayer.
+        // Dies kann jedoch nur bei Layergruppen der Fall sein, nicht bei Einzellayer.
         // Falls ein Sublayer einer Layergruppe requested wurde, gibt es nur
         // ein Objekt.
         Product requestedProduct = null;
@@ -76,9 +78,12 @@ public class ProductService {
             }
         }
 
+        Collator germanCollator = Collator.getInstance(Locale.forLanguageTag("de-CH"));
+        germanCollator.setStrength(Collator.PRIMARY);
+        
         // Build final list with sorted parents and assigned children
         List<Product> finalList = parentMap.values().stream()
-                .sorted(Comparator.comparing(Product::title)) // Sort parents by title
+                .sorted(Comparator.comparing(Product::title, germanCollator)) // Sort parents by title
                 .map(parent -> new Product(
                     parent.id(), parent.parent_title(), parent.parent_ident_part(), parent.dtype(), parent.description(), parent.description_override(), parent.description_model(), parent.remarks(),
                     parent.title(), parent.ident_part(), parent.derived_identifier(),

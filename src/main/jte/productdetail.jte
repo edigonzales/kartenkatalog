@@ -15,10 +15,10 @@
     <title>${product.title()} • Kartenportal • Kanton Solothurn</title>
     
     <script src="https://unpkg.com/htmx.org@2.0.4"></script>
-
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@maps4html/mapml@latest/dist/mapml.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@materializecss/materialize@2.2.1/dist/js/materialize.min.js"></script>
-    <link href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp" rel="stylesheet">
 
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp">
     <link rel="stylesheet" href="../fonts.css">
     <link rel="stylesheet" href="../kartenkatalog-debug.css">
 </head>
