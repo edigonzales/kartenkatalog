@@ -23,6 +23,7 @@
 
 ## Technisches
 
+- Eigentlich könnten man wohl die Layergruppe korrekt in der Karte in einzelne Layer aufsplitten (inkl. Transparenz)
 - ~Product braucht noch Titel/Name des Parents~
 - ~Leere Felder zeigen? Damit klar ist == null~
 - ~Klassen machen für min-height (badge, text).~
