@@ -10,8 +10,8 @@
 - Ggf GIS-Koordinatoren fragen.
 - Was soll alles in die Liste? (ich glaube data service habe ich nicht, oder? Ah doch, muss ich mir noch anschauen, plus es gibt das Attribut in Product, schräg: "ch.so.afu.altlasten.standorte.data_v2" kann ich eingeloggt im WGC in der URL angeben und es lädt). -> falls "nur WMS" funktioniert es nicht, z.B. "Dataservice-Konfig für UPlusLuft-Anlagen". Ist wohl bei altlasten falsch konfiguriert und geht trotzdem irgendwo unter, damit es nicht in der Suche vorkommt.
 - Wie findet man raus, ob es Product wirklich nur als Data-Service gibt?
-
-
+- Auch noch witzig http://localhost:8080/product/ch.swisstopo.lidar_2023.dsm: dünkt mich keywords mit synonymen verwechselt.
+- http://localhost:8080/product/ch.bfs.gebaeude_wohnungs_register: WMS-Request geht nicht.
 
 ## Vorgaben
 

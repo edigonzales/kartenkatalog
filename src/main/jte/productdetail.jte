@@ -30,9 +30,13 @@
         </div>
 
         <div class="left-align" style="margin-top:60px;">
-            <h1>${product.title()} <a href="https://geo.so.ch/map?l=${product.ident_part()}[${product.transparency()}]" target="_blank"><i class="material-icons-outlined black-link">open_in_new</i></a></h1>
+            @if (product.transparency() != null)
+                <h1>${product.title()} <a href="https://geo.so.ch/map?l=${product.ident_part()}[${product.transparency()}]" target="_blank"><i class="material-icons-outlined black-link">open_in_new</i></a></h1>            
+            @else
+                <h1>${product.title()} <a href="https://geo.so.ch/map?l=${product.ident_part()}" target="_blank"><i class="material-icons-outlined black-link">open_in_new</i></a></h1>
+            @endif
         </div>
-        
+
         <!--<div>${product.service_download()}</div>-->
                                         
         <div class="textedit-container">
@@ -47,6 +51,14 @@
                 @endif            
             </div>
         </div>
+        
+        <div class="textedit-container">
+            <label class="textedit-label">Layername</label>
+            <div class="textedit-display textedit-display-line">
+                ${product.ident_part()}          
+            </div>
+        </div>
+
 
         <div class="textedit-container">
             <label class="textedit-label">Schlagwörter</label>
@@ -139,46 +151,19 @@
         </div>
         
         <p>&nbsp;</p>
-        
-        <!--
-        <mapml-viewer style="border:0px green solid;" height="600" projection="OSMTILE" zoom="10" lat="47.1943" lon="7.5411" controls> 
-            <map-layer label="Hintergrundkarte" opacity="0.66" checked>
-            
-  
-
-          <map-extent label="Landeskarte" units="OSMTILE" checked="checked" hidden="hidden">
-            <map-input name="z" type="zoom" min="0" max="16" step="1" />
-            <map-input name="x" type="location" units="tilematrix" axis="column" min="0" max="262144" />
-            <map-input name="y" type="location" units="tilematrix" axis="row" min="0" max="262144" />
-            <map-link
-              rel="tile"
-              tref="https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-grau/default/current/3857/{z}/{x}/{y}.jpeg"
-            />
-          </map-extent>
-            
-            
-            </map-layer>   
-        </mapml-viewer>
--->
 
 <mapml-viewer style="border:0px green solid;" height="600" projection="OSMTILE" lat="47.2943" lon="7.6511" zoom="10" controls>
   <map-layer label="Hintergrundkarte" checked>
-  
-    <map-extent label="Plan für das Grundbuch" units="OSMTILE" checked hidden>
-      <map-input name="z" type="zoom" value="24" min="17" max="24" step="1" />
-      <map-input name="xmin" type="location" rel="map" position="top-left" axis="easting"
-        units="pcrs" min="783975" max="926967" />
-      <map-input name="ymin" type="location" rel="map" position="bottom-left" axis="northing"
-        units="pcrs" min="5945675" max="6034311" />
-      <map-input name="xmax" type="location" rel="map" position="top-right" axis="easting"
-        units="pcrs" min="783975" max="926967" />
-      <map-input name="ymax" type="location" rel="map" position="top-left" axis="northing"
-        units="pcrs" min="5945675" max="6034311" />
-      <map-input name="w" type="width" min="1" max="6000" />
-      <map-input name="h" type="height" min="1" max="6000" />
-      <map-link rel="image" tref="https://geo.so.ch/wms?request=GetMap&amp;crs=EPSG:3857&amp;service=WMS&amp;bbox={xmin},{ymin},{xmax},{ymax}&amp;layers=ch.so.agi.hintergrundkarte_sw&amp;format=image/png&amp;width={w}&amp;styles=population&amp;language=en&amp;version=1.3.0&amp;transparent=true&amp;height={h}"></map-link> 
+    <map-extent label="Plan für das Grundbuch" units="OSMTILE" opacity="0.66" checked hidden>
+        <map-input name="w" type="width"></map-input>
+        <map-input name="h" type="height"></map-input>
+        <map-input name="z" type="zoom" value="24" min="17" max="24" step="1"></map-input>
+        <map-input name="xmin" type="location" units="pcrs" position="top-left" axis="easting" min="783975" max="926967" ></map-input>
+        <map-input name="ymin" type="location" units="pcrs" position="bottom-left" axis="northing" min="5945675" max="6034311"></map-input>
+        <map-input name="xmax" type="location" units="pcrs" position="top-right" axis="easting" min="783975" max="926967"></map-input>
+        <map-input name="ymax" type="location" units="pcrs" position="top-left" axis="northing" min="5945675" max="6034311"></map-input>
+        <map-link rel="image" tref="https://geo.so.ch/wms?REQUEST=GetMap&crs=EPSG:3857&SERVICE=WMS&BBOX={xmin},{ymin},{xmax},{ymax}&LAYERS=ch.so.agi.hintergrundkarte_sw&FORMAT=image/png&WIDTH={w}&HEIGHT={h}&STYLES=&TRANSPARENT=FALSE&version=1.3.0"></map-link> 
     </map-extent>
-  
     <map-extent label="Landeskarte" units="OSMTILE" opacity="0.66" checked hidden>
       <map-input name="z" type="zoom" min="0" max="16"></map-input>
       <map-input name="x" type="location" units="tilematrix" axis="column" min="0" max="262144"></map-input>
@@ -186,36 +171,21 @@
       <map-link rel="tile" tref="https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-grau/default/current/3857/{z}/{x}/{y}.jpeg"></map-link>
     </map-extent>
   </map-layer>
+  <map-layer label="${product.title()}" checked>
+    <map-extent units="OSMTILE" checked hidden>
+        <map-input name="w" type="width"></map-input>
+        <map-input name="h" type="height"></map-input>
+        <map-input name="z" type="zoom" value="24" min="1" max="24" step="1"></map-input>
+        <map-input name="xmin" type="location" units="pcrs" position="top-left" axis="easting" min="783975" max="926967" ></map-input>
+        <map-input name="ymin" type="location" units="pcrs" position="bottom-left" axis="northing" min="5945675" max="6034311"></map-input>
+        <map-input name="xmax" type="location" units="pcrs" position="top-right" axis="easting" min="783975" max="926967"></map-input>
+        <map-input name="ymax" type="location" units="pcrs" position="top-left" axis="northing" min="5945675" max="6034311"></map-input>
+        <map-link rel="image" tref="https://geo.so.ch/wms?REQUEST=GetMap&crs=EPSG:3857&SERVICE=WMS&BBOX={xmin},{ymin},{xmax},{ymax}&LAYERS=${product.ident_part()}&FORMAT=image/png&WIDTH={w}&HEIGHT={h}&STYLES=&TRANSPARENT=TRUE&version=1.3.0"></map-link> 
+    </map-extent>
+  </map-layer>
+
 </mapml-viewer>
 
-
-
-        
-        <!--
-        <table class="responsive-table">
-            <colgroup>
-                <col style="width: 2%" />
-                <col style="width: 2%" />
-                <col style="width: 22%" />
-                <col style="width: 58%" />
-                <col style="width: 8%" />
-                <col style="width: 8%" />
-            </colgroup>
-
-            <thead>
-            <tr>
-                <th style="padding-right:0px;"></th>
-                <th colspan="2">Titel</th>
-                <th>Beschreibung</th>
-                <th>Karte</th>
-                <th>Details</th>
-            </tr>
-            </thead>
-            <tbody id="search-results">
-                @template.search-results(productList = productList)
-            </tbody>
-        </table>    
-        -->
     </div>    
 </body>
 </html>
