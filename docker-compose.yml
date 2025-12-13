@@ -1,0 +1,20 @@
+services:
+  pgvector:
+    image: sogis/postgis:17-3.6
+    container_name: kartenkatalog-db
+    environment:
+      POSTGRES_DB: edit
+      POSTGRES_USER: ddluser
+      POSTGRES_PASSWORD: ddluser
+    ports:
+      - "54321:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ddluser -d edit"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  pgdata:
