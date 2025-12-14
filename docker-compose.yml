@@ -1,6 +1,7 @@
 services:
-  pgvector:
+  editdb:
     image: sogis/postgis:17-3.6
+    platform: linux/amd64
     container_name: kartenkatalog-db
     environment:
       POSTGRES_DB: edit
