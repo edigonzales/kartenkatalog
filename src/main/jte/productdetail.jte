@@ -105,6 +105,13 @@
         </div>
 
         <div class="textedit-container">
+            <label class="textedit-label">Product type</label>
+            <div class="textedit-display textedit-display-line">
+                ${product.dtype()}
+            </div>
+        </div>
+
+        <div class="textedit-container">
             <label class="textedit-label">QML</label>
             <div class="textedit-display textedit-display-line">
                 @if(product.style_server() != null)

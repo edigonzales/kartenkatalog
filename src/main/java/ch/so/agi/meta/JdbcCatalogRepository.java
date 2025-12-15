@@ -67,8 +67,6 @@ public class JdbcCatalogRepository implements CatalogRepository {
                 WHERE t.identifier = :identifier
                 ORDER BY e.title
                 """;
-
-        System.out.println(sql);
         
         return jdbcClient.sql(sql)
                 .param("identifier", identifier)
@@ -101,13 +99,13 @@ public class JdbcCatalogRepository implements CatalogRepository {
                     org_name,
                     permissions,
                     thema_r
-                FROM agi_kartenkatalog_pub_v1.kartenkatalog_ebene
+                FROM agi_kartenkatalog_v2.kartenkatalog_ebene
                 WHERE ident_part = :identPart
                 """;
 
         return jdbcClient.sql(sql)
                 .param("identPart", identPart)
-                .query(new EbeneRowMapper())
+                .query(Ebene.class)
                 .optional();
     }
 }

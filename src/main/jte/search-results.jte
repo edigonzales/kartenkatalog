@@ -12,12 +12,12 @@
                 hx-get="/themen/${thema.identifier()}/ebenen"
                 hx-target="#theme-${thema.identifier().replaceAll("[^A-Za-z0-9_-]", "_")}-anchor"
                 hx-swap="afterend"
-                hx-on:click="if(this.dataset.loaded==='true'){console.log('Hallo stefan'); document.querySelectorAll('.theme-${thema.identifier().replaceAll("[^A-Za-z0-9_-]", "_")}-child').forEach(el => el.remove()); this.dataset.loaded='false'; event.preventDefault();}"
+                hx-trigger="click[!this.dataset.loaded || this.dataset.loaded === 'false']"
+                hx-on:click="if(this.dataset.loaded==='true'){document.querySelectorAll('.theme-${thema.identifier().replaceAll("[^A-Za-z0-9_-]", "_")}-child').forEach(el => el.remove()); this.dataset.loaded='false';}"
                 hx-on:htmx:after-request="this.dataset.loaded='true';"
             >add</i>
         </td>
-        <td style="padding-right:0px;"><i class="material-icons-outlined">folder</i></td>
-        <td>${thema.title()}</td>
+        <td colspan="2">${thema.title()}</td>
         <td>
             @if(thema.adescription() != null)
                 $unsafe{thema.adescription()}
