@@ -4,11 +4,6 @@
 @param List<Ebene> ebenen
 @param String domIdentifier
 
-<tr class="theme-${domIdentifier}-child child-header">
-    <td></td>
-    <td></td>
-    <td colspan="4"><strong>Ebenen</strong></td>
-</tr>
 @for (var ebene : ebenen)
 <tr class="theme-${domIdentifier}-child">
     <td></td>
