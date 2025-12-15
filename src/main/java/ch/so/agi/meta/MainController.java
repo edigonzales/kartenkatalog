@@ -31,7 +31,7 @@ public class MainController {
 
     @GetMapping("/")
     public String home(Model model) {
-        return "redirect:/themen";
+        return "redirect:/thema";
     }
 
     @GetMapping("/ping")
@@ -45,7 +45,7 @@ public class MainController {
         return new ResponseEntity<>("kartenkatalog", HttpStatus.OK);
     }
 
-    @GetMapping("/themen")
+    @GetMapping("/thema")
     public ModelAndView showThemen(@RequestHeader Map<String, String> headers, HttpServletRequest request) {
         headers.forEach((key, value) -> log.info(String.format("Header '%s' = %s", key, value)));
 
@@ -53,7 +53,7 @@ public class MainController {
         log.info("context path: " + request.getContextPath());
 
         List<Thema> themen = catalogService.findAllThemen();
-        ModelAndView mav = new ModelAndView("product");
+        ModelAndView mav = new ModelAndView("thema");
         mav.addObject("themen", themen);
         return mav;
     }
