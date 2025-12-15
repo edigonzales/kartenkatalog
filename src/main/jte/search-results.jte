@@ -12,8 +12,8 @@
                 hx-get="/themen/${thema.identifier()}/ebenen"
                 hx-target="#theme-${thema.identifier().replaceAll("[^A-Za-z0-9_-]", "_")}-anchor"
                 hx-swap="afterend"
-                hx-on:click="if(this.dataset.loaded==='true'){document.querySelectorAll('.theme-${thema.identifier().replaceAll("[^A-Za-z0-9_-]", "_")}-child').forEach(el => el.classList.toggle('hidden')); event.preventDefault();}"
-                hx-on::after-request="this.dataset.loaded='true'; document.querySelectorAll('.theme-${thema.identifier().replaceAll("[^A-Za-z0-9_-]", "_")}-child').forEach(el => el.classList.remove('hidden'));"
+                hx-on:click="if(this.dataset.loaded==='true'){console.log('Hallo stefan'); document.querySelectorAll('.theme-${thema.identifier().replaceAll("[^A-Za-z0-9_-]", "_")}-child').forEach(el => el.remove()); this.dataset.loaded='false'; event.preventDefault();}"
+                hx-on:htmx:after-request="this.dataset.loaded='true';"
             >add</i>
         </td>
         <td style="padding-right:0px;"><i class="material-icons-outlined">folder</i></td>

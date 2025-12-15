@@ -62,6 +62,8 @@ public class MainController {
     public ModelAndView loadEbenen(@PathVariable(name = "identifier") String identifier) {
         List<Ebene> ebenen = catalogService.findEbenenByThemaIdentifier(identifier);
         String domIdentifier = sanitizeIdentifier(identifier);
+        
+        log.info("Anzahl Ebenen <{}>: {}", identifier, ebenen.size());
 
         ModelAndView mav = new ModelAndView("theme-layers");
         mav.addObject("ebenen", ebenen);

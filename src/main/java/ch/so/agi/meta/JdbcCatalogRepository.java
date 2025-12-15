@@ -68,6 +68,8 @@ public class JdbcCatalogRepository implements CatalogRepository {
                 ORDER BY e.title
                 """;
 
+        System.out.println(sql);
+        
         return jdbcClient.sql(sql)
                 .param("identifier", identifier)
                 .query(Ebene.class)
