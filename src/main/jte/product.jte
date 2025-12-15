@@ -1,7 +1,7 @@
 @import java.util.List
-@import ch.so.agi.meta.Product
+@import ch.so.agi.meta.Thema
 
-@param List<Product> productList
+@param List<Thema> themen
 
 <!DOCTYPE html>
 <html lang="en">
@@ -13,7 +13,7 @@
     <meta name="mobile-web-app-capable" content="yes" />
 
     <title>Kartenportal • Kanton Solothurn</title>
-    
+
     <script src="https://unpkg.com/htmx.org@2.0.4"></script>
 
     <!--
@@ -29,35 +29,6 @@
 
 <body>
     <div class="container">
-        <!--
-        <div class="right-align" style="margin-top:10px;">
-            <img src="/Logo.png" alt="Logo Kanton Solothurn">
-        </div>
-
-        <div class="left-align" style="margin-top:120px;">
-            <h3>Kartenkatalog Kanton Solothurn <span class="blink-css" style="color:red;">(Debug Mode)</span></h3>
-        </div>
-
-        <div class="left-align" style="margin-top:30px; font-size: 16px; line-height: 1.42857143;">
-            Lorem ipsum odor amet, consectetuer adipiscing elit. Nisi donec vulputate posuere auctor dictum ante. Eu convallis mi consequat per sollicitudin vestibulum odio ut maximus. Maecenas tellus sodales eget nunc volutpat nam integer? Efficitur lobortis posuere aptent id aliquam nec nibh litora. Accumsan enim feugiat morbi, integer pharetra ad. Nec aenean rhoncus ridiculus arcu sapien est vitae. Natoque nisl arcu habitasse morbi netus egestas justo. Rhoncus tellus pellentesque vivamus purus phasellus varius suscipit.
-            <br/><br/>Ad diam tristique netus conubia dui maecenas pretium aenean. Ridiculus dictum ligula pretium, ridiculus maecenas tortor. Velit pulvinar lectus hac pretium inceptos duis? Tristique facilisi neque odio; dapibus praesent lobortis. Proin ex gravida magnis scelerisque tristique venenatis. Ligula ex facilisis montes vestibulum vel etiam non?	        
-        </div>
-
-        <div style="margin-top:40px; margin-bottom:30px;">
-            <div class="s12 m6 input-field">
-                <div class="prefix"><i class="material-icons">search</i></div>
-                <div class="suffix" hx-on:click="document.querySelector('#search-input').value = ''; htmx.trigger('#search-input', 'input');"><i class="material-icons">clear</i></div>
-                <input id="search-input" placeholder=" " type="text"
-                name="search" 
-                hx-post="/search"
-                hx-trigger="input changed delay:500ms, keyup[key=='Enter'], load"
-                hx-target="#search-results">
-                <label for="search-input">Suchbegriff</label>    
-            </div>
-        </div>
-
-        <div>${productList.size()}</div>
-        -->
         <table class="responsive-table">
             <colgroup>
                 <col style="width: 2%" />
@@ -78,9 +49,9 @@
             </tr>
             </thead>
             <tbody id="search-results">
-                @template.search-results(productList = productList)
+                @template.search-results(themen = themen)
             </tbody>
-        </table>    
+        </table>
     </div>
 </body>
 </html>
