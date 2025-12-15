@@ -62,15 +62,15 @@ public class JdbcCatalogRepository implements CatalogRepository {
                     e.org_name,
                     e.permissions,
                     e.thema_r
-                FROM agi_kartenkatalog_pub_v1.ebene e
-                JOIN agi_kartenkatalog_pub_v1.thema t ON e.thema_r = t.t_id
+                FROM agi_kartenkatalog_v2.kartenkatalog_ebene e
+                JOIN agi_kartenkatalog_v2.kartenkatalog_thema t ON e.thema_r = t.t_id
                 WHERE t.identifier = :identifier
                 ORDER BY e.title
                 """;
 
         return jdbcClient.sql(sql)
                 .param("identifier", identifier)
-                .query(new EbeneRowMapper())
+                .query(Ebene.class)
                 .list();
     }
 
@@ -99,7 +99,7 @@ public class JdbcCatalogRepository implements CatalogRepository {
                     org_name,
                     permissions,
                     thema_r
-                FROM agi_kartenkatalog_pub_v1.ebene
+                FROM agi_kartenkatalog_pub_v1.kartenkatalog_ebene
                 WHERE ident_part = :identPart
                 """;
 

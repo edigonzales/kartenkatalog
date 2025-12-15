@@ -2,15 +2,15 @@
 @import ch.so.agi.meta.Ebene
 
 @param List<Ebene> ebenen
-@param String identifier
+@param String domIdentifier
 
-<tr class="theme-${identifier}-child child-header">
+<tr class="theme-${domIdentifier}-child child-header">
     <td></td>
     <td></td>
     <td colspan="4"><strong>Ebenen</strong></td>
 </tr>
 @for (var ebene : ebenen)
-<tr class="theme-${identifier}-child">
+<tr class="theme-${domIdentifier}-child">
     <td></td>
     <td style="padding-right:0px;"><i class="material-icons-outlined">map</i></td>
     <td>${ebene.title()}</td>

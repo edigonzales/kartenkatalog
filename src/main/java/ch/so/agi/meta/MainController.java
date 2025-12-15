@@ -61,9 +61,12 @@ public class MainController {
     @GetMapping("/themen/{identifier}/ebenen")
     public ModelAndView loadEbenen(@PathVariable(name = "identifier") String identifier) {
         List<Ebene> ebenen = catalogService.findEbenenByThemaIdentifier(identifier);
+        String domIdentifier = sanitizeIdentifier(identifier);
+
         ModelAndView mav = new ModelAndView("theme-layers");
         mav.addObject("ebenen", ebenen);
         mav.addObject("identifier", identifier);
+        mav.addObject("domIdentifier", domIdentifier);
         return mav;
     }
 
@@ -87,5 +90,9 @@ public class MainController {
         headers.setContentType(MediaType.TEXT_XML);
 
         return new ResponseEntity<>(contentBytes, headers, HttpStatus.OK);
+    }
+
+    private String sanitizeIdentifier(String identifier) {
+        return identifier.replaceAll("[^A-Za-z0-9_-]", "_");
     }
 }
