@@ -9,7 +9,7 @@
             <i
                 style="cursor: pointer;"
                 class="material-icons"
-                hx-get="/themen/${thema.identifier()}/ebenen"
+                hx-get="themen/${thema.identifier()}/ebenen"
                 hx-target="#theme-${thema.identifier().replaceAll("[^A-Za-z0-9_-]", "_")}-anchor"
                 hx-swap="afterend"
                 hx-trigger="click[!this.dataset.loaded || this.dataset.loaded === 'false']"

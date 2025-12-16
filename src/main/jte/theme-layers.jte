@@ -25,6 +25,6 @@
             <a href="https://geo.so.ch/map?l=${ebene.ident_part()}" target="_blank"><i class="material-icons-outlined black-link">open_in_new</i></a>
         @endif
     </td>
-    <td><a href="/ebene/${ebene.ident_part()}" target="_blank"><i class="material-icons-outlined black-link">info</i></a></td>
+    <td><a href="ebene/${ebene.ident_part()}" target="_blank"><i class="material-icons-outlined black-link">info</i></a></td>
 </tr>
 @endfor
