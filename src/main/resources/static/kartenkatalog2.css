@@ -17,7 +17,7 @@ a:focus-visible {
 details {
   border: 0px solid;
   padding: 0 1rem;
-  background: #F2F7F3;
+  background: #F5F5F7;
   border-radius: 5px;
   margin: 10px 0 0 0;
 }
@@ -70,16 +70,19 @@ details[open] > summary::after{
 summary::-webkit-details-marker { display: none; }
 
 /* prevent the link from inheriting summary cursor feel */
-summary a { cursor: pointer; }
+summary a { 
+    cursor: pointer; 
+    align-items: center; 
+}
 
 /* optional: make title stand out a bit */
 .acc-title { font-weight: 400; }
 
-/* optional: make description calmer */
 /*.acc-desc { opacity: .85; }*/
 
-/* optional: keep link from wrapping weirdly */
-.acc-link { white-space: nowrap; }
+.acc-link { 
+    white-space: nowrap;
+}
 
 .acc-info {
   color: inherit;
@@ -110,6 +113,32 @@ summary a { cursor: pointer; }
   outline: 2px solid currentColor;
   outline-offset: 2px;
   border-radius: 4px;
+}
+
+.layers {
+  padding-left: 2rem;   /* indentation */
+}
+
+.layer{
+  display: grid;
+  grid-template-columns: 1fr 2fr auto auto; 
+  gap: .75rem;
+  align-items: top;
+
+  padding: 1rem 0;
+}
+
+/* thin line between layers */
+.layer {
+  border-top: 1px solid #DFDFDF;
+}
+
+.layer-icon{
+  font-size: 24px;
+  line-height: 1;
+  margin-left: 10px;
+  margin-right: 10px;
+  
 }
 
 

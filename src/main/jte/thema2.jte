@@ -20,7 +20,6 @@
 
     <link rel="stylesheet" href="fonts.css">
     <link rel="stylesheet" href="kartenkatalog2.css">
-
 </head>
 
 <body>
@@ -38,12 +37,15 @@
         <div class="left-align" style="margin-top:30px; line-height: 1.42857143;">
             Lorem ipsum odor amet, consectetuer adipiscing elit. Nisi donec vulputate posuere auctor dictum ante. Eu convallis mi consequat per sollicitudin vestibulum odio ut maximus. Maecenas tellus sodales eget nunc volutpat nam integer? Efficitur lobortis posuere aptent id aliquam nec nibh litora. Accumsan enim feugiat morbi, integer pharetra ad. Nec aenean rhoncus ridiculus arcu sapien est vitae. Natoque nisl arcu habitasse morbi netus egestas justo. Rhoncus tellus pellentesque vivamus purus phasellus varius suscipit.
             <br/><br/>Ad diam tristique netus conubia dui maecenas pretium aenean. Ridiculus dictum ligula pretium, ridiculus maecenas tortor. Velit pulvinar lectus hac pretium inceptos duis? Tristique facilisi neque odio; dapibus praesent lobortis. Proin ex gravida magnis scelerisque tristique venenatis. Ligula ex facilisis montes vestibulum vel etiam non?         
-        </div>        
-        
-        <div style="margin-top:60px;">
-                                
+        </div>
+        <div style="margin-top:60px;">               
             @for (var thema : themen)
-                <details>
+                <details
+                    hx-get="themen/${thema.identifier()}/ebenen"
+                    hx-trigger="toggle once"
+                    hx-target="#theme-${thema.identifier().replaceAll("[^A-Za-z0-9_-]", "_")}-anchor"
+                    hx-swap="innerHTML"
+                >
                     <summary>
                         <span class="sum-grid">
                             <span class="acc-title">${thema.title()}</span>
@@ -57,18 +59,13 @@
                             </a>
                         </span>      
                     </summary>
-                    <div class="acc-body">
-                        ...details content...
+                    <div id="theme-${thema.identifier().replaceAll("[^A-Za-z0-9_-]", "_")}-anchor" class="acc-body">
+                        <em>Loading…</em>.
                     </div>
                 </details>
-            
-            
             @endfor                
-                
         </div>
-        
     </div>
-
 </body>
 
 <script>
