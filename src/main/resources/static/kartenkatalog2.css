@@ -1,0 +1,148 @@
+a,
+a:visited,
+a:hover,
+a:active,
+a:focus {
+  color: inherit;            /* same color as surrounding text */
+  text-decoration: underline;
+}
+
+a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+@layer setupPage;
+
+details {
+  border: 0px solid;
+  padding: 0 1rem;
+  background: #F2F7F3;
+  border-radius: 5px;
+  margin: 10px 0 0 0;
+}
+details + details {
+  border-top: none;
+}
+details[open] {
+    padding-bottom: 1em;
+}
+summary {
+  list-style: none;               /* Firefox */
+  cursor: pointer;
+  padding: 1rem 2em 1rem 0;
+
+  position: relative;
+}
+
+summary::-webkit-details-marker { display: none; } /* Chrome/Safari */
+
+/* Grid inside summary */
+.sum-grid{
+  display: grid;
+  grid-template-columns: 1fr 2fr auto;
+  gap: .75rem;
+  /*align-items: center;*/
+}
+
+/* Custom chevron */
+summary::after {
+  content: "expand_more";               /* chevron-down icon */
+  font-family: "Material Icons";        /* uses your loaded font */
+  font-size: 24px;
+  color: #CC0000;
+
+  position: absolute;
+  right: .5rem;
+  top: 50%;
+  transform: translateY(-50%) rotate(0deg);
+  transition: transform 200ms ease;
+  line-height: 1;
+  pointer-events: none;                 /* don't block clicks */
+}
+
+/* Rotate when open */
+details[open] > summary::after{
+  transform: translateY(-50%) rotate(180deg);
+}
+
+/* hide default marker in Chrome/Safari */
+summary::-webkit-details-marker { display: none; }
+
+/* prevent the link from inheriting summary cursor feel */
+summary a { cursor: pointer; }
+
+/* optional: make title stand out a bit */
+.acc-title { font-weight: 400; }
+
+/* optional: make description calmer */
+/*.acc-desc { opacity: .85; }*/
+
+/* optional: keep link from wrapping weirdly */
+.acc-link { white-space: nowrap; }
+
+.acc-info {
+  color: inherit;
+  text-decoration: none; 
+  display: inline-flex;
+  /*align-items: center;*/
+  justify-content: left;
+  line-height: 1;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.acc-info .material-icons-outlined {
+  font-size: 24px;
+}
+
+.acc-info,
+.acc-info:hover,
+.acc-info:visited,
+.acc-info:active,
+.acc-info:focus {
+    text-decoration: none;
+}
+
+.acc-info:hover { opacity: .8; }
+
+.acc-info:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+
+/* cascade layer: page setup. Doesn't impact the accordion */
+@layer setupPage {
+  
+    html, body,
+    button, input, optgroup, select, textarea {
+        font-family: Frutiger, system-ui, Roboto, sans;
+        color: #2F4858;
+        font-size: 18px;
+    }
+
+    h1 {
+        font-size: 36px;
+    }
+
+    .container {
+        width: 85%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+* {
+  box-sizing: border-box;
+}
+
+aside {
+  width: 38em;
+  max-width: 98vw;
+}
+}
+
+slot:not([name]) {
+  display: revert;
+}
