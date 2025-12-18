@@ -3,7 +3,7 @@ a:visited,
 a:hover,
 a:active,
 a:focus {
-  color: inherit;            /* same color as surrounding text */
+  color: inherit; /* same color as surrounding text */
   text-decoration: underline;
 }
 
@@ -28,27 +28,25 @@ details[open] {
     padding-bottom: 1em;
 }
 summary {
-  list-style: none;               /* Firefox */
+  list-style: none; /* Firefox */
   cursor: pointer;
   padding: 1rem 2em 1rem 0;
-
   position: relative;
 }
 
 summary::-webkit-details-marker { display: none; } /* Chrome/Safari */
 
-/* Grid inside summary */
-.sum-grid{
+.sum-grid {
   display: grid;
-  grid-template-columns: 1fr 2fr auto;
+  grid-template-columns: 1fr 0.5fr 2fr auto;
   gap: .75rem;
   /*align-items: center;*/
 }
 
 /* Custom chevron */
 summary::after {
-  content: "expand_more";               /* chevron-down icon */
-  font-family: "Material Icons";        /* uses your loaded font */
+  content: "expand_more"; /* chevron-down icon */
+  font-family: "Material Icons";
   font-size: 24px;
   color: #CC0000;
 
@@ -58,11 +56,11 @@ summary::after {
   transform: translateY(-50%) rotate(0deg);
   transition: transform 200ms ease;
   line-height: 1;
-  pointer-events: none;                 /* don't block clicks */
+  pointer-events: none; /* don't block clicks */
 }
 
 /* Rotate when open */
-details[open] > summary::after{
+details[open] > summary::after {
   transform: translateY(-50%) rotate(180deg);
 }
 
@@ -75,8 +73,24 @@ summary a {
     align-items: center; 
 }
 
+.sum-grid > .badge{
+  justify-self: start;
+  align-self: start; 
+}
+
+.badge {
+  display:inline-flex;
+  align-items:center;
+  padding:.4rem .6rem;
+  border-radius:999px;
+  border: 1px solid #DFDFDF;
+  line-height:1; 
+  font: 400 16px/1 Frutiger, system-ui, Roboto, sans;
+  background:#FFFFFF;   /* dark */
+}
+
 /* optional: make title stand out a bit */
-.acc-title { font-weight: 400; }
+.acc-title { font-weight: 600; }
 
 /*.acc-desc { opacity: .85; }*/
 
@@ -119,12 +133,11 @@ summary a {
   padding-left: 2rem;   /* indentation */
 }
 
-.layer{
+.layer {
   display: grid;
   grid-template-columns: 1fr 2fr auto auto; 
   gap: .75rem;
   align-items: top;
-
   padding: 1rem 0;
 }
 
@@ -133,12 +146,11 @@ summary a {
   border-top: 1px solid #DFDFDF;
 }
 
-.layer-icon{
+.layer-icon {
   font-size: 24px;
   line-height: 1;
   margin-left: 10px;
-  margin-right: 10px;
-  
+  margin-right: 15px;  
 }
 
 
@@ -154,6 +166,7 @@ summary a {
 
     h1 {
         font-size: 36px;
+        font-weight: 900;
     }
 
     .container {

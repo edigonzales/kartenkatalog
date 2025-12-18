@@ -19,18 +19,32 @@ public class JdbcCatalogRepository implements CatalogRepository {
     @Override
     public List<Thema> findAllThemen() {
         String sql = """
-                SELECT
-                    t_id,
-                    identifier,
-                    title,
-                    adescription,
-                    keywords,
-                    synonyms,
-                    further_info_url,
-                    data_owner
-                FROM agi_kartenkatalog_v2.kartenkatalog_thema
-                ORDER BY title
-                """;
+SELECT
+    t.t_id,
+    t.identifier,
+    t.title,
+    t.adescription,
+    t.keywords,
+    t.synonyms,
+    t.further_info_url,
+    t.data_owner,
+    COUNT(e.t_id) AS ebenen_count
+FROM 
+    agi_kartenkatalog_v2.kartenkatalog_thema AS t
+LEFT JOIN agi_kartenkatalog_v2.kartenkatalog_ebene AS e
+ON e.thema_r = t.t_id
+GROUP BY
+    t.t_id,
+    t.identifier,
+    t.title,
+    t.adescription,
+    t.keywords,
+    t.synonyms,
+    t.further_info_url,
+    t.data_owner
+ORDER BY 
+    t.title;
+                    """;
 
         return jdbcClient.sql(sql)
                 .query(Thema.class)

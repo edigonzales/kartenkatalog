@@ -8,5 +8,6 @@ public record Thema(
         String keywords,
         String synonyms,
         String further_info_url,
-        String data_owner
+        String data_owner,
+        int ebenen_count
 ) {}

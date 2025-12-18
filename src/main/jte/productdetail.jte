@@ -31,9 +31,9 @@
 
         <div class="left-align" style="margin-top:60px;">
             @if (product.transparency() != null)
-                <h1>${product.title()} <a href="https://geo.so.ch/map?l=${product.ident_part()}[${product.transparency()}]" target="_blank"><i class="material-icons-outlined black-link">open_in_new</i></a></h1>
+                <h1 style="font-weight:900;">${product.title()} <a href="https://geo.so.ch/map?l=${product.ident_part()}[${product.transparency()}]" target="_blank"><i class="material-icons-outlined black-link">open_in_new</i></a></h1>
             @else
-                <h1>${product.title()} <a href="https://geo.so.ch/map?l=${product.ident_part()}" target="_blank"><i class="material-icons-outlined black-link">open_in_new</i></a></h1>
+                <h1 style="font-weight:900;">${product.title()} <a href="https://geo.so.ch/map?l=${product.ident_part()}" target="_blank"><i class="material-icons-outlined black-link">open_in_new</i></a></h1>
             @endif
         </div>
 

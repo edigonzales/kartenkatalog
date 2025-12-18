@@ -18,8 +18,16 @@
                 $unsafe{ebene.description_model()}
             @endif        
         </span>
-        <span class="layer-icon material-icons-outlined" aria-hidden="true">check</span>        
-        <span class="layer-icon material-icons-outlined" aria-hidden="true">info</span>
+        
+        @if(ebene.transparency() != null && !ebene.transparency().equals("0"))
+            <a href="https://geo.so.ch/map?l=${ebene.ident_part()}[${ebene.transparency()}]" target="_blank"><i class="material-icons-outlined black-link">open_in_new</i></a>
+        @else
+            <a href="https://geo.so.ch/map?l=${ebene.ident_part()}" target="_blank"><i class="material-icons-outlined black-link">open_in_new</i></a>                
+        @endif             
+        
+        <a href="ebene/${ebene.ident_part()}" target="_blank"><i class="material-icons-outlined layer-icon">info</i></a>
+        
+        
     </div>
 </div>
 

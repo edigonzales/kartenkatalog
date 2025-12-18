@@ -49,6 +49,13 @@
                     <summary>
                         <span class="sum-grid">
                             <span class="acc-title">${thema.title()}</span>
+                            @if(thema.ebenen_count() == 1)
+                                <span class="badge">1 Ebene</span>                            
+                            @else
+                                <span class="badge">${thema.ebenen_count()} Ebenen</span>                            
+                            @endif
+                            
+                            
                             <span class="acc-desc">
                                 @if(thema.adescription() != null)
                                     $unsafe{thema.adescription()}
