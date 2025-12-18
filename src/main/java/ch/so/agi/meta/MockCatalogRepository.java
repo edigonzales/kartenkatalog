@@ -15,8 +15,8 @@ public class MockCatalogRepository implements CatalogRepository {
 
     public MockCatalogRepository() {
         this.themen = List.of(
-                new Thema("t-1", "geologie", "Geologie", "Übersicht zu geologischen Themen.", "Geologie,Stein", "Fels,Gestein", "https://geo.so.ch/geoportal", "Amt für Geologie"),
-                new Thema("t-2", "planung", "Planung", "Informationen rund um Raumplanung.", "Planung,Räumlich", "Ortsplanung,Zonen", "https://geo.so.ch/planung", "Amt für Raumplanung")
+                new Thema("t-1", "geologie", "Geologie", "Übersicht zu geologischen Themen.", "Geologie,Stein", "Fels,Gestein", "https://geo.so.ch/geoportal", "Amt für Geologie", 3),
+                new Thema("t-2", "planung", "Planung", "Informationen rund um Raumplanung.", "Planung,Räumlich", "Ortsplanung,Zonen", "https://geo.so.ch/planung", "Amt für Raumplanung", 1)
         );
 
         this.ebenen = List.of(

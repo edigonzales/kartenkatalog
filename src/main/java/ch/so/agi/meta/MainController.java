@@ -53,7 +53,7 @@ public class MainController {
         log.info("context path: " + request.getContextPath());
 
         List<Thema> themen = catalogService.findAllThemen();
-        ModelAndView mav = new ModelAndView("thema");
+        ModelAndView mav = new ModelAndView("thema2");
         mav.addObject("themen", themen);
         return mav;
     }

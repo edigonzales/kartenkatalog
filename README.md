@@ -1,5 +1,9 @@
 # kartenkatalog
 
+## Fragen 2:
+- Absprung zum "Thema"? Alle Layer laden?
+
+
 ```
 java -jar /Users/stefan/apps/ili2pg-5.3.0/ili2pg-5.3.0.jar --dbhost localhost --dbport 54321 --dbdatabase edit --dbusr ddluser --dbpwd ddluser --nameByTopic --createEnumTabs --defaultSrsCode 2056 --strokeArcs --models SO_AGI_Kartenkatalog_Publikation_20251210 --dbschema agi_kartenkatalog_v2 --doSchemaImport --import  /Users/stefan/Downloads/agi_kartenkatalog_v2.xtf
 ```
