@@ -29,10 +29,10 @@ public class MainController {
         this.catalogService = catalogService;
     }
 
-    @GetMapping("/")
-    public String home(Model model) {
-        return "redirect:/thema";
-    }
+//    @GetMapping("/")
+//    public String home(Model model) {
+//        return "redirect:/thema";
+//    }
 
     @GetMapping("/ping")
     public ResponseEntity<String> ping(@RequestHeader Map<String, String> headers, HttpServletRequest request) {
@@ -51,6 +51,7 @@ public class MainController {
 
         log.info("server name: " + request.getServerName());
         log.info("context path: " + request.getContextPath());
+        log.info("thema");
 
         List<Thema> themen = catalogService.findAllThemen();
         ModelAndView mav = new ModelAndView("thema2");
