@@ -87,12 +87,16 @@ summary a {
   line-height:1; 
   font: 400 16px/1 Frutiger, system-ui, Roboto, sans;
   background:#FFFFFF;   /* dark */
+  font-weight: 200;
 }
 
 /* optional: make title stand out a bit */
 .acc-title { font-weight: 600; }
 
-/*.acc-desc { opacity: .85; }*/
+.acc-desc { 
+    font-weight: 300; 
+    line-height: 150%;
+}
 
 .acc-link { 
     white-space: nowrap;
@@ -162,6 +166,7 @@ summary a {
         font-family: Frutiger, system-ui, Roboto, sans;
         color: #2F4858;
         font-size: 18px;
+        line-height: 150%;
     }
 
     h1 {
