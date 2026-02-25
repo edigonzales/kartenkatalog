@@ -4,7 +4,8 @@
 @param List<Thema> themen
 
 <!DOCTYPE html>
-<html lang="en">
+
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -14,15 +15,36 @@
 
     <title>Kartenportal • Kanton Solothurn</title>
 
-    <script src="https://unpkg.com/htmx.org@2.0.8"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/so-web-components@0.1.8/dist/styles/reset.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/so-web-components@0.1.8/dist/styles/fonts.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/so-web-components@0.1.8/dist/styles/tokens.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     
+    <link rel="stylesheet" href="kartenkatalog2.css">
+    <link rel="stylesheet" href="fonts.css">
     <link href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp" rel="stylesheet">
 
-    <link rel="stylesheet" href="fonts.css">
-    <link rel="stylesheet" href="kartenkatalog2.css">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/so-web-components@0.1.8/dist/index.js"></script>
+    <script src="https://unpkg.com/htmx.org@2.0.8"></script>
 </head>
 
-<body>
+<body class="so-page">
+
+<header class="so-page-header">
+    <so-header
+        active-section="Verwaltung"
+        site-name="Kanton Solothurn">
+    </so-header>
+
+    <so-breadcrumb class="so-page-breadcrumb">
+        <so-breadcrumb-item href="https://so.ch">so.ch</so-breadcrumb-item>
+        <so-breadcrumb-item href="https://so.ch/verwaltung/">Verwaltung</so-breadcrumb-item>
+        <so-breadcrumb-item href="https://so.ch/verwaltung/bau-und-justizdepartement/">Bau- und Justizdepartement</so-breadcrumb-item>
+        <so-breadcrumb-item href="https://so.ch/verwaltung/bau-und-justizdepartement/amt-fuer-geoinformation/">Amt für Geoinformation</so-breadcrumb-item>
+        <so-breadcrumb-item isCurrentPage>Kartenkatalog</so-breadcrumb-item>
+    </so-breadcrumb>
+</header>
+
 
     <div style="margin-top:20px;margin-left:20px;text-align:left;">
         <img src="kantons-logo.svg" alt="Logo Kanton Solothurn">

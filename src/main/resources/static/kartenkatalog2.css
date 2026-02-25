@@ -1,3 +1,60 @@
+body.so-page {
+  margin: 0;
+  background: var(--so-bg);
+  color: var(--so-fg);
+  font-family: var(--so-font-family);
+}
+
+.so-page a {
+  color: var(--so-fg);
+  text-decoration: underline;
+}
+
+.so-page a:hover {
+  color: #e01f26;
+}
+
+.so-page-breadcrumb {
+  display: block;
+  max-width: none;
+  margin: 0;
+}
+
+.so-main {
+  margin: 0 auto;
+  padding: 34px 24px 78px;
+}
+
+.so-main--wide {
+  max-width: 1400px;
+}
+
+.so-main--narrow {
+  max-width: 1400px;
+}
+
+.so-page-title {
+  margin: 0;
+  font-size: 2.25rem;
+  line-height: 1.15;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.lead-text {
+  margin-top: 24px;
+  /*max-width: 1040px;*/
+}
+
+.lead-text p {
+  margin: 0 0 18px;
+  font-size: 1.125rem;
+  line-height: 1.55;
+}
+
+
+
+
 a,
 a:visited,
 a:hover,
