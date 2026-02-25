@@ -46,6 +46,16 @@
 </header>
 
 
+<main class="so-main so-main--wide">
+    <h1 class="so-page-title">Kartenkatalog</h1>
+
+    <div class="lead-text">
+        <p>Lorem ipsum odor amet, consectetuer adipiscing elit. Nisi donec vulputate posuere auctor dictum ante. Eu convallis mi consequat per sollicitudin vestibulum odio ut maximus. Maecenas tellus sodales eget nunc volutpat nam integer? Efficitur lobortis posuere aptent id aliquam nec nibh litora. Accumsan enim feugiat morbi, integer pharetra ad. Nec aenean rhoncus ridiculus arcu sapien est vitae. Natoque nisl arcu habitasse morbi netus egestas justo. Rhoncus tellus pellentesque vivamus purus phasellus varius suscipit.</p>
+        <p>Ad diam tristique netus conubia dui maecenas pretium aenean. Ridiculus dictum ligula pretium, ridiculus maecenas tortor. Velit pulvinar lectus hac pretium inceptos duis? Tristique facilisi neque odio; dapibus praesent lobortis. Proin ex gravida magnis scelerisque tristique venenatis. Ligula ex facilisis montes vestibulum vel etiam non?</p>
+    </div>
+    
+</main>    
+
     <div style="margin-top:20px;margin-left:20px;text-align:left;">
         <img src="kantons-logo.svg" alt="Logo Kanton Solothurn">
     </div>
