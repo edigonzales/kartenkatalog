@@ -157,13 +157,12 @@ summary a {
   border-radius:999px;
   border: 1px solid #DFDFDF;
   line-height:1; 
-  font: 400 16px/1 Frutiger, system-ui, Roboto, sans;
+  /*font: 400 16px/1 Frutiger, system-ui, Roboto, sans;*/
   background:#FFFFFF;   /* dark */
-  font-weight: 200;
+  /*font-weight: 200;*/
 }
 
-/* optional: make title stand out a bit */
-.acc-title { font-weight: 600; }
+.acc-title { font-weight: 900; }
 
 .acc-desc { 
     /*font-weight: 300;*/ 
@@ -221,6 +220,14 @@ summary a {
 /* thin line between layers */
 .layer {
   border-top: 1px solid #DFDFDF;
+}
+
+.layer-text {
+    font-weight: 900;
+}
+
+.layer-subtext {
+    line-height: var(--so-lead-text-line-height, 1.55);
 }
 
 .layer-icon {
