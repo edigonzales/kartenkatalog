@@ -15,28 +15,27 @@
 
     <title>Kartenportal • Kanton Solothurn</title>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/so-web-components@0.1.8/dist/styles/reset.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/so-web-components@0.1.8/dist/styles/fonts.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/so-web-components@0.1.8/dist/styles/tokens.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/so-web-components@0.1.9/dist/styles/reset.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/so-web-components@0.1.9/dist/styles/fonts.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/so-web-components@0.1.9/dist/styles/tokens.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     
     <link rel="stylesheet" href="kartenkatalog2.css">
-    <link rel="stylesheet" href="fonts.css">
     <link href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp" rel="stylesheet">
 
-    <script type="module" src="https://cdn.jsdelivr.net/npm/so-web-components@0.1.8/dist/index.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/so-web-components@0.1.9/dist/index.js"></script>
     <script src="https://unpkg.com/htmx.org@2.0.8"></script>
 </head>
 
 <body class="so-page">
 
-<header class="so-page-header">
+<header>
     <so-header
         active-section="Verwaltung"
         site-name="Kanton Solothurn">
     </so-header>
 
-    <so-breadcrumb class="so-page-breadcrumb">
+    <so-breadcrumb>
         <so-breadcrumb-item href="https://so.ch">so.ch</so-breadcrumb-item>
         <so-breadcrumb-item href="https://so.ch/verwaltung/">Verwaltung</so-breadcrumb-item>
         <so-breadcrumb-item href="https://so.ch/verwaltung/bau-und-justizdepartement/">Bau- und Justizdepartement</so-breadcrumb-item>
@@ -48,12 +47,47 @@
 
 <main class="so-main so-main--wide">
     <h1 class="so-page-title">Kartenkatalog</h1>
-
-    <div class="lead-text">
-        <p>Lorem ipsum odor amet, consectetuer adipiscing elit. Nisi donec vulputate posuere auctor dictum ante. Eu convallis mi consequat per sollicitudin vestibulum odio ut maximus. Maecenas tellus sodales eget nunc volutpat nam integer? Efficitur lobortis posuere aptent id aliquam nec nibh litora. Accumsan enim feugiat morbi, integer pharetra ad. Nec aenean rhoncus ridiculus arcu sapien est vitae. Natoque nisl arcu habitasse morbi netus egestas justo. Rhoncus tellus pellentesque vivamus purus phasellus varius suscipit.</p>
-        <p>Ad diam tristique netus conubia dui maecenas pretium aenean. Ridiculus dictum ligula pretium, ridiculus maecenas tortor. Velit pulvinar lectus hac pretium inceptos duis? Tristique facilisi neque odio; dapibus praesent lobortis. Proin ex gravida magnis scelerisque tristique venenatis. Ligula ex facilisis montes vestibulum vel etiam non?</p>
-    </div>
+    <so-lead-text>
+      <p>Lorem ipsum odor amet, consectetuer adipiscing elit. Nisi donec vulputate posuere auctor dictum ante. Eu convallis mi consequat per sollicitudin vestibulum odio ut maximus. Maecenas tellus sodales eget nunc volutpat nam integer?</p>
+      <p>Ad diam tristique netus conubia dui maecenas pretium aenean. Ridiculus <a href="https://www.cogeo.org/" target="_blank" rel="noopener noreferrer">Cloud Optimized GeoTIFF</a> dictum ligula pretium, ridiculus maecenas tortor. Velit pulvinar lectus hac pretium inceptos duis? Tristique facilisi neque odio; dapibus praesent lobortis. Proin ex gravida magnis scelerisque tristique venenatis. Ligula ex facilisis montes vestibulum vel etiam non? </p>
+    </so-lead-text>
     
+        <div style="margin-top:60px;">               
+            @for (var thema : themen)
+                <details
+                    hx-get="themen/${thema.identifier()}/ebenen"
+                    hx-trigger="toggle once"
+                    hx-target="#theme-${thema.identifier().replaceAll("[^A-Za-z0-9_-]", "_")}-anchor"
+                    hx-swap="innerHTML"
+                >
+                    <summary>
+                        <span class="sum-grid">
+                            <span class="acc-title">${thema.title()}</span>
+                            @if(thema.ebenen_count() == 1)
+                                <span class="badge">1 Ebene</span>                            
+                            @else
+                                <span class="badge">${thema.ebenen_count()} Ebenen</span>                            
+                            @endif
+                            
+                            
+                            <span class="acc-desc">
+                                @if(thema.adescription() != null)
+                                    $unsafe{thema.adescription()}
+                                @endif                                                    
+                            </span>
+                            <a class="acc-info" href="/more-info" aria-label="More information">
+                                <span class="material-icons-outlined" aria-hidden="true">info</span>
+                            </a>
+                        </span>      
+                    </summary>
+                    <div id="theme-${thema.identifier().replaceAll("[^A-Za-z0-9_-]", "_")}-anchor" class="acc-body">
+                        <em>Loading…</em>.
+                    </div>
+                </details>
+            @endfor                
+        </div>
+    
+        
 </main>    
 
     <div style="margin-top:20px;margin-left:20px;text-align:left;">

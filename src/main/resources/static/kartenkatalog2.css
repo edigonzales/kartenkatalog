@@ -1,24 +1,31 @@
-body.so-page {
+body {
   margin: 0;
   background: var(--so-bg);
   color: var(--so-fg);
   font-family: var(--so-font-family);
 }
 
+/*
 .so-page a {
   color: var(--so-fg);
   text-decoration: underline;
 }
+*/
 
+/*
 .so-page a:hover {
   color: #e01f26;
 }
+*/
 
+/*
 .so-page-breadcrumb {
   display: block;
   max-width: none;
   margin: 0;
 }
+*/
+
 
 .so-main {
   margin: 0 auto;
@@ -33,6 +40,8 @@ body.so-page {
   max-width: 1400px;
 }
 
+
+/*
 .so-page-title {
   margin: 0;
   font-size: 2.25rem;
@@ -40,34 +49,40 @@ body.so-page {
   font-weight: 900;
   letter-spacing: 0;
 }
+*/
 
+/*
 .lead-text {
   margin-top: 24px;
-  /*max-width: 1040px;*/
 }
+*/
 
+/*
 .lead-text p {
   margin: 0 0 18px;
   font-size: 1.125rem;
   line-height: 1.55;
 }
+*/
 
 
-
-
+/*
 a,
 a:visited,
 a:hover,
 a:active,
 a:focus {
-  color: inherit; /* same color as surrounding text */
+  color: inherit; 
   text-decoration: underline;
 }
+*/
 
+/*
 a:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 2px;
 }
+*/
 
 @layer setupPage;
 
@@ -151,8 +166,9 @@ summary a {
 .acc-title { font-weight: 600; }
 
 .acc-desc { 
-    font-weight: 300; 
-    line-height: 150%;
+    /*font-weight: 300;*/ 
+    /*line-height: 150%;*/
+    line-height: var(--so-lead-text-line-height, 1.55);
 }
 
 .acc-link { 
@@ -220,10 +236,10 @@ summary a {
   
     html, body,
     button, input, optgroup, select, textarea {
-        font-family: Frutiger, system-ui, Roboto, sans;
+        /*font-family: Frutiger, system-ui, Roboto, sans;*/
         color: #2F4858;
-        font-size: 18px;
-        line-height: 150%;
+        /*font-size: 18px;*/
+        /*line-height: 150%;*/
     }
 
     h1 {
