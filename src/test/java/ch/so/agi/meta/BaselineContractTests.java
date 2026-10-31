@@ -109,7 +109,7 @@ class BaselineContractTests {
         for (String path : List.of("/ebene/unknown", "/themen/unknown/ebenen", "/ebene/unknown/style")) assertEquals(404, request(path).statusCode());
     }
     @Test void canonicalHtmlDeepLinksAndMapTargetRemainUsable() throws Exception {
-        var home = request("/"); assertEquals(302, home.statusCode()); assertEquals("/thema", URI.create(home.headers().firstValue("Location").orElseThrow()).getPath());
+        var home = request("/"); assertEquals(200, home.statusCode()); assertTrue(home.body().contains("<h1>Kartenkatalog</h1>"));
         for (String path : List.of("/thema", "/themen/harvest-hoheitsgrenzen/ebenen", "/ebene/ch.so.agi.gemeindegrenzen")) {
             var response = request(path); assertEquals(200, response.statusCode());
             assertTrue(response.headers().firstValue("Content-Type").orElse("").startsWith("text/html"));

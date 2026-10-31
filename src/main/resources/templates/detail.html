@@ -1,10 +1,16 @@
-{#include layout}
+{#include layout chrome=product.chrome}
 {#title}{product.title}{/title}
-{#content}
-<p><a href="/thema">Alle Themen</a></p><h1>{product.title}</h1>
-<div>{product.description}</div>
-<dl><dt>Layername</dt><dd>{product.id}</dd><dt>Produkttyp</dt><dd>{product.type}</dd></dl>
-<p><a href="{product.mapUrl}" target="_blank" rel="noopener noreferrer">Karte öffnen</a></p>
-{#if product.styleUrl}<a href="{product.styleUrl}">QML herunterladen</a>{/if}
+{#content}<p class="back-link"><a href="{product.themeHref}">← {product.themeTitle}</a></p>
+<div class="detail-heading"><div><span class="type-badge">{product.type}</span><h1>{product.title}</h1></div><a class="primary-action" href="{product.mapUrl}" target="_blank" rel="noopener noreferrer">Im Kartenportal öffnen <span aria-hidden="true">↗</span></a></div>
+<div class="detail-grid"><div class="detail-main">
+{#if product.description}<section class="metadata-section" aria-labelledby="description-heading"><h2 id="description-heading">Beschreibung</h2><div class="metadata-text">{product.description}</div></section>{/if}
+{#if !product.keywords.isEmpty}<section class="metadata-section" aria-labelledby="keywords-heading"><h2 id="keywords-heading">Schlagwörter</h2><ul class="term-list">{#for word in product.keywords}<li>{word}</li>{/for}</ul></section>{/if}
+{#if !product.synonyms.isEmpty}<section class="metadata-section" aria-labelledby="synonyms-heading"><h2 id="synonyms-heading">Synonyme</h2><ul class="term-list">{#for word in product.synonyms}<li>{word}</li>{/for}</ul></section>{/if}
+</div><aside class="detail-sidebar" aria-label="Karteninformationen"><section class="metadata-section"><h2>Karteninformationen</h2><dl><dt>Layername</dt><dd class="identifier">{product.id}</dd><dt>Produkttyp</dt><dd>{product.type}</dd><dt>Thema</dt><dd><a href="{product.themeHref}">{product.themeTitle}</a></dd>
+{#if product.organization}<dt>Organisation</dt><dd>{product.organization}</dd>{/if}
+{#if product.publicationScope}<dt>Verfügbarkeit</dt><dd>{product.publicationScope}</dd>{/if}
+{#if product.download}<dt>Download</dt><dd>{product.download}</dd>{/if}</dl></section>
+{#if product.styleUrl}<section class="metadata-section"><h2>Darstellung</h2><a class="secondary-action" href="{product.styleUrl}" download>QML herunterladen</a></section>{/if}
+{#if product.furtherInfoUrl}<section class="metadata-section"><h2>Weitere Informationen</h2><a href="{product.furtherInfoUrl}" target="_blank" rel="noopener noreferrer">Informationen zum Thema ↗</a></section>{/if}</aside></div>
 {/content}
 {/include}

@@ -20,10 +20,28 @@ dependencies {
     implementation 'org.apache.lucene:lucene-analysis-common:10.6.0'
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'
+    testImplementation 'com.microsoft.playwright:playwright:1.60.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 tasks.withType(JavaCompile).configureEach { options.compilerArgs += ['-parameters'] }
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
     systemProperty 'java.util.logging.manager', 'org.jboss.logmanager.LogManager'
+}
+
+// P3a requires real Chromium. P3b will extend the browser matrix to Firefox and filter UX.
+tasks.named('test') { useJUnitPlatform { excludeTags 'playwright' } }
+tasks.register('installPlaywrightChromium', JavaExec) {
+    classpath = configurations.testRuntimeClasspath
+    mainClass = 'com.microsoft.playwright.CLI'
+    args 'install'
+    if (providers.gradleProperty('playwrightWithDeps').getOrElse('false').toBoolean()) args '--with-deps'
+    args 'chromium'
+}
+tasks.register('playwrightTest', Test) {
+    dependsOn 'quarkusBuild', 'testClasses', 'installPlaywrightChromium'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform { includeTags 'playwright' }
+    systemProperty 'referenceUrl', providers.gradleProperty('referenceUrl').getOrElse('')
 }

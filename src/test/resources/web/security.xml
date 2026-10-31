@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='utf-8'?>
+<ili:transfer xmlns:ili="http://www.interlis.ch/xtf/2.4/INTERLIS" xmlns:k="http://www.interlis.ch/xtf/2.4/SO_AGI_Kartenkatalog_Publikation_20251210">
+  <ili:headersection>
+    <ili:models>
+      <ili:model>SO_AGI_Kartenkatalog_Publikation_20251210</ili:model>
+    </ili:models>
+  </ili:headersection>
+  <ili:datasection>
+    <k:Kartenkatalog ili:bid="web">
+      <k:Thema ili:tid="security">
+        <k:identifier>security</k:identifier>
+        <k:title>&lt;script&gt;alert("theme")&lt;/script&gt;Sicherheit</k:title>
+        <k:further_info_url>javascript:alert(42)</k:further_info_url>
+      </k:Thema>
+      <k:Thema ili:tid="empty">
+        <k:identifier>empty</k:identifier>
+        <k:title>Leere Metadaten</k:title>
+        <k:further_info_url>https://example.org/info?x=1&amp;y=2</k:further_info_url>
+      </k:Thema>
+      <k:Ebene ili:tid="layer-security">
+        <k:id>ca4d15a0-3e4f-5efa-813d-79eb806ad489</k:id>
+        <k:dtype>datasetview</k:dtype>
+        <k:ident_part>ch.test.security</k:ident_part>
+        <k:title>&lt;img src=x onerror=alert("title")&gt;Sicherheitslayer</k:title>
+        <k:description>&lt;p&gt;Beschreibung &lt;strong&gt;formatiert&lt;/strong&gt;&lt;script&gt;alert(1)&lt;/script&gt;&lt;img src=x onerror=alert(2)&gt;&lt;a href="javascript:alert(3)"&gt;unsafe&lt;/a&gt;&lt;a href="https://example.org/good"&gt;sicher&lt;/a&gt;&lt;/p&gt;</k:description>
+        <k:keywords>Wasser, Fluss</k:keywords>
+        <k:synonyms>Bach, Aue</k:synonyms>
+        <k:org_name>&lt;img src=x onerror=alert("org")&gt;Amt</k:org_name>
+        <k:display_text>Öffentlich</k:display_text>
+        <k:service_download>true</k:service_download>
+        <k:transparency>85</k:transparency>
+        <k:style_server>&lt;qgis version="3.40"/&gt;</k:style_server>
+        <k:Thema_R ili:ref="security" />
+      </k:Ebene>
+      <k:Ebene ili:tid="layer-empty">
+        <k:id>82c19918-521d-5d4c-a310-5c5a6b02f7d1</k:id>
+        <k:dtype>datasetview</k:dtype>
+        <k:ident_part>ch.test.empty</k:ident_part>
+        <k:title>Ohne Zusatzmetadaten</k:title>
+        <k:Thema_R ili:ref="empty" />
+      </k:Ebene>
+    </k:Kartenkatalog>
+  </ili:datasection>
+</ili:transfer>

@@ -1,6 +1,23 @@
-{#include layout}
+{#include layout chrome=page.chrome}
 {#content}
-<h1>Kartenkatalog</h1><p>Themen und Kartenebenen des Kantons Solothurn.</p>
-<ul>{#for theme in themes}<li><a href="{theme.href}">{theme.title}</a> ({theme.count} Ebenen)</li>{/for}</ul>
+<section class="catalog-intro"><h1>Kartenkatalog</h1>
+<p class="lead">Entdecken Sie Themen und Kartenebenen des Kantons Solothurn.</p>
+<p class="intro-note">Karten finden, Metadaten lesen und direkt im Kartenportal öffnen.</p></section>
+<form method="get" action="/" class="catalog-search" role="search">
+<label class="sr-only" for="catalog-search">Kartenkatalog durchsuchen</label>
+<div class="search-field"><span aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="10" cy="10" r="6.5"/><path d="m15 15 6 6"/></svg></span><input id="catalog-search" type="search" name="q" value="{page.q}" maxlength="200" placeholder="Suche nach Karten, Themen, Schlagwörtern …"><button type="submit">Suchen</button></div>
+<div class="filter-band"><label>Thema<select name="thema"><option value="">Alle Themen</option>{#for option in page.themeOptions}<option value="{option.value}" {#if option.selected}selected{/if}>{option.label}</option>{/for}</select></label>
+<label>Produkttyp<select name="typ"><option value="">Alle Produkttypen</option>{#for option in page.typeOptions}<option value="{option.value}" {#if option.selected}selected{/if}>{option.label}</option>{/for}</select></label>
+{#if !page.organizationOptions.isEmpty}<label>Organisation<select name="organisation"><option value="">Alle Organisationen</option>{#for option in page.organizationOptions}<option value="{option.value}" {#if option.selected}selected{/if}>{option.label}</option>{/for}</select></label>{/if}
+<a class="reset-link" href="/">Zurücksetzen</a></div></form>
+<section aria-labelledby="results-heading" class="catalog-results">
+<div class="results-heading"><h2 id="results-heading">{page.total} {#if page.total == 1}Kartenebene{#else}Kartenebenen{/if} in {page.themes.size} {#if page.themes.size == 1}Thema{#else}Themen{/if}</h2><span class="list-label">Listenansicht · Titel A–Z</span></div>
+{#if page.themes.isEmpty}<div class="empty-state"><h3>Keine Kartenebenen gefunden</h3><p>Ändern Sie den Suchbegriff oder setzen Sie die Auswahl zurück.</p><a href="/">Alle Themen anzeigen</a></div>
+{#else}<div class="list-head" aria-hidden="true"><span>Thema / Kartenebene</span><span>Umfang</span></div>
+<div class="theme-list">{#for theme in page.themes}
+<details class="theme-row" hx-get="{theme.href}" hx-trigger="toggle once" hx-target="find .theme-layers" hx-swap="innerHTML">
+<summary aria-controls="{theme.panelId}"><span class="expand-icon" aria-hidden="true"></span><span class="theme-summary"><span class="theme-title">{theme.title}</span>{#if theme.description}<span class="theme-description">{theme.description}</span>{/if}</span><span class="theme-count">{theme.count} {#if theme.count == 1}Ebene{#else}Ebenen{/if}</span></summary>
+<div id="{theme.panelId}" class="theme-layers"><p class="fallback-link"><a href="{theme.href}">Kartenebenen des Themas öffnen</a></p></div>
+</details>{/for}</div>{/if}</section>
 {/content}
 {/include}

@@ -2,7 +2,7 @@
 
 Quarkus **3.40.1.1**, Java **21**, Gradle Wrapper **9.8.2**. Der Katalog wird beim Start aus einer lokalen INTERLIS-2.4-XTF-Datei gelesen, validiert und als unveränderlicher In-Memory-Snapshot bereitgestellt. Keine Datenbank, kein Mock-Fallback, kein Reload-Endpunkt.
 
-Aktueller Migrationsabschnitt **P2**: Quarkus REST/Jackson, minimale typsichere Qute-Seiten, SmallRye Health und **Apache Lucene 10.6.0**. Der Index wird bei jedem Start aus XTF im Java-Heap (`ByteBuffersDirectory`, `GermanAnalyzer`) neu aufgebaut. Kein persistierter Suchindex oder Index-Volume. SODATA-Oberfläche und Native-/Linux-Abnahme folgen in P3/P4. Der aktuelle Stand behauptet keine Native-Freigabe.
+Aktueller Migrationsabschnitt **P3a**: Quarkus REST/Jackson, typsichere Qute-Seiten im SODATA-Stil, SmallRye Health und **Apache Lucene 10.6.0**. Der Index wird bei jedem Start aus XTF im Java-Heap (`ByteBuffersDirectory`, `GermanAnalyzer`) neu aufgebaut. Kein persistierter Suchindex oder Index-Volume. Die Startseite bietet aufklappbare Themen mit lazy geladenen Kartenebenen und No-JS-Themenlinks; Detailseiten zeigen nur vorhandene Metadaten. Suche/Filter sind vorerst normale GET-Formulare. Die erweiterte Filter-/History-/Mobile-Sheet-UX folgt in P3b, Native-/Linux-Abnahme in P4. Der aktuelle Stand behauptet keine Native-Freigabe.
 
 ## Start und Build
 
@@ -35,10 +35,10 @@ CATALOG_XTF_LOCATION=file:/absoluter/pfad/katalog.xtf \
 | `/api/v1/ebenen` | alle Ebenen; `q` und optional `thema` |
 | `/api/v1/ebenen/{id}` | einzelne Ebene per `ident_part` |
 | `/api/v1/facets` | dynamische Facets; gleiche Query-/Filterparameter wie `/api/v1/ebenen` |
-| `/` | Weiterleitung nach `/thema` |
-| `/thema` | vollständige Themenliste |
+| `/` | vollständige Katalog-Startseite, `200 text/html` |
+| `/thema` | kompatibler Alias zur Katalog-Startseite |
 | `/themen/{identifier}/ebenen` | vollständige Themenseite; mit `HX-Request: true` nur Ebenenfragment |
-| `/ebene/{id}` | minimale Qute-Detailseite mit sicherem Kartenlink |
+| `/ebene/{id}` | Qute-Detailseite mit Metadaten, Themen- und sicherem Kartenlink |
 | `/ebene/{id}/style` | XML/QML-Attachment, nur bei tatsächlich vorhandenem QML |
 | `/ping` | `200 text/plain`, `kartenkatalog` |
 | `/q/health/live`, `/q/health/ready` | SmallRye Health; Readiness setzt vollständigen Snapshot und offenen Suchindex voraus |
@@ -62,6 +62,7 @@ Fehler verwenden weiterhin `application/problem+json` mit `status`, `title`, `de
 
 ```sh
 ./gradlew clean test quarkusBuild
+./gradlew playwrightTest
 ./gradlew dependencies --configuration runtimeClasspath
 python3 scripts/p1-process-contract.py
 python3 scripts/p1-process-contract.py --dev
@@ -73,3 +74,23 @@ Der P2-Prozesstest prüft Neuaufbau/Determinismus nach Neustart, XTF-Änderungen
 Die synthetische `with-qml.xml` dient nur Tests für QML und Sanitization; sie wird nicht in den Harvest gemischt. CI prüft aktuell JVM/Tests; Linux-Native und Container werden in P4 eingeführt. Die alten Boot-Native-/Docker-Publishing-Tasks wurden entfernt. Kein Push/Release als versteckter Buildschritt.
 
 Migrationsplan, Status und unabhängige Abnahmen: [docs/quarkus-migration](docs/quarkus-migration/STATUS.md). Frühere Notizen: [docs/legacy-notes.md](docs/legacy-notes.md).
+
+## Oberfläche und Browserprüfung (P3a)
+
+`/` und `/thema` liefern dieselbe Startseite. Native `details`-Zeilen laden ihre
+Ebenen einmalig als HTMX-Fragment; ohne JavaScript bleibt der Themenlink nutzbar.
+Themen und Produkttypen lassen sich über die normale GET-Form suchen/filtern;
+Organisation erscheint nur bei echten Quellwerten. Keine Datums-/Dummyfilter.
+Metadatenlinks werden vor Ausgabe auf absolute HTTP(S)-URLs ohne Zugangsdaten
+begrenzt; Beschreibungs-HTML wird vor Qute-RawString mit Jsoup saniert. QML und
+optionale Felder werden nur bei tatsächlichem Quellinhalt angezeigt.
+
+`./gradlew playwrightTest` installiert bei Bedarf den gepinnten Chromium-Browser
+für Playwright **1.60.0** und prüft einen selbst gestarteten JVM-Prozess, lokale
+Assets, Tastatur-Aufklappen, No-JS-Navigation, GET-Suche, Details und schmales Layout.
+Browserberichte: `build/reports/tests/playwrightTest/`; Screenshots und JVM-Log:
+`build/reports/p3a/`. Der normale `test`-Task prüft separat alle Unit-/HTTP-Tests;
+CI ruft **beide** Pflichttasks auf und installiert die Linux-Systembibliotheken mit
+`./gradlew playwrightTest -PplaywrightWithDeps=true`.
+Referenzbild, Herkunft und Wiederholung der SODATA-Aufnahme:
+[docs/quarkus-migration/reference](docs/quarkus-migration/reference/README.md).

@@ -64,8 +64,8 @@ def main():
         assert all(actual[k] == expected[k] for k in ['status', 'title', 'detail']), actual
         assert actual['instance'] == expected['path'].split('?')[0]
         assert 'trace' not in actual and 'exception' not in actual
-    body, headers = request('/', 302, None)
-    assert urllib.parse.urlparse(headers['Location']).path == '/thema'
+    body, headers = request('/', 200, 'text/html')
+    assert '<h1>Kartenkatalog</h1>' in body  # P3a replaces the legacy redirect with the full start page.
     for path, title in [('/thema', 'Hoheitsgrenzen'), ('/themen/harvest-hoheitsgrenzen/ebenen', 'Gemeindegrenzen'), ('/ebene/ch.so.agi.gemeindegrenzen', 'Gemeindegrenzen')]:
         assert title in request(path, mime='text/html')[0]
     for path in ['/ebene/unknown', '/themen/unknown/ebenen', '/ebene/unknown/style']:
