@@ -18,7 +18,7 @@ macOS 15.8.1/arm64, Java 21.0.7, Gradle 9.8.2, Quarkus 3.40.1.1; Lucene bleibt 1
 
 | Befehl / Gegenfall | Exit / Ergebnis | Rohbeleg |
 |---|---|---|
-| **`./gradlew clean test quarkusBuild playwrightTest -PreferenceUrl=http://127.0.0.1:18090`** nach allen Java-/Template-/Teständerungen | **0; Unit/HTTP 59/0/0/0; Chromium 3/0/0/0** | `build/reports/p3a/clean-test-browser.log`, `build/test-results/{test,playwrightTest}/TEST-*.xml`, `build/reports/tests/` |
+| **`./gradlew clean test quarkusBuild playwrightTest`** nach allen Änderungen inkl. Asset-Normalisierung (zuvor ebenfalls mit `-PreferenceUrl=http://127.0.0.1:18090` zur Referenzaufnahme) | **0; Unit/HTTP 59/0/0/0; Chromium 3/0/0/0** | `build/reports/p3a/clean-test-browser.log`, `build/test-results/{test,playwrightTest}/TEST-*.xml`, `build/reports/tests/` |
 | `python3 scripts/p1-process-contract.py` | **0**, echte JVM, aktualisierter P0-HTTP-Vertrag, Health, Snapshot-Lifetime und alle acht Startfehler | `build/reports/p3a/p1-process.log`, `build/reports/p1/` |
 | `python3 scripts/p2-process-contract.py` | **0**, echter RAM-Index, read-only/Neustarts/XTF-Änderung/Index-Startfehler | `build/reports/p3a/p2-process.log`, `build/reports/p2/` |
 | `./gradlew dependencies --configuration runtimeClasspath` | **0**, kein Spring/JTE/JDBC; Browserbibliothek nur testseitig | `build/reports/p3a/dependencies.log` |
@@ -32,7 +32,7 @@ Die **echten Chromium-Tests** starten das gebaute JVM-JAR selbst und prüfen: 16
 
 ## Visueller Abgleich (Bilder tatsächlich angesehen)
 
-Referenz: echte laufende SODATA-Anwendung, `/datasets?view=list`, identischer Commit wie P0. Vergleich bei **1440×900**, ergänzende Aufnahmen bei **390×844**. Gepinntes Desktop-Referenzbild: `reference/sodata-desktop.png` (112 KB), Herkunft/Reproduktion/Lizenzen: `reference/README.md`. Neue Rohbilder unter `build/reports/p3a/screenshots/`: `catalog-desktop`, `catalog-expanded-desktop`, `detail-desktop`, `catalog-mobile`, `detail-mobile` sowie Referenzaufnahmen `sodata-1440`/`sodata-390` (jeweils `.png`).
+Referenz: echte laufende SODATA-Anwendung, `/datasets?view=list`, identischer Commit wie P0. Vergleich bei **1440×900**, ergänzende Aufnahmen bei **390×844**. Gepinntes Desktop-Referenzbild: `reference/sodata-desktop.png` (112 KB), Herkunft/Reproduktion/Lizenzen: `reference/README.md`. Neue Rohbilder unter `build/reports/p3a/screenshots/`: `catalog-desktop`, `catalog-expanded-desktop`, `detail-desktop`, `catalog-mobile`, `detail-mobile` (jeweils `.png`). Die mit `referenceUrl` erstellte Desktop-Referenz ist versioniert; optionale Referenz-Rohaufnahmen werden bei `clean` ersetzt.
 
 | Merkmal | Sichtprüfung / fachliche Anpassung |
 |---|---|
@@ -42,7 +42,7 @@ Referenz: echte laufende SODATA-Anwendung, `/datasets?view=list`, identischer Co
 | Informationen/Details | Ebenenzahl und Produktart, Details und Karte statt unbelegter Publikationsdaten/Dateiformate; lesbarer Metadatenblock und Sidebar, keine leeren Org-/QML-Werte |
 | Leerzustand/schmale Ansicht | klare Rücksetz-/Kein-Treffer-Meldung; Header/Breadcrumb umbrechend, Details einspaltig; kein Overflow. Einfacher GET-Filter statt vorgezogenem P3b-Sheet |
 
-MIT-Herkunftshinweise für SODATA-Gestaltung und Webcomponents sowie HTMX-Lizenz lokal erhalten. Fonts/Logo sind unveränderte bereits vorhandene Kartenkatalog-Assets; keine Fontdateien erfunden. Die Referenzanwendung blieb getrackt unverändert und wurde nach der Aufnahme gestoppt.
+MIT-Herkunftshinweise für SODATA-Gestaltung und Webcomponents sowie HTMX-Lizenz lokal erhalten. Fonts/Logo sind bereits vorhandene Kartenkatalog-Assets mit unveränderten Font-/Bilddaten; keine Fontdateien erfunden. Übernommene Assets enthielten sechs Whitespace-Verstösse: erster Check des Zwischencommits Exit 2, anschliessend ausschliesslich Zeilenenden bereinigt und final erneut geprüft. Die Referenzanwendung blieb getrackt unverändert und wurde nach der Aufnahme gestoppt.
 
 ## Kriterien und Review
 

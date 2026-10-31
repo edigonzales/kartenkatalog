@@ -19,7 +19,7 @@ Der Kartenkatalog benötigt den Referenzserver nicht zur Laufzeit oder für sein
 Browser-Pflichtprüfungen. Ohne `referenceUrl` prüft der Task die neue Oberfläche;
 das hier versionierte Referenzbild bleibt für den visuellen Abgleich verfügbar.
 Die optional zusätzliche Referenzaufnahme ist kein übersprungenes Browser-Gate.
-Rohscreenshots der neuen Oberfläche und mobile Referenzaufnahme:
+Rohscreenshots der neuen Oberfläche (mit `referenceUrl` zusätzlich mobile Referenzaufnahme):
 `build/reports/p3a/screenshots/`.
 
 Gezielt adaptierte Quellen: `pages/catalog.jte`, `layouts/main.jte`,
@@ -33,13 +33,15 @@ normale GET-Selects; Desktop-Popover/Mobile-Sheet/Filter-Chips folgen erst P3b.
 
 Lokale Assets/Herkunft:
 
-- `vendor/so-web-components/0.1.10/`: unveränderte benötigte JS-/Reset-/Token-
+- `vendor/so-web-components/0.1.10/`: benötigte JS-/Reset-/Token-
   Dateien aus dem Referenzcheckout (dessen npm-Vendorcopy, MIT ©2026 Stefan
-  Ziegler; mit LICENSE und Herkunfts-README). Nur benötigte Module übernommen.
+  Ziegler; mit LICENSE und Herkunfts-README). Nur benötigte Module übernommen;
+  lediglich Whitespace an Zeilenenden normalisiert.
 - `vendor/htmx/2.0.11/`: offizielle Dateien aus
   `https://github.com/bigskysoftware/htmx/tree/v2.0.11`, inklusive LICENSE.
 - `fonts.css`, `kantons-logo.svg`: bereits im Kartenkatalog enthaltene Assets,
-  jetzt unter Quarkus' lokalem Ressourcenpfad verfügbar. Keine Fontdateien erfunden.
+  jetzt unter Quarkus' lokalem Ressourcenpfad verfügbar (Whitespace an
+  Zeilenenden normalisiert). Keine Fontdateien erfunden.
 - `catalog.css`: eigene Kartenkatalog-Stile unter Übernahme der SODATA-
   Gestaltungskonzepte; Quelle und MIT-Hinweis in CSS, vollständige Lizenz unter
   `vendor/SODATA-LICENSE`.
