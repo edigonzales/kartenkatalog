@@ -1,48 +1,27 @@
 tasks.register('copyNativeImage', Copy) {
-    //dependsOn 'nativeCompile'
-    from file("$buildDir/native/nativeCompile/kartenkatalog")
-    into file("$projectDir/docker/image/tmp")
+    dependsOn 'nativeCompile'
+    from layout.buildDirectory.file('native/nativeCompile/kartenkatalog')
+    into layout.projectDirectory.dir('docker/image/tmp')
 }
 
-// tasks.register('buildNativeDockerImage', Exec) {
-//     dependsOn 'copyNativeImage'
-//     def githash = getCheckedOutGitCommitHash()
-//     def build_timestamp = getTimestamp()
-
-//     workingDir "$projectDir/docker/image"
-//     commandLine 'docker', 'build',
-//                 '--no-cache', '--force-rm',
-//                 '-t', "sogis/datahub:latest",
-//                 '-f', 'Dockerfile.alpine',  '.'
-// }
-
-// Wird sich noch ändern, wenn wir JVM-Image herstellen
-// und Docker-Image testen wollen.
-
-tasks.register('buildNativeDockerImage', Exec) {
-    dependsOn 'copyNativeImage'
-    def githash = getCheckedOutGitCommitHash()
-    def build_timestamp = getTimestamp()
-
-    // TODO add ghcr.io 
-    workingDir "$projectDir/docker/image"
-    commandLine 'docker', 'buildx', 'build',
-                '--platform', 'linux/amd64',
-                '-t', "sogis/kartenkatalog:$version.major",
-                '-t', "sogis/kartenkatalog:$version.major.$version.minor",
-                '-t', "sogis/kartenkatalog:$version.major.$version.minor.$version.build",
-                '-t', "sogis/kartenkatalog:latest",
-                '--label', "kartenkatalog.created=$build_timestamp", 
-                '--label', "kartenkatalog.git_commit=$githash",
-                '--label', "kartenkatalog.version=$version",
-                '-f', 'Dockerfile.native',  '.', '--push'
-}
-
-def getCheckedOutGitCommitHash() {
-    'git log -1 --pretty=%H'.execute().text.trim()
-}
-
-def getTimestamp() {
-    def date = new Date()
-    return date.format('yyyy-MM-dd HH:mm:ss')
+// Building locally must not publish a registry image as a hidden side effect.
+['buildNativeDockerImage': '--load', 'publishNativeDockerImage': '--push'].each { taskName, outputMode ->
+    tasks.register(taskName, Exec) {
+        dependsOn 'copyNativeImage'
+        workingDir layout.projectDirectory.dir('docker/image')
+        doFirst {
+            def revision = providers.exec {
+                commandLine 'git', 'rev-parse', 'HEAD'
+            }.standardOutput.asText.get().trim()
+            commandLine 'docker', 'buildx', 'build',
+                    '--platform', 'linux/amd64',
+                    '-t', "sogis/kartenkatalog:$version.major",
+                    '-t', "sogis/kartenkatalog:$version.major.$version.minor",
+                    '-t', "sogis/kartenkatalog:$version",
+                    '-t', 'sogis/kartenkatalog:latest',
+                    '--label', "kartenkatalog.git_commit=$revision",
+                    '--label', "kartenkatalog.version=$version",
+                    '-f', 'Dockerfile.native', '.', outputMode
+        }
+    }
 }

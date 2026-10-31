@@ -315,3 +315,6 @@ gradle-app.setting
 **/build/
 
 # End of https://www.toptal.com/developers/gitignore/api/maven,gradle,java,groovy,windows,linux,macos,intellij+all,netbeans,eclipse
+
+# Versioned public XTF fixture for local API development
+!data/kartenkatalog-harvest-ohne-qml.xtf

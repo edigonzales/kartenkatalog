@@ -1,10 +1,11 @@
+@import ch.so.agi.meta.CatalogText
 @import ch.so.agi.meta.Ebene
 
 @param Ebene product
 @param String finalDescription = null
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -14,9 +15,9 @@
 
     <title>${product.title()} • Kartenportal • Kanton Solothurn</title>
 
-    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@maps4html/mapml@latest/dist/mapml.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@materializecss/materialize@2.2.1/dist/js/materialize.min.js"></script>
+    <script src="https://unpkg.com/htmx.org@2.0.11"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@maps4html/mapml@0.18.1/dist/mapml.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@materializecss/materialize@2.4.0/dist/js/materialize.min.js"></script>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp">
     <link rel="stylesheet" href="../fonts.css">
@@ -31,22 +32,16 @@
 
         <div class="left-align" style="margin-top:60px;">
             @if (product.transparency() != null)
-                <h1 style="font-weight:900;">${product.title()} <a href="https://geo.so.ch/map?l=${product.ident_part()}[${product.transparency()}]" target="_blank"><i class="material-icons-outlined black-link">open_in_new</i></a></h1>
+                <h1 style="font-weight:900;">${product.title()} <a href="https://geo.so.ch/map?l=${product.ident_part()}[${product.transparency()}]" target="_blank" rel="noopener noreferrer"><i class="material-icons-outlined black-link">open_in_new</i></a></h1>
             @else
-                <h1 style="font-weight:900;">${product.title()} <a href="https://geo.so.ch/map?l=${product.ident_part()}" target="_blank"><i class="material-icons-outlined black-link">open_in_new</i></a></h1>
+                <h1 style="font-weight:900;">${product.title()} <a href="https://geo.so.ch/map?l=${product.ident_part()}" target="_blank" rel="noopener noreferrer"><i class="material-icons-outlined black-link">open_in_new</i></a></h1>
             @endif
         </div>
 
         <div class="textedit-container">
             <label class="textedit-label">Beschreibung</label>
             <div class="textedit-display textedit-display-area">
-                @if(product.adescription() != null)
-                    $unsafe{product.adescription()}
-                @elseif(product.description_override() != null)
-                    $unsafe{product.description_override()}
-                @elseif(product.description_model() != null)
-                    $unsafe{product.description_model()}
-                @endif
+                $unsafe{CatalogText.html(CatalogText.description(product))}
             </div>
         </div>
 
@@ -61,7 +56,7 @@
             <label class="textedit-label">Schlagwörter</label>
             <div class="textedit-display textedit-display-badge">
                 @if(product.keywords() != null)
-                    @for (var keyword : product.keywords().split(","))
+                    @for (var keyword : CatalogText.terms(product.keywords()))
                         <span class="badge">${keyword}</span>
                     @endfor
                 @endif
@@ -72,7 +67,7 @@
             <label class="textedit-label">Synonyme</label>
             <div class="textedit-display textedit-display-badge">
                 @if(product.synonyms() != null)
-                    @for (var synonym : product.synonyms().split(","))
+                    @for (var synonym : CatalogText.terms(product.synonyms()))
                         <span class="badge">${synonym}</span>
                     @endfor
                 @endif
@@ -115,23 +110,9 @@
             <label class="textedit-label">QML</label>
             <div class="textedit-display textedit-display-line">
                 @if(product.style_server() != null)
-                    <a href="../ebene/${product.ident_part()}/style" target="_blank">${product.ident_part()}.qml</a>
+                    <a href="../ebene/${product.ident_part()}/style" target="_blank" rel="noopener noreferrer">${product.ident_part()}.qml</a>
 
                 @endif
-            </div>
-        </div>
-
-        <div class="textedit-container">
-            <label class="textedit-label">Interne Bemerkungen</label>
-            <div class="textedit-display textedit-display-line">
-                $unsafe{product.remarks()}
-            </div>
-        </div>
-
-        <div class="textedit-container">
-            <label class="textedit-label">Permissions</label>
-            <div class="textedit-display textedit-display-line">
-                ${product.permissions()}
             </div>
         </div>
 

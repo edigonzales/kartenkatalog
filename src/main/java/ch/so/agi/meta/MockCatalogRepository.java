@@ -15,8 +15,8 @@ public class MockCatalogRepository implements CatalogRepository {
 
     public MockCatalogRepository() {
         this.themen = List.of(
-                new Thema("t-1", "geologie", "Geologie", "Übersicht zu geologischen Themen.", "Geologie,Stein", "Fels,Gestein", "https://geo.so.ch/geoportal", "Amt für Geologie", 3),
-                new Thema("t-2", "planung", "Planung", "Informationen rund um Raumplanung.", "Planung,Räumlich", "Ortsplanung,Zonen", "https://geo.so.ch/planung", "Amt für Raumplanung", 1)
+                new Thema("t-1", "geologie", "Geologie", "Übersicht zu geologischen Themen.", "Geologie,Stein", "Fels,Gestein", "https://geo.so.ch/geoportal", "Amt für Geologie", 2),
+                new Thema("t-2", "planung", "Planung", "Informationen rund um Raumplanung.", "Planung,Räumlich", "Ortsplanung,Zonen", "https://geo.so.ch/planung", "Amt für Raumplanung", 2)
         );
 
         this.ebenen = List.of(
@@ -26,6 +26,9 @@ public class MockCatalogRepository implements CatalogRepository {
                 new Ebene("e-4", "simiProduct_Layer", "Bauzonen", null, null, "", "Bauzonen", "ch.so.planung.bauzonen", "bz1", "Planung", "Bau", "public", null, true, 25, "Planung", "planung", "ARP", "public", "t-2")
         );
     }
+
+    @Override
+    public List<Ebene> findAllEbenen() { return ebenen; }
 
     @Override
     public List<Thema> findAllThemen() {
@@ -42,7 +45,7 @@ public class MockCatalogRepository implements CatalogRepository {
     @Override
     public Optional<Ebene> findEbeneByIdentPart(String identPart) {
         return ebenen.stream()
-                .filter(ebene -> ebene.ident_part().equalsIgnoreCase(identPart))
+                .filter(ebene -> ebene.ident_part().equals(identPart))
                 .findFirst();
     }
 }

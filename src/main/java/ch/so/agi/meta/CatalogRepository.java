@@ -6,6 +6,8 @@ import java.util.Optional;
 public interface CatalogRepository {
     List<Thema> findAllThemen();
 
+    List<Ebene> findAllEbenen();
+
     List<Ebene> findEbenenByThemaIdentifier(String identifier);
 
     Optional<Ebene> findEbeneByIdentPart(String identPart);

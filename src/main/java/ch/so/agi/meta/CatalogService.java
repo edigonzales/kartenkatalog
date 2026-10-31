@@ -5,31 +5,32 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 
 @Service
 public class CatalogService {
     private final CatalogRepository catalogRepository;
-    private final Collator germanCollator;
+    public CatalogService(CatalogRepository catalogRepository) { this.catalogRepository = catalogRepository; }
 
-    public CatalogService(CatalogRepository catalogRepository) {
-        this.catalogRepository = catalogRepository;
-        this.germanCollator = Collator.getInstance(Locale.forLanguageTag("de-CH"));
-        this.germanCollator.setStrength(Collator.PRIMARY);
+    // Collator is mutable and not thread-safe: each operation owns its comparator.
+    private static Comparator<String> titles() {
+        var collator = Collator.getInstance(Locale.forLanguageTag("de-CH"));
+        collator.setStrength(Collator.PRIMARY);
+        return Comparator.nullsLast(collator::compare);
     }
-
     public List<Thema> findAllThemen() {
-        return catalogRepository.findAllThemen();
+        return catalogRepository.findAllThemen().stream()
+                .sorted(Comparator.comparing(Thema::title, titles()).thenComparing(Thema::identifier)).toList();
     }
-
+    public List<Ebene> findAllEbenen() { return sorted(catalogRepository.findAllEbenen()); }
     public List<Ebene> findEbenenByThemaIdentifier(String identifier) {
-        return catalogRepository.findEbenenByThemaIdentifier(identifier).stream()
-                .sorted(Comparator.comparing(Ebene::title, germanCollator))
-                .toList();
+        return sorted(catalogRepository.findEbenenByThemaIdentifier(identifier));
     }
-
-    public Optional<Ebene> findEbeneByIdentPart(String identPart) {
-        return catalogRepository.findEbeneByIdentPart(identPart);
+    private List<Ebene> sorted(List<Ebene> layers) {
+        return layers.stream().sorted(Comparator.comparing(Ebene::title, titles()).thenComparing(Ebene::ident_part)).toList();
+    }
+    public Optional<Ebene> findEbeneByIdentPart(String identPart) { return catalogRepository.findEbeneByIdentPart(identPart); }
+    public Optional<Thema> findThema(String identifier) {
+        return findAllThemen().stream().filter(t -> t.identifier().equals(identifier)).findFirst();
     }
 }

@@ -1,9 +1,9 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.5.8'
+    id 'org.springframework.boot' version '4.1.2'
     id 'io.spring.dependency-management' version '1.1.7'
-    id 'org.graalvm.buildtools.native' version '0.10.6'
-    id 'gg.jte.gradle' version '3.1.16'
+    id 'org.graalvm.buildtools.native' version '1.1.18'
+    id 'gg.jte.gradle' version '3.2.4'
 }
 
 apply from: "$rootDir/gradle/versioning.gradle"
@@ -24,9 +24,12 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'gg.jte:jte:3.1.16'
-    implementation 'gg.jte:jte-spring-boot-starter-3:3.1.16'
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    implementation 'gg.jte:jte:3.2.4'
+    implementation 'gg.jte:jte-spring-boot-starter-4:3.2.4'
+    implementation 'org.jsoup:jsoup:1.23.2'
+    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    testImplementation 'com.h2database:h2'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -52,11 +55,9 @@ graalvmNative {
     binaries {
         main {
             buildArgs.add('-march=compatibility')
-            //buildArgs.add("-H:IncludeLocales=de,en")
-            //buildArgs.add("-Duser.country=CH")
-            //buildArgs.add("-Duser.language=de")
-            //jvmArgs.add("-Duser.country=CH")
-            //jvmArgs.add("-Duser.language=de")
+            buildArgs.add("-J-Xmx${providers.gradleProperty('nativeMaxHeap').getOrElse('4g')}")
+            buildArgs.add("--parallelism=${providers.gradleProperty('nativeParallelism').getOrElse('2')}")
+            if (project.hasProperty('nativeQuickBuild')) buildArgs.add('-Ob')
 
             verbose = true
         }
