@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ili:transfer xmlns:ili="http://www.interlis.ch/xtf/2.4/INTERLIS" xmlns:k="http://www.interlis.ch/xtf/2.4/SO_AGI_Kartenkatalog_Publikation_20251210">
+  <ili:headersection><ili:models><ili:model>SO_AGI_Kartenkatalog_Publikation_20251210</ili:model></ili:models></ili:headersection>
+  <ili:datasection><k:Kartenkatalog ili:bid="contract">
+    <k:Thema ili:tid="test-theme"><k:identifier>contract</k:identifier><k:title>Testthema</k:title></k:Thema>
+    <k:Ebene ili:tid="test-layer">
+      <k:id>85ee5e38-804c-4014-bb9b-490a2a3ea768</k:id><k:dtype>datasetview</k:dtype>
+      <k:ident_part>ch.test.qml</k:ident_part><k:title>QML Test</k:title>
+      <k:description>&lt;p&gt;Sicher &lt;strong&gt;formatiert&lt;/strong&gt;&lt;script&gt;alert(1)&lt;/script&gt;&lt;/p&gt;</k:description>
+      <k:style_server>&lt;qgis version="3.40"&gt;&lt;renderer-v2 type="singleSymbol"/&gt;&lt;/qgis&gt;</k:style_server>
+      <k:Thema_R ili:ref="test-theme"/>
+    </k:Ebene>
+  </k:Kartenkatalog></ili:datasection>
+</ili:transfer>

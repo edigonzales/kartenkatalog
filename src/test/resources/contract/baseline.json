@@ -1,0 +1,127 @@
+{
+  "fixture": {
+    "themes": 169,
+    "layers": 886,
+    "sha256": "de40f025368ae6fc70f5858ab42592488bca837c6942cb6ff8759e6c8803de86"
+  },
+  "layerFields": [
+    "id",
+    "sourceId",
+    "type",
+    "title",
+    "description",
+    "descriptionHtml",
+    "keywords",
+    "synonyms",
+    "qwcLayerName",
+    "derivedIdentifier",
+    "transparency",
+    "themeIdentifier",
+    "themeTitle",
+    "organization",
+    "publicationScope",
+    "downloadAvailable"
+  ],
+  "themeFields": [
+    "identifier",
+    "title",
+    "description",
+    "descriptionHtml",
+    "keywords",
+    "synonyms",
+    "furtherInfoUrl",
+    "dataOwner",
+    "layerCount"
+  ],
+  "layer": {
+    "id": "ch.so.agi.gemeindegrenzen",
+    "sourceId": "e01871cf-fb42-5a9c-a7e6-dd8b5d100275",
+    "type": "datasetview",
+    "title": "Gemeindegrenzen",
+    "description": "Bei den Gemeindegrenzen handelt es sich um die politischen Gemeindegrenzen, welche aus der amtlichen Vermessung stammen. Die Geometrien sind topologisch bereinigt, d.h. sie weisen weder Überlappungen noch Lücken auf.",
+    "descriptionHtml": "Bei den Gemeindegrenzen handelt es sich um die politischen Gemeindegrenzen, welche aus der amtlichen Vermessung stammen. Die Geometrien sind topologisch bereinigt, d.h. sie weisen weder Überlappungen noch Lücken auf.",
+    "keywords": [],
+    "synonyms": [],
+    "qwcLayerName": "ch.so.agi.gemeindegrenzen",
+    "derivedIdentifier": null,
+    "transparency": 0,
+    "themeIdentifier": "harvest-hoheitsgrenzen",
+    "themeTitle": "Hoheitsgrenzen",
+    "organization": null,
+    "publicationScope": null,
+    "downloadAvailable": null
+  },
+  "theme": {
+    "identifier": "harvest-hoheitsgrenzen",
+    "title": "Hoheitsgrenzen",
+    "description": "Als Hoheitsgrenzen werden die Landesgrenzen, Kantonsgrenzen und die Grenzen der politischen Gemeinden bezeichnet. Die Hoheitsgrenzen liegen auf Grundstücksgrenzen. Sie sind Bestandteil der amtlichen Vermessung.",
+    "descriptionHtml": "Als Hoheitsgrenzen werden die Landesgrenzen, Kantonsgrenzen und die Grenzen der politischen Gemeinden bezeichnet. Die Hoheitsgrenzen liegen auf Grundstücksgrenzen. Sie sind Bestandteil der amtlichen Vermessung.",
+    "keywords": [],
+    "synonyms": [],
+    "furtherInfoUrl": "https://so.ch/verwaltung/bau-und-justizdepartement/amt-fuer-geoinformation/amtliche-vermessung/hoheitsgrenzen/",
+    "dataOwner": null,
+    "layerCount": 7
+  },
+  "products": [
+    {
+      "id": "ch.so.agi.gemeindegrenzen",
+      "type": "datasetview",
+      "title": "Gemeindegrenzen",
+      "qwcLayerName": "ch.so.agi.gemeindegrenzen",
+      "themeIdentifier": "harvest-hoheitsgrenzen"
+    },
+    {
+      "id": "ch.so.arp.agglomerationsprogramme",
+      "type": "layergroup",
+      "title": "Agglomerationsprogramme",
+      "qwcLayerName": "ch.so.arp.agglomerationsprogramme",
+      "themeIdentifier": "harvest-agglomerationsprogramme"
+    },
+    {
+      "id": "ch.so.alw.strukturverbesserungen.bewaesserung",
+      "type": "facadelayer",
+      "title": "Bewässerung (Strukturverbesserungen)",
+      "qwcLayerName": "ch.so.alw.strukturverbesserungen.bewaesserung",
+      "themeIdentifier": "harvest-strukturverbesserungen"
+    },
+    {
+      "id": "ch.emchberger.abwasser_werkplan_gde",
+      "type": "extwms",
+      "title": "Abwasser Werkplan (Quelle Emch+Berger)",
+      "qwcLayerName": "ch.emchberger.abwasser_werkplan_gde",
+      "themeIdentifier": "harvest-nicht-zugeordnet-kein-thema-im-quelltext"
+    }
+  ],
+  "errors": [
+    {
+      "path": "/api/v1/ebenen/unknown",
+      "status": 404,
+      "title": "Not Found",
+      "detail": "Kartenebene nicht gefunden: unknown"
+    },
+    {
+      "path": "/api/v1/themen/unknown/ebenen",
+      "status": 404,
+      "title": "Not Found",
+      "detail": "Thema nicht gefunden: unknown"
+    },
+    {
+      "path": "/api/v1/ebenen?thema=unknown",
+      "status": 404,
+      "title": "Not Found",
+      "detail": "Thema nicht gefunden: unknown"
+    },
+    {
+      "path": "/ebene/ch.so.agi.gemeindegrenzen/style",
+      "status": 404,
+      "title": "Not Found",
+      "detail": "Kein QML vorhanden"
+    },
+    {
+      "path": "/api/v1/ebenen?q=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "status": 400,
+      "title": "Bad Request",
+      "detail": "Suchtext darf höchstens 200 Zeichen enthalten"
+    }
+  ]
+}
