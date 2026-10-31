@@ -1,6 +1,6 @@
 # P3b – Filter-/Such-UX und kumulatives UI-Gate
 
-31.10.2026 · Agent A · **AWAITING_REVIEW**. Kriterien **AC3B-01–04**, kumulativ **AC3A-01–04**.
+31.10.2026 · Agent A · **PASS**, unabhängig für `c030009c361995baeab0d83ef76fd763ec131a84` (siehe [Review](../reviews/P3b-review.md)). Kriterien **AC3B-01–04**, kumulativ **AC3A-01–04**.
 BASE_SHA: `82ff569acad954e8a65212fef7a9ec25f0e4b5e8` (sauberes `main`); voriger unabhängiger Produkt-PASS `9dfde0ffb2ad6f94bb71bdd278beb174eb3f9ee6` (P3a). Keine AGENTS.md im Repository/Elternpfad. **P4 nicht begonnen.**
 
 ## Umsetzung und Verträge
@@ -60,3 +60,12 @@ Frische eigene Screenshots: `build/reports/p3a/screenshots/{chromium,firefox}-{c
 **AC3B-01:** fachliche Mehrfachfilter/Counts/Chips/Reset und JSON-/HTML-/HTMX-Parität belegt. **AC3B-02:** Fragment-, URL-/Back-/Reload-/Deep-Link-/Expansion- und No-JS-Verträge belegt. **AC3B-03:** beide Engines, beide Viewports, echte Popover/Sheet-/Fokus-/Layout-/Leerzustandsbilder und Referenzvergleich ausgeführt. **AC3B-04:** technische Eigenprüfungen frisch grün; unabhängige kumulative Zielabnahme **aller AC3A-01–04 und AC3B-01–04 bleibt OpenCode-Aufgabe**, keine Selbstfreigabe.
 
 Keine offene Pflichtprüfung in der eigenen P3b-Implementierung. Firefox nicht nur installiert, sondern alle sieben Browserfälle je Engine ausgeführt. Native/Linux/Container ausschliesslich P4, nicht vorgezogen oder als bestanden behauptet. Handoff nach Commit mit vollem SHA an neue OpenCode-Sitzung/sauberen Review-Worktree, `deepseek/deepseek-flash` direkt via DeepSeek API, eigener neuer Filter-/Browser-Gegenfall und konkrete Bildsichtprüfung. **Vor P4 stoppen.**
+
+
+## Unabhängige kumulative Abnahme
+
+OpenCode CLI **2.1.4**, neue Sitzung `ses_e6c582dc0ffemS1G4yvXXFtWCv`, hat den sauberen detached Kandidaten **`c030009c361995baeab0d83ef76fd763ec131a84`** mit **PASS** abgenommen: sämtliche **AC3A-01–04 und AC3B-01–04**, damit das kumulative UI-Gate P3a+P3b. Modell-/Provideridentität `deepseek/deepseek-flash` = DeepSeek-V4.1-Flash-1017 direkt via DeepSeek API wurde anhand tatsächlicher Sitzungs-/Modelldaten und Verbindung überprüft. Keine Produkt-/Test-/Buildänderung nach diesem SHA.
+
+Frische unabhängige Ergebnisse: **62/0/0/0** Unit/HTTP und **14/0/0/0** Chromium-/Firefox-Tests, JVM-/Dev-/RAM-Index-Verträge und Runtime-Graph, eigene Qute-Mutationscanary sowie tatsächliche Bildsichtprüfung. Eigene neue externe XTFs (Organisationen und fehlende Angaben, zusätzlich No-Org-Fixture und reale Harvest) und ein separater Java-/Browserprüfer ergaben **212/212 Checks, Exit 0**. Keine offene Muss-Abweichung. Der Bericht hält den Font-Wartehänger im eigenen No-JS-Probeharness, das asynchrone Aktualisieren von `aria-expanded` nach dem Dialog-`close`-Event und bewusste visuelle Anpassungen als Beobachtungen ohne Abnahmewirkung fest.
+
+Der unveränderte Prüfbericht wird unter `../reviews/P3b-review.md` archiviert. Dauerhafte unabhängige Rohbelege liegen ausserhalb des Produktcommits in `/Users/stefan/sources/kartenkatalog-P3b-review-evidence/c030009c361995baeab0d83ef76fd763ec131a84/`, sauberer Review-Worktree `/Users/stefan/sources/kartenkatalog-review-P3b`. Dieser nachfolgende Commit enthält ausschliesslich Dokumentation. **P4 nicht begonnen; Native/Linux/Container nicht als geprüft behauptet.**
