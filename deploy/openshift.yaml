@@ -1,0 +1,84 @@
+# Replace the image with the tested Linux artifact for the node architecture.
+# Populate the existing PVC separately; XTF is mounted read-only, never an index volume.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kartenkatalog
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kartenkatalog
+  template:
+    metadata:
+      labels:
+        app: kartenkatalog
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: catalog
+          image: example.invalid/kartenkatalog:replace-me
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: CATALOG_XTF_LOCATION
+              value: file:/catalog/catalog.xtf
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          resources:
+            requests:
+              memory: 128Mi
+              cpu: 100m
+            limits:
+              memory: 512Mi
+              cpu: '1'
+          volumeMounts:
+            - name: xtf
+              mountPath: /catalog
+              readOnly: true
+            - name: scratch
+              mountPath: /tmp
+          startupProbe:
+            httpGet:
+              path: /q/health/ready
+              port: http
+            periodSeconds: 2
+            failureThreshold: 60
+          readinessProbe:
+            httpGet:
+              path: /q/health/ready
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /q/health/live
+              port: http
+            periodSeconds: 30
+      volumes:
+        - name: scratch
+          emptyDir:
+            medium: Memory
+            sizeLimit: 64Mi
+        - name: xtf
+          persistentVolumeClaim:
+            claimName: kartenkatalog-xtf
+            readOnly: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kartenkatalog
+spec:
+  selector:
+    app: kartenkatalog
+  ports:
+    - name: http
+      port: 80
+      targetPort: http

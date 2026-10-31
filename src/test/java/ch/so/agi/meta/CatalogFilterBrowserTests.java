@@ -26,7 +26,10 @@ class CatalogFilterBrowserTests {
         int port;
         try(var socket=new ServerSocket(0)){port=socket.getLocalPort();}
         base="http://127.0.0.1:"+port;
-        var command=new ProcessBuilder("java","-Dquarkus.http.host=127.0.0.1","-Dquarkus.http.port="+port,"-jar","build/quarkus-app/quarkus-run.jar");
+        String executable=System.getProperty("catalogExecutable","");
+        var command=executable.isBlank()
+            ? new ProcessBuilder("java","-Dquarkus.http.host=127.0.0.1","-Dquarkus.http.port="+port,"-jar","build/quarkus-app/quarkus-run.jar")
+            : new ProcessBuilder(executable,"-Dquarkus.http.host=127.0.0.1","-Dquarkus.http.port="+port);
         command.environment().put("CATALOG_XTF_LOCATION","file:"+Path.of("src/test/resources/search/catalog.xml").toAbsolutePath());
         app=command.redirectErrorStream(true).redirectOutput(Path.of("build/reports/p3b/browser-jvm.log").toFile()).start();
         var client=HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(2)).build();

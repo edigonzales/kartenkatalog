@@ -1,0 +1,9 @@
+**
+!build/
+!build/quarkus-app/
+!build/quarkus-app/**
+!build/*-runner
+!src/
+!src/main/
+!src/main/docker/
+!src/main/docker/**

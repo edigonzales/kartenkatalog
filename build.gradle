@@ -44,4 +44,12 @@ tasks.register('playwrightTest', Test) {
     classpath = sourceSets.test.runtimeClasspath
     useJUnitPlatform { includeTags 'playwright' }
     systemProperty 'referenceUrl', providers.gradleProperty('referenceUrl').getOrElse('')
+    systemProperty 'catalogExecutable', providers.gradleProperty('catalogExecutable').getOrElse('')
+}
+
+// The same packaged HTTP contract runs for JVM and testNative; no empty native test task.
+quarkus {
+    sourceSets {
+        extraNativeTest = sourceSets.integrationTest
+    }
 }
