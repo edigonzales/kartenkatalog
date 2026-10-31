@@ -1,0 +1,10 @@
+{#include layout}
+{#title}{product.title}{/title}
+{#content}
+<p><a href="/thema">Alle Themen</a></p><h1>{product.title}</h1>
+<div>{product.description}</div>
+<dl><dt>Layername</dt><dd>{product.id}</dd><dt>Produkttyp</dt><dd>{product.type}</dd></dl>
+<p><a href="{product.mapUrl}" target="_blank" rel="noopener noreferrer">Karte öffnen</a></p>
+{#if product.styleUrl}<a href="{product.styleUrl}">QML herunterladen</a>{/if}
+{/content}
+{/include}

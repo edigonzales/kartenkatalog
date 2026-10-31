@@ -1,88 +1,62 @@
 # Kartenkatalog
 
-Spring-Boot-Anwendung für Themen und Kartenebenen. Die bestehende HTML-/HTMX-Oberfläche und die JSON-API nutzen denselben `CatalogService`. Die QWC-App und ihr künftiges Plugin liegen separat in [qwc-kartenkatalog](https://github.com/edigonzales/qwc-kartenkatalog).
+Quarkus **3.40.1.1**, Java **21**, Gradle Wrapper **9.8.2**. Der Katalog wird beim Start aus einer lokalen INTERLIS-2.4-XTF-Datei gelesen, validiert und als unveränderlicher In-Memory-Snapshot bereitgestellt. Keine Datenbank, kein Mock-Fallback, kein Reload-Endpunkt.
 
-## Lokal mit dem gelieferten XTF starten
+Aktueller Migrationsabschnitt **P1**: Quarkus REST/Jackson, minimale typsichere Qute-Seiten und SmallRye Health. Die bisherige lineare Teilstringsuche bleibt vorerst erhalten. Lucene, die neue SODATA-Oberfläche und Native-/Linux-Abnahme folgen in den separat geprüften Lieferungen P2–P4. Der aktuelle Stand behauptet keine Native-Freigabe.
 
-Voraussetzungen: **JDK 21** für die Anwendung und Gradle-Wrapper. Der Wrapper unterstützt auch JDK 25 zum Ausführen des Builds; die Java-21-Toolchain muss dann ebenfalls installiert sein. Keine Datenbank erforderlich:
+## Start und Build
+
+JDK 21 muss verfügbar sein; der Gradle-Wrapper bleibt unverändert.
 
 ```sh
-./gradlew bootRun --args='--spring.profiles.active=xtf --server.address=127.0.0.1 --server.port=8083'
+./gradlew quarkusDev
+./gradlew test quarkusBuild
+java -jar build/quarkus-app/quarkus-run.jar
 ```
 
-- Oberfläche: [Themen](http://127.0.0.1:8083/thema)
-- API: [vollständiger Katalog](http://127.0.0.1:8083/api/v1/catalog)
-- Beispiel: [Gemeindegrenzen](http://127.0.0.1:8083/api/v1/ebenen/ch.so.agi.gemeindegrenzen)
+Standardport: 8080. Andere Datei/Port, z.B.:
 
-Das Profil `xtf` liest `data/kartenkatalog-harvest-ohne-qml.xtf` beim Start als unveränderlichen Snapshot. Eine andere Datei kann mit `CATALOG_XTF_LOCATION=file:/absoluter/pfad/datei.xtf` gewählt werden. Nach Austausch der Datei neu starten. Ungültige Dateien, doppelte fachliche Kennungen und defekte Themenreferenzen lassen den Start mit einer Fehlermeldung abbrechen; es gibt keinen stillen Mock-Fallback. Das ist ein gezielter Leser für das angehängte INTERLIS-2.4-Publikationsmodell, kein allgemeiner INTERLIS-Validator.
+```sh
+CATALOG_XTF_LOCATION=file:/absoluter/pfad/katalog.xtf \
+  java -Dquarkus.http.port=8083 -jar build/quarkus-app/quarkus-run.jar
+```
 
-**Datenstand:** 169 Themen, 886 Kartenebenen. Der Transfer ist ausdrücklich eine unvollständige Rekonstruktion aus öffentlichen QWC-Diensten. `harvest-*`-Themenkennungen und UUIDs sind teilweise synthetisch; QML, Schlagwörter, Synonyme und Berechtigungsangaben fehlen in diesem Datenstand. Fehlende Angaben werden nicht erfunden. Siehe [Datenherkunft](data/README.md).
+`catalog.xtf-location` / `CATALOG_XTF_LOCATION` akzeptiert ausschliesslich `file:` oder `classpath:`. Default: `file:./data/kartenkatalog-harvest-ohne-qml.xtf`, relativ zum Arbeitsverzeichnis. Keine HTTP-Quelle und keine Datenbank-/Spring-Profile mehr. Für eine Änderung der XTF Anwendung neu starten. Fehlerhafte/fehlende Dateien, doppelte Kennungen/TIDs/UUIDs, ungültige Pflichtfelder, Modell-/Referenzfehler und DTD/XXE verhindern den Start. Der DOM-Leser ist modellbezogen und kein vollständiger INTERLIS-Schemavalidator.
 
-## JSON-API v1
+**Datenherkunft:** Der mitgelieferte Harvest hat 169 Themen und 886 Ebenen; dies ist eine Fixture-Eigenschaft, keine Produktionsgrenze. Er ist `INCOMPLETE`, enthält synthetische UUIDs/`harvest-*`-Themen und keine Keywords, Synonyme, Organisationen, Permissions oder QML. Fehlende Metadaten werden nicht erfunden. Siehe [data/README.md](data/README.md).
 
-| GET-Endpunkt | Antwort |
-| --- | --- |
+## HTTP-Vertrag
+
+| GET | Antwort |
+|---|---|
 | `/api/v1/catalog` | `{ "themes": [{ "theme": {…}, "layers": […] }] }` |
-| `/api/v1/themen` | Themen mit Beschreibung und Anzahl Kartenebenen |
-| `/api/v1/themen/{identifier}/ebenen` | Kartenebenen eines fachlichen Themas |
-| `/api/v1/ebenen` | Alle Kartenebenen |
-| `/api/v1/ebenen?q=wasser&thema=harvest-hoheitsgrenzen` | Suche und optionaler Themenfilter |
-| `/api/v1/ebenen/{identPart}` | Metadaten einer Kartenebene |
+| `/api/v1/themen` | Themen mit Beschreibung und Ebenenanzahl |
+| `/api/v1/themen/{identifier}/ebenen` | Ebenen des Themas |
+| `/api/v1/ebenen` | alle Ebenen; `q` und optional `thema` |
+| `/api/v1/ebenen/{id}` | einzelne Ebene per `ident_part` |
+| `/` | Weiterleitung nach `/thema` |
+| `/thema` | vollständige Themenliste |
+| `/themen/{identifier}/ebenen` | vollständige Themenseite; mit `HX-Request: true` nur Ebenenfragment |
+| `/ebene/{id}` | minimale Qute-Detailseite mit sicherem Kartenlink |
+| `/ebene/{id}/style` | XML/QML-Attachment, nur bei tatsächlich vorhandenem QML |
+| `/ping` | `200 text/plain`, `kartenkatalog` |
+| `/q/health/live`, `/q/health/ready` | SmallRye Health; Readiness setzt vollständigen Snapshot voraus |
 
-Die Suche ignoriert Gross-/Kleinschreibung und Akzente, entfernt äussere Leerzeichen und durchsucht Kennung, Titel, Beschreibung, Schlagwörter und Synonyme als Teilzeichenfolge. `q` darf maximal 200 Zeichen enthalten. Leere Suchresultate sind `[]`; unbekannte Themen/Kartenebenen und nicht vorhandene QML-Dateien ergeben **404**, ungültige Suchparameter **400**. API-Fehler werden als `application/problem+json` ausgegeben. Listen sind deterministisch nach deutschen Titeln (de-CH), bei Gleichstand nach Kennung sortiert. Der vollständige Katalog benötigt zwei Repository-Abfragen statt einer SQL-Abfrage je Thema.
+Die API bleibt für das separate [QWC2-Plugin](https://github.com/edigonzales/qwc-kartenkatalog) kompatibel. `id` und `qwcLayerName` sind der publizierte `ident_part`; `sourceId` ist die separate Quell-UUID. Optionale Skalare werden als `null`, Keywords/Synonyme als Arrays ausgegeben. Öffentliche Theme-/Layer-Felder sind durch `src/test/resources/contract/baseline.json` geschützt. Beschreibungen verwenden weiterhin Beschreibung → Override → Modellbeschreibung; Klartext und mit Jsoup bereinigtes HTML sind getrennt. QML, Remarks und Berechtigungsrohwerte gehören nicht zum DTO.
 
-### Felder
+Die Listen sind nach de-CH-Titel und Kennung sortiert. Die P1-Suche trimmt Leerzeichen, ignoriert Gross-/Kleinschreibung und Akzente und sucht einen Teilstring über Kennung, Titel, Beschreibung, Keywords und Synonyme. `q` hat maximal 200 Zeichen. Kein Treffer: `200 []`; unbekanntes Thema/Layer oder fehlendes QML: **404**; zu langer Suchtext: **400**. Fehler verwenden `application/problem+json` mit `status`, `title`, `detail`, `instance`; keine Stacktraces. CORS ist nicht pauschal freigeschaltet; für QWC bevorzugt same-origin Reverse Proxy.
 
-Themen: `identifier`, `title`, `description`, `descriptionHtml`, `keywords`, `synonyms`, `furtherInfoUrl`, `dataOwner`, `layerCount`.
-
-Kartenebenen: `id`, `sourceId`, `type`, `title`, `description`, `descriptionHtml`, `keywords`, `synonyms`, `qwcLayerName`, `derivedIdentifier`, `transparency`, `themeIdentifier`, `themeTitle`, `organization`, `publicationScope`, `downloadAvailable`.
-
-- `id` und `qwcLayerName` sind die vorhandene fachlich-technische Kennung `ident_part`, z.B. `ch.so.agi.gemeindegrenzen`. `sourceId` ist die separate Quell-ID; beim Harvest ist sie synthetisch.
-- `type` erhält den Quellwert (`datasetview`, `layergroup`, `facadelayer`, `extwms` im gelieferten XTF). `transparency` ist der vorhandene Prozentwert 0–100; fehlende Werte bleiben `null`.
-- `themeIdentifier` kommt aus der tatsächlichen Themenreferenz, nicht aus einem eventuell fehlenden oder abweichenden redundanten Quellfeld.
-- Listen für Schlagwörter/Synonyme sind nie `null`; optionale skalare Felder dürfen `null` sein. Beschreibungen verwenden die bestehende Reihenfolge: explizite Beschreibung, Override, Modellbeschreibung; leere Werte werden übersprungen.
-- `description` ist Text; `descriptionHtml` ist mit jsoup auf erlaubte Formatierung und Links bereinigt. Interne Bemerkungen, Berechtigungs-Rohdaten und QML werden nicht als öffentliche DTO-Felder serialisiert.
-
-Die API liefert Metadaten, keine WMS-Endpunkte und keine Zusicherung der aktuellen QWC-Verfügbarkeit. Das QWC-Plugin löst Kennungen über seine vorhandene Layerverwaltung und den Datenprodukt-Service auf. Die effektive Geodienst-Berechtigung bleibt beim QWC-/GIS-Backend. CORS ist nicht pauschal freigeschaltet; die spätere QWC-Anbindung verwendet einen gezielten Proxy oder eine passende Deployment-Konfiguration.
-
-## PostgreSQL und Profile
-
-Ohne `xtf` oder `mock` verwendet die App weiterhin `JdbcCatalogRepository` mit dem bestehenden Schema `agi_kartenkatalog_v2` und den Tabellen `kartenkatalog_thema`/`kartenkatalog_ebene`. Es gibt keine automatische Migration oder Änderung bestehender Daten.
-
-- `DBURL`: Standard `jdbc:postgresql://localhost:54321/edit`
-- `DBUSR`, `DBPWD`: lokale Standardwerte `ddluser`
-- `HIKARI_MAX_POOL_SIZE`: Standard `2`
-- `mock`: kleine synthetische Beispieldaten für isolierte Tests.
-- `prod`: bestehendes Deployment-Profil; verwendet JDBC. Alle Profile nutzen vorab kompilierte jte-Templates.
-
-`xtf` und `mock` sind alternative Datenquellen und dürfen nicht kombiniert werden. Das XTF wird nicht automatisch in die produktive Datenbank importiert und ist kein vollständiger Ersatz eines SIMI-Exports.
-
-## Build und Tests
+## Verifikation
 
 ```sh
-./gradlew clean check bootJar
-java -jar build/libs/kartenkatalog-0.0.LOCALBUILD.jar --spring.profiles.active=xtf --server.port=8083
+./gradlew clean test quarkusBuild
+./gradlew dependencies --configuration runtimeClasspath
+python3 scripts/p1-process-contract.py
+python3 scripts/p1-process-contract.py --dev
 ```
 
-Aktualisiert auf Spring Boot **4.1.2**, jte **3.2.4** mit Boot-4-Starter, Gradle **9.8.2**, Native Build Tools **1.1.18** und jsoup **1.23.2**. PostgreSQL, H2 und Spring-Abhängigkeiten werden durch das Spring-Boot-BOM abgestimmt. Browser-Bibliotheken sind ebenfalls aktualisiert und auf konkrete Versionen festgelegt.
+Der JVM-Prozesstest startet das gebaute JAR selbst, prüft die P0-HTTP-Verträge, Health und Snapshot-Lebensdauer sowie echte Startabbrüche für ungültige Quellen. `--dev` prüft einen separaten `quarkusDev`-Prozess. Beide räumen ihre Prozessgruppen auf; Rohlogs liegen unter `build/reports/p1/`. Der weiterhin nutzbare `scripts/p0-http-contract.py <Basis-URL>` prüft einen bereits laufenden Prozess. JUnit-Rohreports: `build/test-results/test/`; HTML: `build/reports/tests/test/`.
 
-Die Tests prüfen die vollständige XTF-Datei, JSON-Verträge, Suche und Fehlerfälle, Themenreferenzen und Zählwerte, HTML-Rendering, HTML-Bereinigung sowie JDBC-Record-Mapping und parametrisierte SQL-Abfragen mit H2 im PostgreSQL-Modus. H2 ersetzt keinen Integrationstest gegen das produktive PostgreSQL-Schema.
+Die synthetische `with-qml.xml` dient nur Tests für QML und Sanitization; sie wird nicht in den Harvest gemischt. CI prüft aktuell JVM/Tests; Linux-Native und Container werden in P4 eingeführt. Die alten Boot-Native-/Docker-Publishing-Tasks wurden entfernt. Kein Push/Release als versteckter Buildschritt.
 
-### Native Image
-
-Boot 4 benötigt **GraalVM 25+**. Das Laufzeitprofil muss beim AOT-Build feststehen:
-
-```sh
-JAVA_HOME=/pfad/zu/graalvm25 ./gradlew nativeCompile -PaotProfiles=xtf
-./build/native/nativeCompile/kartenkatalog --spring.profiles.active=xtf --server.port=8083
-```
-
-Native-Builds sind standardmässig auf 4 GiB Heap und zwei Threads begrenzt. `-PnativeMaxHeap=8g -PnativeParallelism=4` erhöht die Grenzen; `-PnativeQuickBuild` verwendet die schnellere Entwicklungsoptimierung `-Ob`.
-
-Ohne `-PaotProfiles` baut die bestehende Pipeline das JDBC-Profil (`default`). Ein so erzeugtes Native Image kann nicht nachträglich auf die XTF-Datenquelle umgeschaltet werden. Die XTF-Datei bleibt extern und wird relativ zum Arbeitsverzeichnis oder über `CATALOG_XTF_LOCATION` gefunden. CI führt die JVM-Tests vor der Native-Kompilation aus. `buildNativeDockerImage` baut lokal; nur `publishNativeDockerImage` veröffentlicht ein Image. Beide Tasks hängen von einer aktuellen Native-Kompilation ab. Das bestehende Dockerfile erwartet ein Linux-amd64-Binary; lokale macOS-Binaries dürfen dafür nicht verwendet werden.
-
-Frühere Arbeitsnotizen sind unter [Legacy-Notizen](docs/legacy-notes.md) erhalten; sie beschreiben teilweise ältere Modelle und gelten nicht als aktuelle Startanleitung.
-
-## Verifikation am 30.10.2026
-
-17 Tests bestehen. Das ausführbare JVM-JAR läuft im XTF-Profil auf Java 25 (die Anwendung und Tests werden mit der Java-21-Toolchain kompiliert/ausgeführt). Zusätzlich wurde ein Native Image mit GraalVM 25 und `-PnativeQuickBuild` gebaut und gestartet: Der vollständige Katalog ist einschliesslich Sortierung und aller Metadaten identisch zur JVM-Antwort; Detailabruf und beide jte-Seiten liefern HTTP 200. Die HTML-Themenansicht und das Nachladen eines Themas wurden ebenfalls im Browser geprüft. Der Docker-Registry-Push und das produktive PostgreSQL wurden nicht ausgeführt.
+Migrationsplan, Status und unabhängige Abnahmen: [docs/quarkus-migration](docs/quarkus-migration/STATUS.md). Frühere Notizen: [docs/legacy-notes.md](docs/legacy-notes.md).

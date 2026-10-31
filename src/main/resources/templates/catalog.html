@@ -1,0 +1,6 @@
+{#include layout}
+{#content}
+<h1>Kartenkatalog</h1><p>Themen und Kartenebenen des Kantons Solothurn.</p>
+<ul>{#for theme in themes}<li><a href="{theme.href}">{theme.title}</a> ({theme.count} Ebenen)</li>{/for}</ul>
+{/content}
+{/include}

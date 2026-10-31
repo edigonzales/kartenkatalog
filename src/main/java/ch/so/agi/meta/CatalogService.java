@@ -5,9 +5,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import org.springframework.stereotype.Service;
+import jakarta.enterprise.context.ApplicationScoped;
 
-@Service
+@ApplicationScoped
 public class CatalogService {
     private final CatalogRepository catalogRepository;
     public CatalogService(CatalogRepository catalogRepository) { this.catalogRepository = catalogRepository; }
@@ -31,6 +31,6 @@ public class CatalogService {
     }
     public Optional<Ebene> findEbeneByIdentPart(String identPart) { return catalogRepository.findEbeneByIdentPart(identPart); }
     public Optional<Thema> findThema(String identifier) {
-        return findAllThemen().stream().filter(t -> t.identifier().equals(identifier)).findFirst();
+        return catalogRepository.findThema(identifier);
     }
 }

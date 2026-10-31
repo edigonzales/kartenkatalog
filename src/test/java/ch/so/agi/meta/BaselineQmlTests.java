@@ -1,35 +1,36 @@
 package ch.so.agi.meta;
 
+import java.util.Map;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
+import io.quarkus.test.junit.*;
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/** Synthetic XTF; never implies QML exists in the harvested catalog. */
-@SpringBootTest(properties = "catalog.xtf-location=classpath:contract/with-qml.xml")
-@AutoConfigureMockMvc
-@ActiveProfiles("xtf")
+@QuarkusTest
+@TestProfile(BaselineQmlTests.QmlProfile.class)
 class BaselineQmlTests {
-    @Autowired MockMvc mvc;
-    @Test void qmlIsAnExactXmlAttachmentNotHtml() throws Exception {
-        mvc.perform(get("/ebene/ch.test.qml/style")).andExpect(status().isOk())
-            .andExpect(content().contentTypeCompatibleWith("application/xml"))
-            .andExpect(header().string("Content-Disposition", allOf(startsWith("attachment;"), containsString("ch.test.qml.qml"))))
-            .andExpect(content().string("<qgis version=\"3.40\"><renderer-v2 type=\"singleSymbol\"/></qgis>"));
+    public static class QmlProfile implements QuarkusTestProfile {
+        @Override public Map<String, String> getConfigOverrides() {
+            return Map.of("catalog.xtf-location", "classpath:contract/with-qml.xml");
+        }
     }
-    @Test void descriptionsAreSanitizedAndQmlStaysOutOfPublicJson() throws Exception {
-        mvc.perform(get("/ebene/ch.test.qml")).andExpect(status().isOk())
-            .andExpect(content().string(containsString("<strong>formatiert</strong>")))
-            .andExpect(content().string(not(containsString("alert(1)"))))
-            .andExpect(content().string(containsString("ch.test.qml/style")));
-        mvc.perform(get("/api/v1/ebenen/ch.test.qml")).andExpect(status().isOk())
-            .andExpect(jsonPath("$.description").value("Sicher formatiert"))
-            .andExpect(jsonPath("$.descriptionHtml").value("<p>Sicher <strong>formatiert</strong></p>"))
-            .andExpect(jsonPath("$.style_server").doesNotExist());
+    @Test void qmlIsAnExactXmlAttachmentNotHtml() {
+        given().get("/ebene/ch.test.qml/style").then().statusCode(200).contentType("application/xml")
+            .header("Content-Disposition", allOf(startsWith("attachment;"), containsString("ch.test.qml.qml")))
+            .body(equalTo("<qgis version=\"3.40\"><renderer-v2 type=\"singleSymbol\"/></qgis>"));
+    }
+    @Test void descriptionsAreSanitizedAndQmlStaysOutOfPublicJson() {
+        given().get("/ebene/ch.test.qml").then().statusCode(200)
+            .body(containsString("<strong>formatiert</strong>"), not(containsString("alert(1)")), containsString("ch.test.qml/style"));
+        given().get("/api/v1/ebenen/ch.test.qml").then().statusCode(200)
+            .body("description", equalTo("Sicher formatiert"))
+            .body("descriptionHtml", equalTo("<p>Sicher <strong>formatiert</strong></p>"))
+            .body("style_server", nullValue());
+    }
+    @Test void fullPageAndHtmxFragmentHaveDifferentDocumentsAndSafeAbsoluteLinks() {
+        given().get("/themen/contract/ebenen").then().statusCode(200).body(containsString("<!doctype html>"), containsString("href=\"/ebene/ch.test.qml\""));
+        given().header("HX-Request", "true").get("/themen/contract/ebenen").then().statusCode(200)
+            .body(not(containsString("<html")), containsString("href=\"/ebene/ch.test.qml\""));
+        given().get("/q/health/ready").then().statusCode(200).body("status", equalTo("UP"));
     }
 }

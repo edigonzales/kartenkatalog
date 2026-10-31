@@ -1,65 +1,27 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '4.1.2'
-    id 'io.spring.dependency-management' version '1.1.7'
-    id 'org.graalvm.buildtools.native' version '1.1.18'
-    id 'gg.jte.gradle' version '3.2.4'
+    id 'io.quarkus' version '3.40.1.1'
 }
 
 apply from: "$rootDir/gradle/versioning.gradle"
-apply from: "$rootDir/gradle/docker.gradle"
-
 group = 'ch.so.agi'
 
 java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
+    toolchain { languageVersion = JavaLanguageVersion.of(21) }
 }
-
-repositories {
-    mavenCentral()
-}
-
+repositories { mavenCentral() }
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
-    implementation 'gg.jte:jte:3.2.4'
-    implementation 'gg.jte:jte-spring-boot-starter-4:3.2.4'
+    implementation enforcedPlatform('io.quarkus.platform:quarkus-bom:3.40.1.1')
+    implementation 'io.quarkus:quarkus-rest-jackson'
+    implementation 'io.quarkus:quarkus-rest-qute'
+    implementation 'io.quarkus:quarkus-smallrye-health'
     implementation 'org.jsoup:jsoup:1.23.2'
-    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
-    testImplementation 'com.h2database:h2'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    runtimeOnly 'org.postgresql:postgresql'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.quarkus:quarkus-junit5'
+    testImplementation 'io.rest-assured:rest-assured'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
-
-jte {
-    generate() 
-    binaryStaticContent = true
-}
-
-tasks.named('test') {
+tasks.withType(JavaCompile).configureEach { options.compilerArgs += ['-parameters'] }
+tasks.withType(Test).configureEach {
     useJUnitPlatform()
-}
-
-import org.springframework.boot.gradle.tasks.aot.ProcessAot
-tasks.withType(ProcessAot) {
-    args "--spring.profiles.active=${project.findProperty('aotProfiles') ?: 'default'}"
-}
-
-graalvmNative {
-    toolchainDetection = false
-    binaries {
-        main {
-            buildArgs.add('-march=compatibility')
-            buildArgs.add("-J-Xmx${providers.gradleProperty('nativeMaxHeap').getOrElse('4g')}")
-            buildArgs.add("--parallelism=${providers.gradleProperty('nativeParallelism').getOrElse('2')}")
-            if (project.hasProperty('nativeQuickBuild')) buildArgs.add('-Ob')
-
-            verbose = true
-        }
-    }
+    systemProperty 'java.util.logging.manager', 'org.jboss.logmanager.LogManager'
 }

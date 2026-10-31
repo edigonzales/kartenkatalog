@@ -1,0 +1,4 @@
+body { font: 1rem/1.6 system-ui, sans-serif; color: #222; margin: 0; }
+header, main, footer { padding: 1rem; max-width: 72rem; margin: auto; }
+header { border-bottom: 3px solid #c00; } a { color: #a30000; overflow-wrap: anywhere; }
+li { margin-block: 1rem; } :focus-visible { outline: 3px solid #222; outline-offset: 3px; }

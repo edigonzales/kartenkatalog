@@ -1,0 +1,5 @@
+{@java.util.List<ch.so.agi.meta.web.CatalogPages$LayerVm> layers}
+<ul>{#for layer in layers}
+<li><h2><a href="{layer.href}">{layer.title}</a></h2>
+<div>{layer.description}</div><a href="{layer.mapUrl}" target="_blank" rel="noopener noreferrer">Karte öffnen</a></li>
+{/for}</ul>

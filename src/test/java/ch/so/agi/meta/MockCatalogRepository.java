@@ -4,11 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Repository;
 
-@Repository
-@Profile("mock")
 public class MockCatalogRepository implements CatalogRepository {
     private final List<Thema> themen;
     private final List<Ebene> ebenen;
