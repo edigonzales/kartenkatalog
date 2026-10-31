@@ -1,6 +1,6 @@
 # P3a – Qute-/SODATA-Oberfläche und sichere Metadaten
 
-31.10.2026 · Agent A · AC3A-01 bis AC3A-04 · **AWAITING_REVIEW**.
+31.10.2026 · Agent A · AC3A-01 bis AC3A-04 · **PASS**, unabhängig für `9dfde0ffb2ad6f94bb71bdd278beb174eb3f9ee6` (siehe [Prüfbericht](../reviews/P3a-review.md)).
 BASE_SHA: `047da2ce91a29bfabf0ba7f6138154ca3bd959d9` (sauberer `main`). Voriges unabhängiges PASS: P2 `a9dde956b4937916cec862c6c672cf26dd30636f`, Bericht `reviews/P2-review.md`. Keine AGENTS.md im Kartenkatalog vorhanden. P3b wird nicht begonnen.
 
 ## Umsetzung und öffentliche Verträge
@@ -49,3 +49,10 @@ MIT-Herkunftshinweise für SODATA-Gestaltung und Webcomponents sowie HTMX-Lizenz
 **AC3A-01:** typsichere Qute-Verträge mit echter Build-Canary, gemeinsames lokales Layout und Herkunft belegt. **AC3A-02:** native Themenliste, echte Unterzeilen/Counts, stabile Deep Links und No-JS-Fallback über HTTP/Browser geprüft. **AC3A-03:** bedingte Metadaten, QML/Map-/externe Links und XSS-Proben erfolgreich. **AC3A-04:** echter Chromium-Lauf und visueller Referenzvergleich vorhanden; unabhängige neue Accessibility-/XSS-/Deep-Link-Probe bleibt OpenCode-Aufgabe.
 
 Keine offene Implementierungs-Pflichtprüfung. Firefox-/Filter-/History-/Mobile-Sheet-Gesamtgate bleibt P3b, Native/Linux P4; keine solche Freigabe behauptet. Handoff nach lokalem Commit mit SHA, sauberem separatem Worktree, `OPENCODE_REVIEW_PROMPT.md`, OpenCode `deepseek/deepseek-flash` direkt via DeepSeek API. Kein eigenes PASS; **vor P3b stoppen**.
+
+
+## Unabhängige Abnahme
+
+OpenCode CLI 2.1.4, separate Sitzung `ses_e6c7c0516ffes4UOI8kmQ6Cszb`, hat den sauberen detached Kandidaten `9dfde0ffb2ad6f94bb71bdd278beb174eb3f9ee6` über `deepseek/deepseek-flash` direkt via DeepSeek API unabhängig mit **PASS** abgenommen. Der unveränderte Bericht ist unter `../reviews/P3a-review.md` archiviert; sämtliche Rohbelege liegen ausserhalb des Produktcommits in `/Users/stefan/sources/kartenkatalog-P3a-review-evidence/9dfde0ffb2ad6f94bb71bdd278beb174eb3f9ee6/`.
+
+Der Reviewer führte eigene neue XTF-/HTTP-/Chromium-Gegenproben (59/59 und 35/35), eine eigene Qute-Build-Canary, reale Bildsichtprüfung sowie frische JVM-/Dev-/Index- und Dependency-Prüfungen aus. Finaler unabhängiger Clean-Lauf: 59 Unit/HTTP und 3 Chromium, jeweils keine Failures/Errors/Skips. Der erste Browserlauf hatte einen Navigationstimeout; sechs folgende Ausführungen desselben Tests einschliesslich zweier vollständiger Clean-Läufe waren erfolgreich. Der Reviewer klassifizierte dies als nicht reproduzierbare Beobachtung ohne Abnahmewirkung und dokumentiert weitere kleinere Hinweise vollständig. Keine offene Muss-Abweichung; keine Produktänderung nach PASS. Die obigen `build/`-Pfade bezeichnen die eigene lokale Prüfung und werden durch `clean` ersetzt; dauerhaft nachvollziehbare unabhängige Rohbelege liegen im externen Evidenzverzeichnis. **P3b nicht begonnen.**
