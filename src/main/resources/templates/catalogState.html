@@ -1,0 +1,32 @@
+{@ch.so.agi.meta.web.CatalogViewModels$CatalogPage page}
+<div id="catalog-state">
+<form id="catalog-form" method="get" action="/" class="catalog-search" role="search" hx-get="/" hx-target="#catalog-state" hx-swap="outerHTML show:none" hx-push-url="true" hx-sync="#catalog-state:replace">
+<label class="sr-only" for="catalog-search">Kartenkatalog durchsuchen</label>
+<div class="search-field"><span aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="10" cy="10" r="6.5"/><path d="m15 15 6 6"/></svg></span><input id="catalog-search" type="search" name="q" value="{page.q}" maxlength="200" placeholder="Suche nach Karten, Themen, Schlagwörtern …">{#if page.q}<a class="search-clear" href="{page.clearSearchUrl}" aria-label="Suchtext löschen" hx-get="{page.clearSearchUrl}" hx-target="#catalog-state" hx-swap="outerHTML show:none" hx-push-url="true" hx-sync="#catalog-state:replace">×</a>{/if}<button type="submit">Suchen</button></div>
+
+<div class="filter-toolbar"><button class="mobile-filter-trigger" type="button" aria-controls="filters-dialog" aria-expanded="false">Filter öffnen</button>
+<dialog id="filters-dialog" open aria-labelledby="filters-title">
+<div class="sheet-heading"><h2 id="filters-title">Karten filtern</h2><button type="button" class="sheet-close" aria-label="Filter schliessen">×</button></div>
+<div class="filter-band">
+{#for group in page.filters}
+<details class="filter-group" data-kind="{group.kind}"><summary aria-controls="panel-{group.kind}">{group.label}<span class="filter-selection">{#if group.selectedCount > 0}{group.selectedCount} ausgewählt{#else}Alle{/if}</span><span aria-hidden="true">⌄</span></summary>
+<div class="filter-popover" id="panel-{group.kind}"><fieldset><legend class="sr-only">{group.label}</legend>
+<div class="filter-options">{#for option in group.options}<label for="{option.id}"><input id="{option.id}" type="checkbox" name="{group.kind}" value="{option.value}" {#if option.selected}checked{/if}><span>{option.label}</span><span class="facet-count" aria-label="{option.count} Treffer">{option.count}</span></label>{/for}</div>
+<button type="submit" class="apply-filter">Auswahl anwenden</button></fieldset></div></details>
+{/for}
+<a class="reset-link" href="/" hx-get="/" hx-target="#catalog-state" hx-swap="outerHTML show:none" hx-push-url="true" hx-sync="#catalog-state:replace">Zurücksetzen</a>
+</div><div class="sheet-actions"><button type="submit">Filter anwenden</button></div></dialog></div>
+<div class="sort-control"><label for="catalog-sort">Ebenen sortieren</label><select id="catalog-sort" name="sort">{#for option in page.sorts}<option value="{option.value}" {#if option.selected}selected{/if}>{option.label}</option>{/for}</select><button type="submit">Sortieren</button></div>
+</form>
+{#if !page.chips.isEmpty}<nav class="filter-chips" aria-label="Aktive Auswahl">{#for chip in page.chips}<a class="filter-chip" href="{chip.href}" aria-label="{chip.label} entfernen" hx-get="{chip.href}" hx-target="#catalog-state" hx-swap="outerHTML show:none" hx-push-url="true" hx-sync="#catalog-state:replace">{chip.label}<span aria-hidden="true">×</span></a>{/for}</nav>{/if}
+<p class="catalog-error" role="alert" hidden></p>
+<section aria-labelledby="results-heading" class="catalog-results">
+<div class="results-heading"><h2 id="results-heading" tabindex="-1">{page.total} {#if page.total == 1}Kartenebene{#else}Kartenebenen{/if} in {page.themes.size} {#if page.themes.size == 1}Thema{#else}Themen{/if}</h2><span class="list-label">Themen A–Z · Ebenen nach Auswahl sortiert</span></div>
+{#if page.themes.isEmpty}<div class="empty-state"><h3>Keine Kartenebenen gefunden</h3><p>Ändern Sie den Suchbegriff oder setzen Sie die Auswahl zurück.</p><a href="/" hx-get="/" hx-target="#catalog-state" hx-swap="outerHTML show:none" hx-push-url="true" hx-sync="#catalog-state:replace">Alle Themen anzeigen</a></div>
+{#else}<div class="list-head" aria-hidden="true"><span>Thema / Kartenebene</span><span>Umfang</span></div>
+<div class="theme-list">{#for theme in page.themes}
+<details data-theme="{theme.identifier}" class="theme-row" hx-get="{theme.href}" hx-trigger="toggle once" hx-target="find .theme-layers" hx-swap="innerHTML">
+<summary aria-controls="{theme.panelId}"><span class="expand-icon" aria-hidden="true"></span><span class="theme-summary"><span class="theme-title">{theme.title}</span>{#if theme.description}<span class="theme-description">{theme.description}</span>{/if}</span><span class="theme-count">{theme.count} {#if theme.count == 1}Ebene{#else}Ebenen{/if}</span></summary>
+<div id="{theme.panelId}" class="theme-layers"><p class="fallback-link"><a href="{theme.href}">Kartenebenen des Themas öffnen</a></p></div>
+</details>{/for}</div>{/if}</section>
+</div>

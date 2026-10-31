@@ -1,4 +1,4 @@
-# P3a: konkrete SODATA-Referenz
+# P3a/P3b: konkrete SODATA-Referenz
 
 Quelle: `sogis/datenportal-sodata`, Commit
 `9db0920e58613ece3bccf5e024199c016705d5de` (MIT, ©2026 edigonzales).
@@ -28,8 +28,7 @@ Gezielt adaptierte Quellen: `pages/catalog.jte`, `layouts/main.jte`,
 Verwendet werden die gemeinsame Farb-/Typografiesprache, Kopfbereich, Breadcrumb,
 Suchband, Ergebniszahl, ruhige Zeilen und Plus/Minus-Expansion. Kartenkatalog-
 Abweichungen: Themen mit Kartenebenen statt Datenreihen mit Editionen, keine
-Datums-/Dateiformatspalten, Karten-/Metadatenlink statt Downloadpillen. P3a nutzt
-normale GET-Selects; Desktop-Popover/Mobile-Sheet/Filter-Chips folgen erst P3b.
+Datums-/Dateiformatspalten, Karten-/Metadatenlink statt Downloadpillen. P3b adaptiert Desktop-Popover, Checkbox-/Count-Zeilen, aktive Chips und mobiles Filtersheet. Statt zweier Formularbäume und zusätzlicher Filterendpunkte nutzt der Kartenkatalog eine GET-Form mit nativen Details und einem mobilen Dialog. Keine Datumsfilter; Sortierung betrifft die Ebenen innerhalb der A–Z-Themenliste.
 
 Lokale Assets/Herkunft:
 
@@ -45,3 +44,7 @@ Lokale Assets/Herkunft:
 - `catalog.css`: eigene Kartenkatalog-Stile unter Übernahme der SODATA-
   Gestaltungskonzepte; Quelle und MIT-Hinweis in CSS, vollständige Lizenz unter
   `vendor/SODATA-LICENSE`.
+
+
+P3b-Referenzaufnahmen bei derselben echten Anwendung/Revision (31.10.2026):
+`./gradlew playwrightTest -PreferenceUrl=http://127.0.0.1:18090` öffnet zusätzlich den ersten Desktop-Filter und das mobile Filtersheet, in Chromium **und Firefox**. Aufnahmen: `build/reports/p3a/screenshots/{chromium,firefox}-sodata-{1440,390}.png` sowie `…-sodata-filter-{1440,390}.png`. Die exemplarischen Chromium-Filterbilder werden hier als `sodata-filter-desktop.png` und `sodata-filter-mobile.png` gepinnt. Neue Vergleichsbilder liegen unter `build/reports/p3b/screenshots/`; die tatsächliche Sichtprüfung und fachlichen Unterschiede dokumentiert `../implementation/P3b.md`. Keine gebauten Referenzdaten oder zusätzlichen Referenzabhängigkeiten in der Kartenkatalog-Runtime.

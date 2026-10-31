@@ -23,10 +23,25 @@ public class CatalogPageVmFactory {
             .map(t->new ThemeRow(t.identifier(),t.title(),summary(t.adescription()),counts.getOrDefault(t.t_id(),0),
                 CatalogUrlFactory.themeQuery(t.identifier(),query),"theme-"+CatalogUrlFactory.encoded(t.identifier()))).toList();
         var facets=search.facets(query);
-        return new CatalogPage(chrome(null,null),rows,result.total(),query.q(),
-            facets.thema().stream().map(f->new Option(f.value(),f.label(),f.selected())).toList(),
-            facets.typ().stream().map(f->new Option(f.value(),type(f.label()),f.selected())).toList(),
-            facets.organisation().stream().map(f->new Option(f.value(),f.label(),f.selected())).toList());
+        var groups=new ArrayList<FilterGroup>();
+        groups.add(group("thema","Thema",facets.thema()));
+        groups.add(group("typ","Produkttyp",facets.typ()));
+        if(!facets.organisation().isEmpty())groups.add(group("organisation","Organisation",facets.organisation()));
+        var chips=new ArrayList<Chip>();
+        if(!query.q().isEmpty())chips.add(new Chip("Suche: "+query.q(),CatalogUrlFactory.withoutFilter(query,"q","")));
+        for(var group:groups)for(var option:group.options())if(option.selected())
+            chips.add(new Chip(group.label()+": "+option.label(),CatalogUrlFactory.withoutFilter(query,group.kind(),option.value())));
+        var sorts=new ArrayList<Option>();
+        sorts.add(new Option("title-asc","Titel A–Z",0,query.sort().equals("title-asc"),"sort-asc"));
+        sorts.add(new Option("title-desc","Titel Z–A",0,query.sort().equals("title-desc"),"sort-desc"));
+        if(!query.q().isBlank())sorts.add(new Option("relevance","Relevanz",0,query.sort().equals("relevance"),"sort-relevance"));
+        return new CatalogPage(chrome(null,null),rows,result.total(),query.q(),List.copyOf(groups),List.copyOf(chips),
+            CatalogUrlFactory.withoutFilter(query,"q",""),List.copyOf(sorts));
+    }
+    private static FilterGroup group(String kind,String label,List<CatalogFacetService.Facet> facets) {
+        var options=new ArrayList<Option>();
+        for(var f:facets)options.add(new Option(f.value(),kind.equals("typ")?type(f.label()):f.label(),f.count(),f.selected(),"filter-"+kind+"-"+options.size()));
+        return new FilterGroup(kind,label,List.copyOf(options),(int)facets.stream().filter(CatalogFacetService.Facet::selected).count());
     }
     public ThemePage theme(String identifier, CatalogQuery query) {
         var t=catalog.findThema(identifier).orElseThrow(()->new CatalogProblem(404,"Thema nicht gefunden"));

@@ -18,7 +18,7 @@ jobs:
           java-version: '21'
       - name: Test and package Quarkus JVM
         run: ./gradlew clean test quarkusBuild
-      - name: Chromium desktop and no-JS contracts
+      - name: Chromium and Firefox desktop/mobile UI gate
         run: ./gradlew playwrightTest -PplaywrightWithDeps=true
       - name: Real JVM HTTP and startup contracts
         run: python3 scripts/p1-process-contract.py

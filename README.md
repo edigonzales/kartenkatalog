@@ -2,7 +2,7 @@
 
 Quarkus **3.40.1.1**, Java **21**, Gradle Wrapper **9.8.2**. Der Katalog wird beim Start aus einer lokalen INTERLIS-2.4-XTF-Datei gelesen, validiert und als unveränderlicher In-Memory-Snapshot bereitgestellt. Keine Datenbank, kein Mock-Fallback, kein Reload-Endpunkt.
 
-Aktueller Migrationsabschnitt **P3a**: Quarkus REST/Jackson, typsichere Qute-Seiten im SODATA-Stil, SmallRye Health und **Apache Lucene 10.6.0**. Der Index wird bei jedem Start aus XTF im Java-Heap (`ByteBuffersDirectory`, `GermanAnalyzer`) neu aufgebaut. Kein persistierter Suchindex oder Index-Volume. Die Startseite bietet aufklappbare Themen mit lazy geladenen Kartenebenen und No-JS-Themenlinks; Detailseiten zeigen nur vorhandene Metadaten. Suche/Filter sind vorerst normale GET-Formulare. Die erweiterte Filter-/History-/Mobile-Sheet-UX folgt in P3b, Native-/Linux-Abnahme in P4. Der aktuelle Stand behauptet keine Native-Freigabe.
+Aktueller Migrationsabschnitt **P3b**: Quarkus REST/Jackson, typsichere Qute-Seiten im SODATA-Stil, SmallRye Health und **Apache Lucene 10.6.0**. Der Index wird bei jedem Start aus XTF im Java-Heap (`ByteBuffersDirectory`, `GermanAnalyzer`) neu aufgebaut. Kein persistierter Suchindex oder Index-Volume. Die Startseite bietet aufklappbare Themen mit lazy geladenen Kartenebenen und No-JS-Themenlinks; Detailseiten zeigen nur vorhandene Metadaten. Suche und Mehrfachfilter arbeiten als normale GET-Form und mit HTMX-Fragmenten, URL-/Back-/Reload-Zustand, Chips, Desktop-Popovern und mobilem Filtersheet. Native-/Linux-Abnahme folgt in P4. Der aktuelle Stand behauptet keine Native-Freigabe.
 
 ## Start und Build
 
@@ -75,22 +75,16 @@ Die synthetische `with-qml.xml` dient nur Tests für QML und Sanitization; sie w
 
 Migrationsplan, Status und unabhängige Abnahmen: [docs/quarkus-migration](docs/quarkus-migration/STATUS.md). Frühere Notizen: [docs/legacy-notes.md](docs/legacy-notes.md).
 
-## Oberfläche und Browserprüfung (P3a)
+## Oberfläche und Browserprüfung (P3a + P3b)
 
-`/` und `/thema` liefern dieselbe Startseite. Native `details`-Zeilen laden ihre
-Ebenen einmalig als HTMX-Fragment; ohne JavaScript bleibt der Themenlink nutzbar.
-Themen und Produkttypen lassen sich über die normale GET-Form suchen/filtern;
-Organisation erscheint nur bei echten Quellwerten. Keine Datums-/Dummyfilter.
-Metadatenlinks werden vor Ausgabe auf absolute HTTP(S)-URLs ohne Zugangsdaten
-begrenzt; Beschreibungs-HTML wird vor Qute-RawString mit Jsoup saniert. QML und
-optionale Felder werden nur bei tatsächlichem Quellinhalt angezeigt.
+`/` und `/thema` liefern dieselbe Startseite. Native `details`-Themenzeilen laden ihre Ebenen einmalig als HTMX-Fragment; ohne JavaScript bleibt der normale Themenlink nutzbar. Die Themenübersicht bleibt A–Z; die Ebenen folgen der ausgewählten Titel-/Relevanzsortierung.
 
-`./gradlew playwrightTest` installiert bei Bedarf den gepinnten Chromium-Browser
-für Playwright **1.60.0** und prüft einen selbst gestarteten JVM-Prozess, lokale
-Assets, Tastatur-Aufklappen, No-JS-Navigation, GET-Suche, Details und schmales Layout.
-Browserberichte: `build/reports/tests/playwrightTest/`; Screenshots und JVM-Log:
-`build/reports/p3a/`. Der normale `test`-Task prüft separat alle Unit-/HTTP-Tests;
-CI ruft **beide** Pflichttasks auf und installiert die Linux-Systembibliotheken mit
-`./gradlew playwrightTest -PplaywrightWithDeps=true`.
-Referenzbild, Herkunft und Wiederholung der SODATA-Aufnahme:
-[docs/quarkus-migration/reference](docs/quarkus-migration/reference/README.md).
+Die GET-Form bietet Mehrfachwahl für Thema, Produkttyp und bei echten Quellwerten Organisation. Facetzahlen berücksichtigen Suchtext und jeweils andere Kategorien. Desktop-Popover öffnen per Klick/Enter, schliessen mit Escape/Aussenklick; mobil öffnet derselbe Formularinhalt als natives modales Filtersheet mit Fokusbegrenzung und Rückkehr zum Auslöser. Ohne JS bleiben native Checkboxgruppen und Submit nutzbar. Chips entfernen genau einen Wert und erhalten andere Filter; Suchtext löschen erhält die Filter, Zurücksetzen entfernt die gesamte Auswahl. Keine Datums-/Dummyfilter.
+
+HTMX ersetzt bei Suche/Filter/Sortierung nur `#catalog-state`, aktualisiert die URL und lädt weiterhin passende geöffnete Themen neu. `Vary: HX-Request, HX-History-Restore-Request` unterscheidet das Fragment von der Vollseite. Der HTMX-DOM-Verlaufscache ist deaktiviert: Browser-Back lädt den gültigen Zustand aus der jeweiligen URL, statt noch nicht angewendete Formfelder aus einem Snapshot wiederherzustellen. Reload und kopierte URLs bleiben serverseitig vollständig nutzbar. Bei HTTP-/Netzfehlern bleiben bisherige Ergebnisse und ein sichtbarer Fehlerhinweis erhalten.
+
+Metadatenlinks sind auf absolute HTTP(S)-URLs ohne Zugangsdaten begrenzt; Beschreibungs-HTML wird vor Qute-RawString mit Jsoup saniert. QML und optionale Felder werden nur mit echtem Quellinhalt angezeigt.
+
+`./gradlew playwrightTest` installiert bei Bedarf die gepinnten Chromium- und Firefox-Versionen für Playwright **1.60.0** (Task `installPlaywrightBrowsers`). Beide Engines prüfen reale, selbst gestartete JVM-Prozesse: Harvest sowie getrennte Such-/Organisationsfixture, 1440×900 und 390×844, lokale Assets, Tastatur/Skip-Link, Aufklappen, No-JS, Mehrfachfilter/Facets/JSON-Parität, Back/Reload/Deep-Link, Reset/Chips, Popover/Sheet/Fokus/Overflow, Fehler und sichere HTML-Ausgabe. Fehlende Browser verursachen einen Fehler, keinen Skip.
+
+Browserberichte: `build/reports/tests/playwrightTest/`; Screenshots und JVM-Logs unter `build/reports/p3a/` (kumulative Basis) und `build/reports/p3b/` (Filtermatrix). Der normale `test`-Task prüft alle Unit-/HTTP-Tests; CI ruft **beide** Pflichttasks auf und installiert Linux-Systembibliotheken mit `-PplaywrightWithDeps=true`. `clean` ersetzt diese Rohreports. Herkunft und Reproduktion der tatsächlichen Referenzbilder: [docs/quarkus-migration/reference](docs/quarkus-migration/reference/README.md).

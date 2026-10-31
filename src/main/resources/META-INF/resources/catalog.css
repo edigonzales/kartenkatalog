@@ -49,3 +49,48 @@ footer { border-top:1px solid var(--line); background:#fafbfc; } .footer-inner {
   .theme-title { font-size:17px; } .theme-layers { padding:0 12px 0 44px; } .layer-row { grid-template-columns:minmax(0,1fr); gap:12px; } .layer-actions { justify-content:start; }
   .detail-heading { align-items:start; flex-direction:column; gap:24px; margin-bottom:36px; } .detail-grid { grid-template-columns:minmax(0,1fr); gap:12px; } .primary-action { white-space:normal; }
 }
+/* P3b: SODATA filter/popover/sheet concepts adapted to one accessible native GET form. */
+.catalog-search { margin-bottom:28px; }
+.search-clear { padding:10px; font-size:26px; text-decoration:none; }
+.filter-toolbar { margin-top:24px; }
+#filters-dialog { position:static; inset:auto; display:block; width:100%; max-width:none; margin:0; padding:0; border:0; overflow:visible; color:inherit; background:white; }
+.filter-band { margin:0; align-items:start; gap:12px; }
+.filter-group { position:relative; flex:1; min-width:200px; }
+.filter-group > summary { list-style:none; display:flex; align-items:center; gap:12px; min-height:56px; padding:8px 14px; border:1px solid var(--line); border-radius:4px; cursor:pointer; font-weight:700; font-size:14px; }
+.filter-group > summary::-webkit-details-marker { display:none; }
+.filter-selection { color:var(--muted); font-weight:400; margin-left:auto; }
+.filter-group[open] > summary { border-color:var(--ink); }
+.filter-popover { position:absolute; left:0; top:calc(100% + 8px); z-index:5; width:360px; max-width:calc(100vw - 48px); padding:16px; background:white; border:1px solid var(--line); border-radius:4px; box-shadow:0 8px 24px #20354226; }
+.filter-group:last-of-type .filter-popover { left:auto; right:0; }
+.filter-popover fieldset { min-width:0; margin:0; padding:0; border:0; }
+.filter-options { max-height:280px; overflow-y:auto; overscroll-behavior:contain; }
+.filter-options label { display:flex; flex:none; align-items:start; min-width:0; gap:10px; padding:10px 4px; font-weight:400; font-size:15px; cursor:pointer; }
+.filter-options input { accent-color:var(--accent); width:18px; height:18px; flex:none; margin-top:2px; }
+.filter-options label > span:not(.facet-count) { overflow-wrap:anywhere; }
+.facet-count { margin-left:auto; color:var(--muted); }
+.apply-filter,.sheet-actions button { margin-top:12px; width:100%; padding:10px 16px; border:0; border-radius:4px; color:white; background:var(--ink); cursor:pointer; }
+.mobile-filter-trigger,.sheet-heading,.sheet-actions { display:none; }
+.sort-control { display:flex; align-items:center; flex-wrap:wrap; gap:10px; margin-top:24px; font-size:14px; }
+.sort-control select { padding:8px; border:1px solid var(--line); color:inherit; background:white; }
+.sort-control button { padding:8px 12px; border:1px solid var(--line); background:white; color:inherit; cursor:pointer; }
+.filter-chips { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 28px; }
+.filter-chip { display:flex; align-items:center; gap:12px; padding:6px 12px; border-radius:20px; background:#eef2f5; text-decoration:none; font-size:14px; max-width:100%; overflow-wrap:anywhere; }
+.filter-chip span { font-size:20px; }
+.catalog-error { padding:16px; color:#a30000; background:var(--surface); margin-bottom:24px; }
+.theme-title,.layer-summary h3 { overflow-wrap:anywhere; }
+@media(max-width:700px) {
+  .catalog-js .mobile-filter-trigger { display:block; padding:12px 20px; border:1px solid var(--ink); border-radius:4px; background:white; color:inherit; cursor:pointer; }
+  .catalog-js #filters-dialog:not([open]) { display:none; }
+  .catalog-js #filters-dialog:modal { position:fixed; inset:auto 0 0; width:100%; max-width:100%; max-height:90dvh; padding:20px 16px; margin:0; overflow-y:auto; border-radius:12px 12px 0 0; }
+  #filters-dialog::backdrop { background:#132a3a80; }
+  .catalog-js .sheet-heading { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:20px; }
+  .sheet-close { background:white; border:1px solid var(--line); font-size:24px; padding:4px 14px; color:inherit; }
+  .catalog-js .sheet-actions { display:block; position:sticky; bottom:-20px; background:white; padding:12px 0; }
+  .filter-band { display:block; }
+  .filter-group { margin-bottom:12px; }
+  .filter-popover,.filter-group:last-of-type .filter-popover { position:static; width:100%; max-width:none; box-shadow:none; border-top:0; }
+  .filter-options { max-height:220px; }
+  .catalog-js .apply-filter { display:none; }
+  .filter-selection { white-space:nowrap; }
+  .filter-chips { margin-bottom:24px; }
+}

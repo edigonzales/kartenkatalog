@@ -26,12 +26,28 @@ public final class CatalogUrlFactory {
             return uri.toASCIIString();
         } catch (IllegalArgumentException error) { return null; }
     }
-    public static String themeQuery(String identifier, CatalogQuery query) {
+    public static String listUrl(CatalogQuery query) { return "/" + queryString(query, true); }
+    public static String withoutFilter(CatalogQuery query, String kind, String value) {
+        var themes = new HashSet<>(query.thema()); var types = new HashSet<>(query.typ()); var orgs = new HashSet<>(query.organisation());
+        switch (kind) {
+            case "thema" -> themes.remove(value);
+            case "typ" -> types.remove(value);
+            case "organisation" -> orgs.remove(value);
+            case "q" -> { }
+            default -> throw new IllegalArgumentException("Unbekannte Filtergruppe");
+        }
+        String q = kind.equals("q") ? "" : query.q();
+        String sort = q.isBlank() && query.sort().equals("relevance") ? "title-asc" : query.sort();
+        return listUrl(new CatalogQuery(q, themes, types, orgs, sort));
+    }
+    public static String themeQuery(String identifier, CatalogQuery query) { return theme(identifier) + queryString(query, false); }
+    private static String queryString(CatalogQuery query, boolean includeThemes) {
         var parameters = new ArrayList<String>();
         if (!query.q().isEmpty()) parameters.add("q=" + encoded(query.q()));
+        if (includeThemes) query.thema().stream().sorted().forEach(v -> parameters.add("thema=" + encoded(v)));
         query.typ().stream().sorted().forEach(v -> parameters.add("typ=" + encoded(v)));
         query.organisation().stream().sorted().forEach(v -> parameters.add("organisation=" + encoded(v)));
         if (!query.sort().equals("title-asc")) parameters.add("sort=" + encoded(query.sort()));
-        return theme(identifier) + (parameters.isEmpty() ? "" : "?" + String.join("&", parameters));
+        return parameters.isEmpty() ? "" : "?" + String.join("&", parameters);
     }
 }

@@ -42,7 +42,7 @@ class CatalogWebTests {
     @Test void listIsNativeDisclosureWithFallbackAndFragmentsVaryByRequestHeader() {
         var root=Jsoup.parse(given().get("/").then().statusCode(200).extract().asString());
         assertEquals(2,root.select("details.theme-row").size());
-        assertEquals(2,root.select("summary[aria-controls]").size());
+        assertEquals(2,root.select(".theme-row summary[aria-controls]").size());
         assertEquals(2,root.select(".fallback-link a[href^='/themen/']").size());
         assertEquals(0,root.select(".layer-row").size());
         assertEquals(1,root.select(".skip-link[href='#main-content']").size());

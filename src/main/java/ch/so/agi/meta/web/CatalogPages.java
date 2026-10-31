@@ -11,7 +11,7 @@ import java.util.*;
 import static ch.so.agi.meta.web.CatalogViewModels.*;
 
 @Path("/")
-@Produces(MediaType.TEXT_HTML)
+@Produces("text/html;charset=UTF-8")
 public class CatalogPages {
     private final CatalogService catalog;
     private final CatalogPageVmFactory views;
@@ -19,25 +19,31 @@ public class CatalogPages {
     @CheckedTemplate(basePath="")
     public static class Templates {
         public static native TemplateInstance catalog(CatalogPage page);
+        public static native TemplateInstance catalogState(CatalogPage page);
         public static native TemplateInstance theme(ThemePage page);
         public static native TemplateInstance layers(List<LayerRow> layers);
         public static native TemplateInstance detail(Detail product);
     }
-    @GET public TemplateInstance home(@QueryParam("q") @DefaultValue("") String q,
-        @QueryParam("thema") List<String> themes,@QueryParam("typ") List<String> types,@QueryParam("organisation") List<String> orgs,@QueryParam("sort") String sort) {
-        return Templates.catalog(views.catalog(query(q,themes,types,orgs,sort)));
+    @GET public Response home(@HeaderParam("HX-Request") String hx,@HeaderParam("HX-History-Restore-Request") String history,
+        @QueryParam("q") @DefaultValue("") String q,@QueryParam("thema") List<String> themes,
+        @QueryParam("typ") List<String> types,@QueryParam("organisation") List<String> orgs,@QueryParam("sort") String sort) {
+        var page=views.catalog(query(q,themes,types,orgs,sort));
+        boolean fragment="true".equalsIgnoreCase(hx)&&!"true".equalsIgnoreCase(history);
+        return Response.ok((fragment?Templates.catalogState(page):Templates.catalog(page)).render()).type("text/html;charset=UTF-8")
+            .header("Vary","HX-Request, HX-History-Restore-Request").build();
     }
-    @GET @Path("thema") public TemplateInstance themes(@QueryParam("q") @DefaultValue("") String q,
-        @QueryParam("thema") List<String> themes,@QueryParam("typ") List<String> types,@QueryParam("organisation") List<String> orgs,@QueryParam("sort") String sort) {
-        return home(q,themes,types,orgs,sort);
+    @GET @Path("thema") public Response themes(@HeaderParam("HX-Request") String hx,@HeaderParam("HX-History-Restore-Request") String history,
+        @QueryParam("q") @DefaultValue("") String q,@QueryParam("thema") List<String> themes,
+        @QueryParam("typ") List<String> types,@QueryParam("organisation") List<String> orgs,@QueryParam("sort") String sort) {
+        return home(hx,history,q,themes,types,orgs,sort);
     }
     @GET @Path("themen/{identifier}/ebenen")
     public Response theme(@PathParam("identifier") String identifier,@HeaderParam("HX-Request") String hx,
         @QueryParam("q") @DefaultValue("") String q,@QueryParam("typ") List<String> types,
         @QueryParam("organisation") List<String> orgs,@QueryParam("sort") String sort) {
         var page=views.theme(identifier,query(q,List.of(),types,orgs,sort));
-        return Response.ok("true".equalsIgnoreCase(hx)?Templates.layers(page.layers()):Templates.theme(page))
-            .header("Vary","HX-Request").build();
+        return Response.ok(("true".equalsIgnoreCase(hx)?Templates.layers(page.layers()):Templates.theme(page)).render())
+            .type("text/html;charset=UTF-8").header("Vary","HX-Request").build();
     }
     @GET @Path("ebene/{id}") public TemplateInstance detail(@PathParam("id") String id) { return Templates.detail(views.detail(id)); }
     @GET @Path("ebene/{id}/style") @Produces(MediaType.APPLICATION_XML)

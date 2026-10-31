@@ -29,17 +29,17 @@ tasks.withType(Test).configureEach {
     systemProperty 'java.util.logging.manager', 'org.jboss.logmanager.LogManager'
 }
 
-// P3a requires real Chromium. P3b will extend the browser matrix to Firefox and filter UX.
+// Both engines are mandatory for the cumulative UI gate; installation failures fail the task.
 tasks.named('test') { useJUnitPlatform { excludeTags 'playwright' } }
-tasks.register('installPlaywrightChromium', JavaExec) {
+tasks.register('installPlaywrightBrowsers', JavaExec) {
     classpath = configurations.testRuntimeClasspath
     mainClass = 'com.microsoft.playwright.CLI'
     args 'install'
     if (providers.gradleProperty('playwrightWithDeps').getOrElse('false').toBoolean()) args '--with-deps'
-    args 'chromium'
+    args 'chromium', 'firefox'
 }
 tasks.register('playwrightTest', Test) {
-    dependsOn 'quarkusBuild', 'testClasses', 'installPlaywrightChromium'
+    dependsOn 'quarkusBuild', 'testClasses', 'installPlaywrightBrowsers'
     testClassesDirs = sourceSets.test.output.classesDirs
     classpath = sourceSets.test.runtimeClasspath
     useJUnitPlatform { includeTags 'playwright' }
