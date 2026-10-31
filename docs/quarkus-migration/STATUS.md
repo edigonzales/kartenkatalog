@@ -1,11 +1,15 @@
 # Migrationsstatus
 
 - Aktuelle Lieferung: **P4** (AC4-01 bis AC4-04)
-- Zustand: **AWAITING_REVIEW**
-- Letzter unabhängig bestätigter PASS-SHA: **`c030009c361995baeab0d83ef76fd763ec131a84`** (P3b, kumulatives UI-Gate)
+- Zustand: **PASS** – unabhängig durch OpenCode/DeepSeek API bestätigt.
+- Letzter unabhängig bestätigter PASS-SHA: **`1af5736c548181746d80688c150e6fefc5c28d5f`** (P4)
 - Implementierungsbasis P4: `6c810d962875b2fa0f9c6810bf5fe7d236291e0a`
 - Bericht: [implementation/P4.md](implementation/P4.md); [Betriebshandbuch](OPERATIONS.md)
-- Eigene Nachweise: **62/0/0/0** Unit/HTTP, **3/0/0/0** JVM-Paket, **3/0/0/0** Native-Paket, jeweils **14/0/0/0** Browserfälle an JVM und Native. Echter macOS/arm64-GraalVM25-Build und separater Linux/arm64-Mandrel25-Build; Java21/Quarkus3.40.1.1/Lucene10.6.0 unverändert. Je 18 echte JVM-/Native-Prozessfälle lokal und in read-only Linux-Containern, Payload-/Such-/Facet-/QML-Parität und harte Startfehler erfolgreich, kein persistierter Index. Negative Laufzeit-Canary erkennt JVM statt Native, leeres Image wird abgelehnt.
-- Betrieb: beliebige Non-Root-UID, read-only XTF/RootFS, begrenztes RAM-Scratch mit Dateiinventar, UBI9-Images, Health/Probes, Runbook und CI. Kein tatsächliches Clusterdeployment/amd64-Ergebnis behauptet, CI nur lokal gelintet.
-- Nächster Schritt: unabhängiger OpenCode-Review mit `deepseek/deepseek-flash` direkt via DeepSeek API im separaten sauberen Kandidaten-Worktree. Frische T1–T4 inkl. eigenem Linux-Native-Build, echter JVM-/Native-Parität und eigenem neuen Native-/Startgegenfall; keine Übernahme alter Rohberichte als neue Abnahme.
-- **P5 nicht begonnen.** Der Auftrag endet nach unabhängigem P4-PASS und Dokumentation.
+- Unveränderter unabhängiger Prüfbericht: [reviews/P4-review.md](reviews/P4-review.md)
+- Reviewer: OpenCode CLI **2.1.4**, neue Sitzung `ses_e6c21a51cffeH502X7Rv6TAAQY`; `deepseek/deepseek-flash` = DeepSeek-V4.1-Flash-1017 direkt via DeepSeek API, über echte Sitzungs-/Modell-/Verbindungsdaten verifiziert.
+- Unabhängige Nachweise: **62/0/0/0** Unit/HTTP, **3/0/0/0** JVM-Paket und **14/0/0/0** Browsertests; eigener frischer **Linux/arm64-Native-Build** mit Mandrel25, eigene Runtime-Images, **18 echte JVM-/Native-Container-Prozessfälle**, volle Payload-/Ranking-/Facet-Parität und harte Startfehler. Eigene neue XTF-/Native-/Betriebs-Gegenprobe des Reviewers: **186/186 Checks, Exit0**. Kein persistierter Lucene-Index; read-only RootFS/XTF, beliebige UID, begrenztes RAM-Scratch überprüft. Runtime-Canaries/Dependency-/Security-/CI-Syntaxprüfung erfolgreich, kein unzulässiger Skip.
+- Java21/Quarkus3.40.1.1/Lucene10.6.0 unverändert. GraalVM/Mandrel25 ist der vom Plugin verlangte Native-Compiler; App-Bytecode weiterhin Major65. Zusätzliche eigene macOS/arm64-Native-Tests (3 Paket-/14 Browsertests) dokumentiert, vom Reviewer nicht als eigene Tests behauptet.
+- Keine offene Muss-Abweichung. Kleinere Beobachtungen im Reviewbericht: JSON-Objektmitgliedsreihenfolge und dessen eigene zusätzliche exakte QML-Body-Paritätsprobe. Kein tatsächliches Clusterdeployment/amd64-/Remote-CI-Ergebnis behauptet.
+- Externe Rohbelege: `/Users/stefan/sources/kartenkatalog-P4-review-evidence/1af5736c548181746d80688c150e6fefc5c28d5f/`; sauberer separater Review-Worktree: `/Users/stefan/sources/kartenkatalog-review-P4`.
+- Dieser nachfolgende Commit archiviert ausschliesslich Dokumentation; Produktfreigabe gilt für den genannten Kandidaten-SHA, keine Produktänderung nach PASS.
+- **P5 nicht begonnen.** Der aktuelle Auftrag endet hier.
