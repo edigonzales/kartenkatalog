@@ -3,6 +3,7 @@ package ch.so.agi.meta;
 import java.util.*;
 import io.quarkus.runtime.Startup;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.annotation.PreDestroy;
 import org.jboss.logging.Logger;
 
 /** Eager construction: Quarkus must abort startup before serving a partial catalog. */
@@ -17,9 +18,13 @@ public class CatalogStore implements CatalogRepository {
         } catch (Exception error) {
             throw new IllegalStateException("Cannot load catalog XTF: " + config.xtfLocation(), error);
         }
-        Logger.getLogger(CatalogStore.class).infof("Catalog loaded: %d themes, %d layers in %d ms from %s",
-            snapshot.findAllThemen().size(), snapshot.findAllEbenen().size(), (System.nanoTime() - start) / 1_000_000, config.xtfLocation());
+        var index = (ch.so.agi.meta.search.LuceneCatalogSearchIndex) snapshot.searchIndex();
+        Logger.getLogger(CatalogStore.class).infof("Catalog loaded: %d themes, %d layers; Lucene %s %s %s; index %d ms, catalog startup %d ms, heap used %d KiB from %s",
+            snapshot.findAllThemen().size(), index.documentCount(), org.apache.lucene.util.Version.LATEST,
+            index.directoryType(), index.analyzerType(), index.buildMillis(), (System.nanoTime() - start) / 1_000_000,
+            (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024, config.xtfLocation());
     }
+    @PreDestroy void close() { snapshot.close(); }
     public CatalogSnapshot current() { return snapshot; }
     @Override public List<Thema> findAllThemen() { return snapshot.findAllThemen(); }
     @Override public List<Ebene> findAllEbenen() { return snapshot.findAllEbenen(); }

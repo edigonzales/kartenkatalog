@@ -9,6 +9,6 @@ public class CatalogReadiness implements HealthCheck {
     private final CatalogStore store;
     public CatalogReadiness(CatalogStore store) { this.store = store; }
     @Override public HealthCheckResponse call() {
-        return HealthCheckResponse.named("catalog-snapshot").status(store.current() != null).build();
+        return HealthCheckResponse.named("catalog-snapshot").status(store.current().searchIndex().available()).build();
     }
 }

@@ -1,8 +1,6 @@
 package ch.so.agi.meta.api;
 
-import java.text.Normalizer;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -13,13 +11,16 @@ import ch.so.agi.meta.Thema;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 
+import ch.so.agi.meta.search.*;
+import java.util.Set;
 import static ch.so.agi.meta.api.CatalogDtos.*;
 
 @Path("/api/v1")
 @Produces(MediaType.APPLICATION_JSON)
 public class CatalogApiController {
     private final CatalogService catalog;
-    public CatalogApiController(CatalogService catalog) { this.catalog = catalog; }
+    private final CatalogSearchService search;
+    public CatalogApiController(CatalogService catalog, CatalogSearchService search) { this.catalog = catalog; this.search = search; }
 
     @GET @Path("/themen")
     public List<Theme> themes() { return catalog.findAllThemen().stream().map(Theme::from).toList(); }
@@ -38,15 +39,20 @@ public class CatalogApiController {
 
     @GET @Path("/ebenen")
     public List<Layer> layers(@QueryParam("q") @DefaultValue("") String q,
-                             @QueryParam("thema") String thema) {
-        if (q.length() > 200) throw new CatalogProblem(400, "Suchtext darf höchstens 200 Zeichen enthalten");
+                             @QueryParam("thema") List<String> thema, @QueryParam("typ") List<String> typ,
+                             @QueryParam("organisation") List<String> organisation, @QueryParam("sort") String sort) {
         var themes = themesById();
-        var layers = thema == null ? catalog.findAllEbenen() : catalog.findEbenenByThemaIdentifier(requireTheme(thema).identifier());
-        String query = normalize(q.strip());
-        return layers.stream().map(e -> Layer.from(e, themeFor(e, themes)))
-                .filter(e -> query.isEmpty() || normalize(String.join(" ", e.id(), e.title(),
-                        e.description() == null ? "" : e.description(), String.join(" ", e.keywords()), String.join(" ", e.synonyms()))).contains(query))
-                .toList();
+        return search.search(query(q, thema, typ, organisation, sort)).layers().stream()
+            .map(e -> Layer.from(e, themeFor(e, themes))).toList();
+    }
+    @GET @Path("/facets")
+    public CatalogFacetService.Facets facets(@QueryParam("q") @DefaultValue("") String q,
+                             @QueryParam("thema") List<String> thema, @QueryParam("typ") List<String> typ,
+                             @QueryParam("organisation") List<String> organisation, @QueryParam("sort") String sort) {
+        return search.facets(query(q, thema, typ, organisation, sort));
+    }
+    private static CatalogQuery query(String q, List<String> thema, List<String> typ, List<String> organisation, String sort) {
+        return new CatalogQuery(q, Set.copyOf(thema), Set.copyOf(typ), Set.copyOf(organisation), sort);
     }
 
     @GET @Path("/catalog")
@@ -70,8 +76,5 @@ public class CatalogApiController {
     }
     private static CatalogProblem notFound(String kind, String id) {
         return new CatalogProblem(404, kind + " nicht gefunden: " + id);
-    }
-    private static String normalize(String text) {
-        return Normalizer.normalize(text, Normalizer.Form.NFD).replaceAll("\\p{M}", "").toLowerCase(Locale.ROOT);
     }
 }

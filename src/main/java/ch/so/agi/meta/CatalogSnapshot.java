@@ -5,7 +5,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /** One validated catalog. All collections (including nested lists) are immutable. */
-public final class CatalogSnapshot implements CatalogRepository {
+public final class CatalogSnapshot implements CatalogRepository, AutoCloseable {
+    private final ch.so.agi.meta.search.CatalogSearchIndex searchIndex;
     private final List<Thema> themes;
     private final List<Ebene> layers;
     private final Map<String, Thema> themesByIdentifier;
@@ -21,7 +22,11 @@ public final class CatalogSnapshot implements CatalogRepository {
         var byTheme = new HashMap<String, List<Ebene>>();
         for (var theme : themes) byTheme.put(theme.identifier(), List.copyOf(grouped.getOrDefault(theme.t_id(), List.of())));
         layersByTheme = Map.copyOf(byTheme);
+        var byTid = themes.stream().collect(Collectors.toMap(Thema::t_id, Function.identity()));
+        searchIndex = new ch.so.agi.meta.search.CatalogSearchIndexBuilder().build(this.layers, byTid);
     }
+    public ch.so.agi.meta.search.CatalogSearchIndex searchIndex() { return searchIndex; }
+    @Override public void close() { searchIndex.close(); }
     public Map<String, Thema> themesByIdentifier() { return themesByIdentifier; }
     public Map<String, Ebene> layersByIdentifier() { return layersByIdentifier; }
     public Map<String, List<Ebene>> layersByTheme() { return layersByTheme; }

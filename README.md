@@ -2,7 +2,7 @@
 
 Quarkus **3.40.1.1**, Java **21**, Gradle Wrapper **9.8.2**. Der Katalog wird beim Start aus einer lokalen INTERLIS-2.4-XTF-Datei gelesen, validiert und als unveränderlicher In-Memory-Snapshot bereitgestellt. Keine Datenbank, kein Mock-Fallback, kein Reload-Endpunkt.
 
-Aktueller Migrationsabschnitt **P1**: Quarkus REST/Jackson, minimale typsichere Qute-Seiten und SmallRye Health. Die bisherige lineare Teilstringsuche bleibt vorerst erhalten. Lucene, die neue SODATA-Oberfläche und Native-/Linux-Abnahme folgen in den separat geprüften Lieferungen P2–P4. Der aktuelle Stand behauptet keine Native-Freigabe.
+Aktueller Migrationsabschnitt **P2**: Quarkus REST/Jackson, minimale typsichere Qute-Seiten, SmallRye Health und **Apache Lucene 10.6.0**. Der Index wird bei jedem Start aus XTF im Java-Heap (`ByteBuffersDirectory`, `GermanAnalyzer`) neu aufgebaut. Kein persistierter Suchindex oder Index-Volume. SODATA-Oberfläche und Native-/Linux-Abnahme folgen in P3/P4. Der aktuelle Stand behauptet keine Native-Freigabe.
 
 ## Start und Build
 
@@ -34,17 +34,29 @@ CATALOG_XTF_LOCATION=file:/absoluter/pfad/katalog.xtf \
 | `/api/v1/themen/{identifier}/ebenen` | Ebenen des Themas |
 | `/api/v1/ebenen` | alle Ebenen; `q` und optional `thema` |
 | `/api/v1/ebenen/{id}` | einzelne Ebene per `ident_part` |
+| `/api/v1/facets` | dynamische Facets; gleiche Query-/Filterparameter wie `/api/v1/ebenen` |
 | `/` | Weiterleitung nach `/thema` |
 | `/thema` | vollständige Themenliste |
 | `/themen/{identifier}/ebenen` | vollständige Themenseite; mit `HX-Request: true` nur Ebenenfragment |
 | `/ebene/{id}` | minimale Qute-Detailseite mit sicherem Kartenlink |
 | `/ebene/{id}/style` | XML/QML-Attachment, nur bei tatsächlich vorhandenem QML |
 | `/ping` | `200 text/plain`, `kartenkatalog` |
-| `/q/health/live`, `/q/health/ready` | SmallRye Health; Readiness setzt vollständigen Snapshot voraus |
+| `/q/health/live`, `/q/health/ready` | SmallRye Health; Readiness setzt vollständigen Snapshot und offenen Suchindex voraus |
 
 Die API bleibt für das separate [QWC2-Plugin](https://github.com/edigonzales/qwc-kartenkatalog) kompatibel. `id` und `qwcLayerName` sind der publizierte `ident_part`; `sourceId` ist die separate Quell-UUID. Optionale Skalare werden als `null`, Keywords/Synonyme als Arrays ausgegeben. Öffentliche Theme-/Layer-Felder sind durch `src/test/resources/contract/baseline.json` geschützt. Beschreibungen verwenden weiterhin Beschreibung → Override → Modellbeschreibung; Klartext und mit Jsoup bereinigtes HTML sind getrennt. QML, Remarks und Berechtigungsrohwerte gehören nicht zum DTO.
 
-Die Listen sind nach de-CH-Titel und Kennung sortiert. Die P1-Suche trimmt Leerzeichen, ignoriert Gross-/Kleinschreibung und Akzente und sucht einen Teilstring über Kennung, Titel, Beschreibung, Keywords und Synonyme. `q` hat maximal 200 Zeichen. Kein Treffer: `200 []`; unbekanntes Thema/Layer oder fehlendes QML: **404**; zu langer Suchtext: **400**. Fehler verwenden `application/problem+json` mit `status`, `title`, `detail`, `instance`; keine Stacktraces. CORS ist nicht pauschal freigeschaltet; für QWC bevorzugt same-origin Reverse Proxy.
+Die Listen sind standardmässig nach de-CH-Titel und Kennung sortiert. `sort=title-desc` kehrt nur die Titelrichtung um; Kennungen lösen Gleichstände weiterhin A–Z auf. `sort=relevance` ist nur mit Suchtext erlaubt. Die Suche verwendet AND über Wörter und OR über Felder (Kennung, Titel, Keywords, Synonyme, Thema, Organisation, Beschreibung). Kennung/Titel/Keywords/Synonyme unterstützen Teilstrings; Beschreibungen deutsche Wortstämme. Gross-/Kleinschreibung, Akzente, Umlaute und ß/ss werden normalisiert. Interpunktion trennt Wörter; Lucene-Querysyntax wird nicht interpretiert. Mindestens ein Wort muss zwei Zeichen haben; alleinige Einzeichen-/Sonderzeichensuche ist 400. `q` bleibt auf 200 Zeichen begrenzt, auch bei Leerzeichen. Der GermanAnalyzer verwendet eine leere Stopwortliste, damit AND-Wörter nicht still verschwinden. Rangstufen: exakte Kennung > exakter Titel > Titelpräfix > Titelteilstring > Keyword/Synonym > Thema/Organisation > Beschreibung; bei Gleichstand Titel/Kennung.
+
+`thema`, `typ`, `organisation` dürfen mehrfach vorkommen: OR innerhalb, AND zwischen Gruppen. Werte sind echte, unveränderte Quellkennungen/-werte. Unbekanntes Thema bleibt aus P0-Kompatibilität **404**; unbekannter Typ/Organisation und ungültige Sortierung sind **400**. Kein Treffer ist `200 []`; unbekannter Layer/fehlendes QML **404**; ausgefallener Suchindex **503**, niemals eine leere Erfolgsliste. Detail-/Metadatenabfragen lesen Maps unabhängig vom Index.
+
+`GET /api/v1/facets` liefert `{thema: […], typ: […], organisation: […]}`. Eintrag: `{value, label, count, selected}`. Jede Gruppe zählt unter Suchtext und allen **anderen** Filtergruppen; der eigene Gruppenfilter wird beim Zählen ausgelassen. Auch 0-Treffer-Optionen behalten ihren Auswahlstatus. Organisationswerte fehlen im Harvest, deshalb ist dessen `organisation`-Array leer. Die Suchfixture mit Organisationen/Keywords/Synonymen liegt getrennt unter `src/test/resources/search/`; im Harvest wird nichts erfunden. Beispiel:
+
+```text
+/api/v1/ebenen?q=wasser&thema=harvest-hoheitsgrenzen&typ=datasetview&sort=relevance
+/api/v1/facets?q=wasser&typ=datasetview
+```
+
+Fehler verwenden weiterhin `application/problem+json` mit `status`, `title`, `detail`, `instance`, ohne Stacktraces. CORS ist nicht pauschal freigeschaltet; für QWC bevorzugt same-origin Reverse Proxy.
 
 ## Verifikation
 
@@ -53,9 +65,10 @@ Die Listen sind nach de-CH-Titel und Kennung sortiert. Die P1-Suche trimmt Leerz
 ./gradlew dependencies --configuration runtimeClasspath
 python3 scripts/p1-process-contract.py
 python3 scripts/p1-process-contract.py --dev
+python3 scripts/p2-process-contract.py
 ```
 
-Der JVM-Prozesstest startet das gebaute JAR selbst, prüft die P0-HTTP-Verträge, Health und Snapshot-Lebensdauer sowie echte Startabbrüche für ungültige Quellen. `--dev` prüft einen separaten `quarkusDev`-Prozess. Beide räumen ihre Prozessgruppen auf; Rohlogs liegen unter `build/reports/p1/`. Der weiterhin nutzbare `scripts/p0-http-contract.py <Basis-URL>` prüft einen bereits laufenden Prozess. JUnit-Rohreports: `build/test-results/test/`; HTML: `build/reports/tests/test/`.
+Der P2-Prozesstest prüft Neuaufbau/Determinismus nach Neustart, XTF-Änderungen, Suche/Ranking/Filter/Facets, read-only Quelle/Arbeitsverzeichnis ohne Indexdateien und einen echten Index-Startupfehler. Er protokolliert lokale Startup-/RSS-/Suchzeitwerte unter `build/reports/p2/`. Der P1-JVM-Prozesstest startet das gebaute JAR selbst, prüft die P0-HTTP-Verträge, Health und Snapshot-Lebensdauer sowie echte Startabbrüche für ungültige Quellen. `--dev` prüft einen separaten `quarkusDev`-Prozess. Beide räumen ihre Prozessgruppen auf; Rohlogs liegen unter `build/reports/p1/`. Der weiterhin nutzbare `scripts/p0-http-contract.py <Basis-URL>` prüft einen bereits laufenden Prozess. JUnit-Rohreports: `build/test-results/test/`; HTML: `build/reports/tests/test/`.
 
 Die synthetische `with-qml.xml` dient nur Tests für QML und Sanitization; sie wird nicht in den Harvest gemischt. CI prüft aktuell JVM/Tests; Linux-Native und Container werden in P4 eingeführt. Die alten Boot-Native-/Docker-Publishing-Tasks wurden entfernt. Kein Push/Release als versteckter Buildschritt.
 

@@ -14,8 +14,8 @@ class XtfCatalogParserTests {
     static String fixture() throws IOException { return Files.readString(Path.of("src/test/resources/contract/with-qml.xml")); }
     static CatalogSnapshot parse(String xml) { return new XtfCatalogParser().parse(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8))); }
     @Test void suppliedTransferCountsAndAllNestedCollectionsAreImmutable() throws Exception {
-        try (var in = new CatalogXtfSource("file:data/kartenkatalog-harvest-ohne-qml.xtf").open()) {
-            var snapshot = new XtfCatalogParser().parse(in);
+        try (var in = new CatalogXtfSource("file:data/kartenkatalog-harvest-ohne-qml.xtf").open();
+             var snapshot = new XtfCatalogParser().parse(in)) {
             assertEquals(169, snapshot.findAllThemen().size()); assertEquals(886, snapshot.findAllEbenen().size());
             assertEquals(886, snapshot.findAllThemen().stream().mapToInt(Thema::ebenen_count).sum());
             assertEquals(886, snapshot.layersByIdentifier().size()); assertEquals(169, snapshot.themesByIdentifier().size());
@@ -30,11 +30,12 @@ class XtfCatalogParserTests {
         }
     }
     @Test void optionalBlankFieldsAreNullAndReferencesBeatRedundantThemeText() throws Exception {
-        var snapshot = parse(fixture().replace("<k:title>QML Test</k:title>", "<k:title>QML Test</k:title><k:keywords>  </k:keywords><k:theme_ident>wrong</k:theme_ident>"));
+        try (var snapshot = parse(fixture().replace("<k:title>QML Test</k:title>", "<k:title>QML Test</k:title><k:keywords>  </k:keywords><k:theme_ident>wrong</k:theme_ident>"))) {
         var e = snapshot.findEbeneByIdentPart("ch.test.qml").orElseThrow();
         assertNull(e.keywords()); assertEquals("test-theme", e.thema_r());
         assertEquals(1, snapshot.findThema("contract").orElseThrow().ebenen_count());
         assertEquals("contract", ch.so.agi.meta.api.CatalogDtos.Layer.from(e, snapshot.findThema("contract").orElseThrow()).themeIdentifier());
+        }
     }
     static Stream<String> malformed() throws IOException {
         String xml = fixture();

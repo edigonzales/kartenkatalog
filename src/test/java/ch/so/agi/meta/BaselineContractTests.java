@@ -40,6 +40,11 @@ class BaselineContractTests {
         var expected = new TreeSet<String>(); contract.get(key).forEach(n -> expected.add(n.asText()));
         assertEquals(expected, names(actual));
     }
+    @Test void harvestFacetsExposeOnlyRealTypesAndNoFictionalOrganization() throws Exception {
+        var f=api("/api/v1/facets");
+        assertEquals(0,f.get("organisation").size()); assertEquals(4,f.get("typ").size());
+        int count=0; for (var type:f.get("typ")) count+=type.get("count").asInt(); assertEquals(886,count);
+    }
     @Test void publicPayloadsRetainNamesTypesNullsListsAndPublishedQwcIdentifier() throws Exception {
         assertEquals(contract.get("layer"), api("/api/v1/ebenen/ch.so.agi.gemeindegrenzen"));
         for (var expected : contract.get("products")) {
