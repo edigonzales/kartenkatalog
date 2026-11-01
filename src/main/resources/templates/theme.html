@@ -1,8 +1,8 @@
 {#include layout chrome=page.chrome}
 {#title}{page.title}{/title}
-{#content}<p class="back-link"><a href="/">← Alle Themen</a></p>
+{#content}<p class="back-link"><a href="/">{#include icon name="arrow-left" /} Alle Themen</a></p>
 <section class="catalog-intro"><h1>{page.title}</h1>{#if page.description}<div class="metadata-text theme-lead">{page.description}</div>{/if}
-{#if page.furtherInfoUrl}<p><a href="{page.furtherInfoUrl}" target="_blank" rel="noopener noreferrer">Weitere Informationen zum Thema ↗</a></p>{/if}</section>
+{#if page.furtherInfoUrl}<p><a href="{page.furtherInfoUrl}" target="_blank" rel="noopener noreferrer">Weitere Informationen zum Thema {#include icon name="arrow-up-right" /}</a></p>{/if}</section>
 <section class="theme-page-layers" aria-labelledby="theme-layer-heading"><h2 id="theme-layer-heading">{page.layers.size} {#if page.layers.size == 1}Kartenebene{#else}Kartenebenen{/if}</h2>{#include layers layers=page.layers /}</section>
 {/content}
 {/include}

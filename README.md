@@ -28,7 +28,7 @@ Ohne Override gilt `file:./data/kartenkatalog-harvest-ohne-qml.xtf`, relativ zum
 
 ## Oberfläche und API
 
-`/` und `/thema` zeigen Themen, lazy geladene Ebenen, Suche, Mehrfachfilter, dynamische Facets und Chips. GET-Formulare/Themenlinks funktionieren ohne JavaScript. Browser-History, Reload und kopierte URLs erhalten den Zustand; Desktop-Popover und mobiles Filtersheet unterstützen Tastatur/Fokus. Details unter `/ebene/{id}`, QML bei vorhandenem Inhalt unter `/ebene/{id}/style`.
+`/` und `/thema` zeigen Themen, lazy geladene Ebenen, Suche, Mehrfachfilter, dynamische Facets und Chips. GET-Formulare/Themenlinks funktionieren ohne JavaScript. Browser-History, Reload und kopierte URLs erhalten den Zustand; Desktop-Popover und mobiles Filtersheet unterstützen Tastatur/Fokus. Die Live-Suche startet ab drei Zeichen nach 300 ms Tipp-Pause; kürzere Eingaben wirken wie eine leere Suche. Leeren aktualisiert sofort. Sortierung wird direkt bei Auswahl angewendet, Checkbox-Filter weiterhin mit „Anwenden“. Ohne JavaScript stehen GET-Submit-Buttons bereit. Frutiger wird in vier Schnitten lokal als WOFF2 geladen; UI-Icons sind eingebettete Bootstrap Icons (MIT). Details unter `/ebene/{id}`, QML bei vorhandenem Inhalt unter `/ebene/{id}/style`.
 
 Öffentliche GET-Endpunkte: `/api/v1/catalog`, `/api/v1/themen`, `/api/v1/themen/{identifier}/ebenen`, `/api/v1/ebenen`, `/api/v1/ebenen/{id}`, `/api/v1/facets`. `id == qwcLayerName` ist der publizierte `ident_part`, `sourceId` die Quell-UUID. JSON-Feldnamen, null/Arrays, Suche/Filter/Sortierung und Problem-JSON sind geschützt. [HTTP-Vertrag und Architektur](docs/architecture.md#http-vertrag).
 

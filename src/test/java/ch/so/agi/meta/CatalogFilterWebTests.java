@@ -55,4 +55,18 @@ class CatalogFilterWebTests {
         request().header("HX-Request",true).get("/?thema=bogus").then().statusCode(404);
         request().get("/?q="+"x".repeat(201)).then().statusCode(400);
     }
+    @Test void controlsUseLocalBootstrapSvgsAndNoJavascriptSubmitFallbacks() {
+        var doc=Jsoup.parse(request().get("/?q=Atlas").asString());
+        assertEquals(1,doc.select(".search-field .bi-search").size());
+        assertEquals(3,doc.select(".filter-chevron .bi-chevron-down").size());
+        assertEquals(1,doc.select(".reset-link .bi-arrow-clockwise").size());
+        assertEquals("Filter zurücksetzen",doc.select(".reset-link").text());
+        assertEquals(1,doc.select(".search-field noscript").size());
+        assertEquals(1,doc.select(".sort-control noscript").size());
+        assertTrue(doc.select("svg.bi").stream().allMatch(svg -> svg.attr("aria-hidden").equals("true")));
+        var css=request().get("/fonts.css").then().statusCode(200).extract().asString();
+        assertFalse(css.contains("base64"));assertEquals(4,css.split("font-display: swap",-1).length-1);
+        request().get("/vendor/bootstrap-icons/1.13.1/LICENSE").then().statusCode(200);
+    }
+
 }

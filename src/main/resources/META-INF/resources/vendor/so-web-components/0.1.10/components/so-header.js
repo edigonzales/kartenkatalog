@@ -1,3 +1,4 @@
+// UI glyphs: Bootstrap Icons 1.13.1 (MIT), /vendor/bootstrap-icons/1.13.1/LICENSE.
 const DEFAULT_TOP_NAV = [
     { label: "Regierung", href: "https://so.ch/regierung/" },
     { label: "Gerichte", href: "https://so.ch/gerichte/" },
@@ -159,7 +160,10 @@ export class SoHeader extends HTMLElement {
                     const label = el("span");
                     label.textContent = item.label;
                     a.append(label);
-                    a.insertAdjacentHTML("beforeend", ` <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><title>my.so.ch</title><path d="M20.39 18.71c1.48-1.84 2.36-4.17 2.36-6.71 0-5.93-4.82-10.75-10.75-10.75S1.25 6.07 1.25 12 6.07 22.75 12 22.75c3.39 0 6.41-1.58 8.38-4.04ZM12 2.75c5.1 0 9.25 4.15 9.25 9.25 0 1.93-.6 3.72-1.61 5.21-1.08-.92-3.49-2.46-7.64-2.46s-6.56 1.54-7.64 2.46A9.156 9.156 0 0 1 2.75 12c0-5.1 4.15-9.25 9.25-9.25Zm0 18.5c-2.63 0-5.01-1.11-6.69-2.88.84-.74 2.93-2.12 6.69-2.12s5.85 1.38 6.69 2.12C17 20.14 14.63 21.25 12 21.25Z"/><path d="M12 12.75c2.07 0 3.75-1.68 3.75-3.75S14.07 5.25 12 5.25 8.25 6.93 8.25 9s1.68 3.75 3.75 3.75Zm0-6c1.24 0 2.25 1.01 2.25 2.25s-1.01 2.25-2.25 2.25S9.75 10.24 9.75 9 10.76 6.75 12 6.75Z"/></svg>`);
+                    a.insertAdjacentHTML("beforeend", ` <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="icon bi bi-person-circle" aria-hidden="true" focusable="false" viewBox="0 0 16 16">
+  <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+  <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+</svg>`);
                     return true;
                 }
                 return false;
@@ -424,14 +428,12 @@ export class SoHeader extends HTMLElement {
 }
 SoHeader.observedAttributes = ["top-nav", "section-nav", "active-section", "logo-href", "site-name"];
 function burgerIcon() {
-    return `
-  <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-    <path fill="currentColor" d="M4 7h16v2H4V7zm0 6h16v2H4v-2zm0 6h16v2H4v-2z"/>
-  </svg>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class=" bi bi-list" aria-hidden="true" focusable="false" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+</svg>`;
 }
 function closeIcon() {
-    return `
-  <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-    <path fill="currentColor" d="M18.3 5.71 12 12l6.3 6.29-1.41 1.42L10.59 13.4l-6.3 6.31-1.41-1.42L9.17 12 2.88 5.71l1.41-1.42 6.3 6.31 6.3-6.31 1.41 1.42Z"/>
-  </svg>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class=" bi bi-x-lg" aria-hidden="true" focusable="false" viewBox="0 0 16 16">
+  <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+</svg>`;
 }

@@ -14,7 +14,7 @@
 <div class="page-header"><so-header active-section="Verwaltung" site-name="Kanton Solothurn"></so-header>
 <header class="header-fallback"><a href="https://so.ch"><img src="/kantons-logo.svg" alt="Kanton Solothurn" width="260" height="35"></a></header>
 <so-breadcrumb>{#for crumb in chrome.crumbs}{#if crumb.href}<so-breadcrumb-item href="{crumb.href}">{crumb.title}</so-breadcrumb-item>{#else}<so-breadcrumb-item iscurrentpage>{crumb.title}</so-breadcrumb-item>{/if}{/for}</so-breadcrumb>
-<nav class="breadcrumb-fallback" aria-label="Brotkrumennavigation"><ol>{#for crumb in chrome.crumbs}<li>{#if crumb.href}<a href="{crumb.href}">{crumb.title}</a>{#else}<span aria-current="page">{crumb.title}</span>{/if}</li>{/for}</ol></nav>
+<nav class="breadcrumb-fallback" aria-label="Brotkrumennavigation"><ol>{#for crumb in chrome.crumbs}<li>{#if !crumb_isFirst}{#include icon name="chevron-right" /}{/if}{#if crumb.href}<a href="{crumb.href}">{crumb.title}</a>{#else}<span aria-current="page">{crumb.title}</span>{/if}</li>{/for}</ol></nav>
 </div>
 <main id="main-content" tabindex="-1">{#insert content}{/insert}</main>
 <footer><div class="footer-inner"><p>Kartenkatalog · Amt für Geoinformation</p>{#if chrome.provenanceNotice}<p class="provenance">{chrome.provenanceNotice}</p>{/if}<a href="https://so.ch/verwaltung/bau-und-justizdepartement/amt-fuer-geoinformation/">Kontakt und Informationen</a></div></footer>

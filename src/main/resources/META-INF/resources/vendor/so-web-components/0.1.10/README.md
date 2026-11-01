@@ -9,3 +9,5 @@ Vendored runtime assets copied from the public npm package `so-web-components@0.
 
 The application serves these files locally from a flattened copy of the package `dist/` directory so public asset URLs stay under `/vendor/so-web-components/0.1.10/...`.
 Do not replace them with unpinned CDN URLs for production-like deployments.
+
+Local adaptation (2026-11-01): header UI glyphs and breadcrumb chevrons use embedded Bootstrap Icons 1.13.1 (MIT; `/vendor/bootstrap-icons/1.13.1/LICENSE`). The canton logo is unchanged.

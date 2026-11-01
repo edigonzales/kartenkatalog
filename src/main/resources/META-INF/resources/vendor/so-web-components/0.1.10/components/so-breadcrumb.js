@@ -1,5 +1,6 @@
-const CHEVRON_SVG = `<svg class="chevron" viewBox="0 0 21 21" aria-hidden="true" focusable="false">
-  <path d="m15.53 11.47-6-6c-.29-.29-.77-.29-1.06 0s-.29.77 0 1.06L13.94 12l-5.47 5.47c-.29.29-.29.77 0 1.06.15.15.34.22.53.22s.38-.07.53-.22l6-6c.29-.29.29-.77 0-1.06Z"/>
+// Bootstrap Icons 1.13.1 (MIT): /vendor/bootstrap-icons/1.13.1/LICENSE
+const CHEVRON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="chevron bi bi-chevron-right" aria-hidden="true" focusable="false" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
 </svg>`;
 function el(tag, cls) {
     const n = document.createElement(tag);
