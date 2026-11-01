@@ -1,15 +1,12 @@
 # Cleanup-Status
 
-- Lieferung: **C0 – tatsächliche Baseline und Consumerinventur**.
-- Zustand: **PASS**, unabhängig durch OpenCode/DeepSeek bestätigt; alle fünf C0-Muss-Kriterien erfüllt, keine Muss-Abweichung und kein Blocker.
-- BASE_SHA: `377fa52bbfcb3026ce77c64c7db78e6163be0b4c`.
-- Letzter unabhängig bestätigter Cleanup-PASS / geprüfter Kandidat: **`1378d3f5b2bb7a210efa5f704c94a4e43ba23643`**.
-- [Implementierungsbericht](implementation/C0.md), [unverändert archivierter unabhängiger Review](reviews/C0-review.md), [verbindlicher Reviewprompt](OPENCODE_REVIEW_PROMPT.md).
-- Frisch ausgeführt: 62 Unit-/HTTP-, 3 JVM-Paket- und 14 Chromium-/Firefox-Browsertests, jeweils ohne Fehler oder Skips; JVM-/Dev-CORS-/RAM-Indexprozesse, neun Versionierungsfälle und sechs Fake-Registry-Tests erfolgreich. Ein durch überlappenden Paketbau verursachter Index-Fehlversuch ist im Bericht offengelegt und anschliessend erfolgreich wiederholt.
-- Reviewer: OpenCode-GUI **2.1.4**, Sitzung `ses_e69905fe2ffekFoiydSmF5Mhwj`, direkter Provider **`deepseek`**, Modell **`deepseek-flash`**, Variante `high`, API `api.deepseek.com`. Die GUI-Auswahl zeigte **DeepSeek V4.1 Flash 1017**; der Reviewer verifizierte Provider-/Session-/App-Metadaten und hielt deren nicht separat exponierte Endung „1017“ transparent als Beobachtung O1 fest.
-- Unabhängig frisch auf dem Kandidaten: **62/0/0/0** Unit/HTTP, **3/0/0/0** JVM-Paket, **14/0/0/0** Chromium-/Firefox-Browser; JVM-/Dev-CORS-/RAM-Indexprozesse, neun Versionierungsfälle, sechs Fake-Registry-Tests und Runtime-Abhängigkeiten erfolgreich. Eigene neue Golden-Feldmengenmutation gegen echte JVM (Original Exit 0, mutiert Exit 1) und Referenzketten-/Mutationsankerprüfung mit absichtlich kaputtem Scriptpfad (Kandidat Exit 0, Canary Exit 1). HEAD und tracked Tree im separaten Review-Worktree vor/nach unverändert sauber.
-- Originalbericht: `/Users/stefan/sources/kartenkatalog-C0-review-1378d3f.md`; SHA256 von Original und bytegleicher Archivkopie: `32d7d998a20a6ae3ab676c6a9c8acaa8fd19b13bed8f6e44d44563db6082bbd6`. Rohbelege aus `/tmp/kartenkatalog-c0-review-1378d3f/` dauerhaft kopiert nach `/Users/stefan/sources/kartenkatalog-C0-review-evidence/1378d3f5b2bb7a210efa5f704c94a4e43ba23643/` (gleiche relative Pfade; die ursprünglichen Reportverweise bleiben unverändert).
-- Native-/Container-Gesamtgate in C0 nicht ausgeführt und nicht als bestanden ausgewiesen; C4 bleibt dafür verbindlich.
-- C0 ist abgeschlossen. **C1 ist nicht begonnen und bleibt auf ausdrücklichen Nutzerauftrag ausgesetzt.** Künftige fällige unabhängige Reviews startet Codex gemäss Nutzeranweisung selbständig; bei FAIL nacharbeiten und erneut prüfen, bei BLOCKED stoppen.
-- Keine Produktänderung, Löschung, Umbenennung, Veröffentlichung, Push, Merge oder Release im Rahmen C0.
-- Dieser nachgelagerte lokale Archivierungscommit enthält ausschliesslich den originalgetreuen Reviewbericht und diese Statusaktualisierung. Der tatsächlich abgenommene Kandidaten-SHA bleibt der oben genannte; keine Produkt-/Test-/Buildänderung nach PASS.
+- Lieferung: **C1 – Root-Artefakte und projektspezifische Ignore-Regeln**.
+- Zustand: **AWAITING_REVIEW**, noch keine unabhängige C1-Abnahme.
+- BASE_SHA: `dd0e1a871db7e124487d02c1a4742b2653f0c51c` (rein dokumentarische Archivierung nach C0-PASS).
+- Letzter unabhängig bestätigter Cleanup-PASS: **C0, `1378d3f5b2bb7a210efa5f704c94a4e43ba23643`**, [originalgetreuer C0-Review](reviews/C0-review.md).
+- [C1-Implementierungsbericht](implementation/C1.md), [verbindlicher Reviewprompt](OPENCODE_REVIEW_PROMPT.md).
+- C1 implementiert: drei nach erneuter Consumerprüfung unbenutzte Root-ZIP/PNG-Artefakte entfernt; `.gitignore` projektspezifisch reduziert und um lokale Environment-/Credential-/Python-Regeln ergänzt. Aktive XTF, Daten-README, sämtliche Testfixtures/Lizenzen, Source, Scripts, Build, CI und `.dockerignore` unverändert.
+- Frisch erfolgreich: **62/0/0/0** Unit/HTTP, **3/0/0/0** JVM-Paket; bestehende JVM-/Dev-CORS-/RAM-Indexprozesse samt XML-/Source-/Indexfehlstarts; 32 Ignorefälle, Audit aller 135 verbliebenen getrackten Dateien und reale temporäre XTF/XML-Gegenprobe.
+- Rohbelege: `/Users/stefan/sources/kartenkatalog-C1-evidence/dd0e1a871db7e124487d02c1a4742b2653f0c51c/`.
+- Offen: unabhängiger OpenCode-2.x-/DeepSeek-4.1-Flash-1017-Review des nach diesem Bericht erzeugten lokalen Kandidatencommits, AC1-01..AC1-05 mit eigenen Tests und eigener neuer Gegenprobe. Codex startet den Review selbständig und wartet auf PASS/FAIL/BLOCKED; bei FAIL nacharbeiten/erneut prüfen, bei BLOCKED stoppen.
+- **C2 nicht begonnen**. Kein Push, Merge, Tag, Workflow-Dispatch, Registry-Upload oder Release. Native-/Container-Gesamtgate bleibt für C4 fällig; für C1 nicht als ausgeführt behauptet.
