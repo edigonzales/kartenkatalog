@@ -155,7 +155,7 @@ def verify(base, label):
     layers = get_json(base, '/api/v1/ebenen')
     themes = get_json(base, '/api/v1/themen')
     catalog = get_json(base, '/api/v1/catalog')
-    expected = 886 if label == 'harvest' else (1 if label == 'qml' else 12)
+    expected = {'harvest': 886, 'qml': 1, 'cross': 3}.get(label, 12)
     assert len(layers) == expected and len({e['id'] for e in layers}) == expected
     first = layers[0]
     theme = first['themeIdentifier']
@@ -178,10 +178,17 @@ def verify(base, label):
                        ('/api/v1/ebenen?typ=bogus', 400), ('/api/v1/ebenen?q=' + 'x' * 201, 400)]:
         status, mime, body = http(base, path)
         assert status == code and 'application/problem+json' in mime and json.loads(body)['status'] == code
-    queries = ['q=wasser&sort=relevance'] if label == 'harvest' else (['q=QML'] if label == 'qml' else [
-        'q=atlas&sort=relevance', 'q=WASSERKARTE%20B%C3%A4che', 'q=AV', 'q=Strasse%20Bodenprobe',
-        'q=atlas%20impossible', 'q=Muster', 'thema=hydro&thema=plan&typ=extwms&typ=layergroup&organisation=Amt%20A&organisation=Amt%20B',
-        'q=atlas&thema=hydro&typ=datasetview', 'sort=title-desc'])
+    if label == 'cross':
+        queries = ['q=GEW%C3%84SSER%20Bach&thema=natur&typ=datasetview&typ=extwms&sort=relevance']
+    elif label == 'harvest':
+        queries = ['q=wasser&sort=relevance']
+    elif label == 'qml':
+        queries = ['q=QML']
+    else:
+        queries = ['q=atlas&sort=relevance', 'q=WASSERKARTE%20B%C3%A4che', 'q=AV', 'q=Strasse%20Bodenprobe',
+                   'q=atlas%20impossible', 'q=Muster',
+                   'thema=hydro&thema=plan&typ=extwms&typ=layergroup&organisation=Amt%20A&organisation=Amt%20B',
+                   'q=atlas&thema=hydro&typ=datasetview', 'sort=title-desc']
     payloads = {q: get_json(base, '/api/v1/ebenen?' + q) for q in queries}
     if label in ('search', 'restart'):
         assert [e['id'] for e in payloads[queries[0]]][:3] == ['atlas', 'ch.test.exact', 'ch.test.prefix']
@@ -190,20 +197,57 @@ def verify(base, label):
         assert [e['id'] for e in payloads[queries[3]]] == ['ch.test.cross']
         assert payloads[queries[4]] == []
         assert {e['id'] for e in payloads[queries[6]]} == {'ch.test.prefix', 'ch.test.keyword', 'ch.test.av'}
+    qml_body = None
     if label == 'qml':
         status, mime, xml = http(base, '/ebene/ch.test.qml/style')
         assert status == 200 and 'application/xml' in mime and '<qgis' in xml
+        qml_body = xml
         assert http(base, '/ebene/ch.test.qml')[2].find('onerror=') == -1
     else:
         assert http(base, '/ebene/' + urllib.parse.quote(first['id'], safe='') + '/style')[0] == 404
     facets = {q: get_json(base, '/api/v1/facets?' + q) for q in queries}
+    if label == 'cross':
+        verify_cross(base, queries[0], payloads[queries[0]], facets[queries[0]])
     timings = []
     for _ in range(10):
         started = time.monotonic()
         get_json(base, '/api/v1/ebenen?' + queries[0])
         timings.append((time.monotonic() - started) * 1000)
     return {'layers': layers, 'themes': themes, 'catalog': catalog, 'detail': detail, 'themed': themed,
-            'queries': payloads, 'facets': facets}, round(statistics.median(timings), 3)
+            'queries': payloads, 'facets': facets, 'qmlBody': qml_body}, round(statistics.median(timings), 3)
+
+
+def verify_cross(base, query, results, facets):
+    """Final XTF/search/filter/API/Qute chain, including absent optional metadata."""
+    assert {e['id'] for e in results} == {'ch.final.gewaesser', 'ch.final.karte'}
+    missing = next(e for e in results if e['id'] == 'ch.final.karte')
+    assert missing['organization'] is None and missing['descriptionHtml'] is None
+    assert missing['keywords'] == [] and missing['qwcLayerName'] == missing['id']
+    organization = '&organisation=' + urllib.parse.quote('Amt für Wasser')
+    narrowed = get_json(base, '/api/v1/ebenen?' + query + organization)
+    assert [e['id'] for e in narrowed] == ['ch.final.gewaesser']
+    assert {f['value']: f['count'] for f in facets['typ']} == {'datasetview': 1, 'extwms': 1}
+    for hx in [False, True]:
+        status, _, html = http(base, '/?' + query, hx=hx)
+        assert status == 200 and '2 Kartenebenen in 1 Thema' in html
+        assert 'data-theme="natur"' in html and 'data-theme="planung"' not in html
+        assert ('<!doctype html>' in html) != hx
+        status, _, html = http(base, '/?' + query + organization, hx=hx)
+        assert status == 200 and '1 Kartenebene in 1 Thema' in html
+        assert 'Amt für Wasser entfernen' in html
+        status, _, html = http(base, '/themen/natur/ebenen?' + query, hx=hx)
+        assert status == 200 and '/ebene/ch.final.karte' in html and '/ebene/ch.final.gewaesser' in html
+        assert '/ebene/ch.final.plan' not in html
+        status, _, html = http(base, '/themen/natur/ebenen?' + query + organization, hx=hx)
+        assert status == 200 and '/ebene/ch.final.gewaesser' in html and '/ebene/ch.final.karte' not in html
+    html = http(base, '/ebene/ch.final.karte')[2]
+    assert '<dt>Organisation</dt>' not in html and 'QML herunterladen' not in html
+    assert 'https://geo.so.ch/map?l=ch.final.karte' in html
+    html = http(base, '/ebene/ch.final.gewaesser')[2]
+    assert 'https://www.admin.ch/' in html and 'attack()' not in html and 'onerror' not in html
+    assert http(base, '/ebene/ch.final.karte/style')[0] == 404
+    assert get_json(base, '/api/v1/ebenen?' + query + '&organisation=Planungsamt') == []
+    print('cross-layer: UTF-8/cross-field AND, OR types, organization AND, facets, JSON/full/HX, missing metadata, XSS, QML404', flush=True)
 
 
 def main():
@@ -230,10 +274,10 @@ def main():
         directory.chmod(0o755)
         fixtures = {name: (ROOT / path).read_text() for name, path in [
             ('harvest', 'data/kartenkatalog-harvest-ohne-qml.xtf'), ('search', 'src/test/resources/search/catalog.xml'),
-            ('qml', 'src/test/resources/contract/with-qml.xml')]}
+            ('qml', 'src/test/resources/contract/with-qml.xml'), ('cross', 'src/test/resources/final/catalog.xml')]}
         for runner in runners:
             summary[runner.kind] = {}
-            for label in ['harvest', 'search', 'restart', 'qml']:
+            for label in ['harvest', 'search', 'restart', 'qml', 'cross']:
                 source = directory / (label + '.xml')
                 source.write_text(fixtures['search' if label == 'restart' else label])
                 source.chmod(0o444)

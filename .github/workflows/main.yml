@@ -17,11 +17,13 @@ jobs:
           distribution: temurin
           java-version: '21'
       - name: Test and package Quarkus JVM
-        run: ./gradlew clean test quarkusBuild
+        run: ./gradlew clean test quarkusBuild quarkusIntTest
       - name: Chromium and Firefox desktop/mobile UI gate
         run: ./gradlew playwrightTest -PplaywrightWithDeps=true
       - name: Real JVM HTTP and startup contracts
         run: python3 scripts/p1-process-contract.py
+      - name: Quarkus Dev and targeted QWC2 CORS contract
+        run: python3 scripts/p1-process-contract.py --dev
       - name: Real RAM-index rebuild and search contracts
         run: python3 scripts/p2-process-contract.py
       - uses: actions/upload-artifact@v4

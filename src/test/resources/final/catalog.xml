@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='utf-8'?>
+<ili:transfer xmlns:ili="http://www.interlis.ch/xtf/2.4/INTERLIS" xmlns:k="http://www.interlis.ch/xtf/2.4/SO_AGI_Kartenkatalog_Publikation_20251210">
+  <ili:headersection>
+    <ili:models>
+      <ili:model>SO_AGI_Kartenkatalog_Publikation_20251210</ili:model>
+    </ili:models>
+  </ili:headersection>
+  <ili:datasection>
+    <k:Kartenkatalog ili:bid="final-cross-layer">
+      <k:Thema ili:tid="natur">
+        <k:identifier>natur</k:identifier>
+        <k:title>Natur</k:title>
+      </k:Thema>
+      <k:Thema ili:tid="planung">
+        <k:identifier>planung</k:identifier>
+        <k:title>Planung</k:title>
+      </k:Thema>
+      <k:Ebene ili:tid="layer-1">
+        <k:id>00000000-0000-4000-8000-000000000001</k:id>
+        <k:ident_part>ch.final.gewaesser</k:ident_part>
+        <k:title>Gewässerübersicht</k:title>
+        <k:dtype>datasetview</k:dtype>
+        <k:org_name>Amt für Wasser</k:org_name>
+        <k:description>&lt;p&gt;Bach mit &lt;a href="https://www.admin.ch/"&gt;Information&lt;/a&gt;&lt;img src=x onerror="attack()"&gt;&lt;script&gt;attack()&lt;/script&gt;&lt;/p&gt;</k:description>
+        <k:Thema_R ili:ref="natur" />
+      </k:Ebene>
+      <k:Ebene ili:tid="layer-2">
+        <k:id>00000000-0000-4000-8000-000000000002</k:id>
+        <k:ident_part>ch.final.karte</k:ident_part>
+        <k:title>Gewässerkarte</k:title>
+        <k:dtype>extwms</k:dtype>
+        <k:synonyms>Bach</k:synonyms>
+        <k:Thema_R ili:ref="natur" />
+      </k:Ebene>
+      <k:Ebene ili:tid="layer-3">
+        <k:id>00000000-0000-4000-8000-000000000003</k:id>
+        <k:ident_part>ch.final.plan</k:ident_part>
+        <k:title>Bauzonen</k:title>
+        <k:dtype>datasetview</k:dtype>
+        <k:org_name>Planungsamt</k:org_name>
+        <k:Thema_R ili:ref="planung" />
+      </k:Ebene>
+    </k:Kartenkatalog>
+  </ili:datasection>
+</ili:transfer>

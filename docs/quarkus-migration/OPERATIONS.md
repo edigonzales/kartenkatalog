@@ -7,7 +7,7 @@ Anwendung: **Java 21**, Quarkus **3.40.1.1**, Gradle **9.8.2**, Lucene **10.6.0*
 - JDK21 und bei lokalem Native-Build zusätzlich GraalVM25 mit `native-image` und C-Toolchain.
 - Für Linux-Build/Prüfung Docker oder ein entsprechend konfiguriertes Podman. Die folgenden tatsächlich genutzten Befehle verwenden Docker.
 - Native-Build benötigt mindestens ca. 4GiB Compilerheap plus Build-/Container-Overhead; keine parallelen Native-Builds in einer kleinen VM. Im lokalen Bericht stehen echte Build-/Runtime-Messwerte.
-- Die getestete lokale Linux-Architektur und unabhängige Nachweise stehen in `implementation/P4.md`/`reviews/P4-review.md`. Für eine andere Zielarchitektur erneut bauen **und dort ausführen**, keinen macOS-/arm64-Test als amd64-Nachweis ausgeben. CI baut auf der Architektur ihres Linux-Runners, ohne Push/Release.
+- Die getestete lokale Linux-Architektur und unabhängige Nachweise stehen in `implementation/P5.md`/`reviews/P5-review.md`. Für eine andere Zielarchitektur erneut bauen **und dort ausführen**, keinen macOS-/arm64-Test als amd64-Nachweis ausgeben. CI baut auf der Architektur ihres Linux-Runners, ohne Push/Release.
 
 Offizielle Grundlagen: [Quarkus Native](https://quarkus.io/guides/building-native-image/), [Gradle/Integrationstests](https://quarkus.io/guides/gradle-tooling/). Die tatsächliche Version 3.40.1.1 verlangt getrennte Paketwahl: Native mit `-Dquarkus.native.enabled=true -Dquarkus.package.jar.enabled=false`; JVM ohne diese beiden Optionen. Ein gleichzeitiges Native-/JAR-Paket lehnt das Plugin ab.
 
@@ -32,7 +32,7 @@ CATALOG_XTF_LOCATION=file:/absoluter/pfad/catalog.xtf \
   ./build/kartenkatalog-0.0.LOCALBUILD-runner
 ```
 
-Bei Git-Tags kann der Dateiname die von `gradle/versioning.gradle` ermittelte Version enthalten; den tatsächlich gebauten `build/*-runner` verwenden. `testNative` führt dieselben drei `PackagedCatalogIT`-HTTP-Verträge wie `quarkusIntTest` am echten gebauten Artefakt aus, nicht am In-Process-Testcontainer. Zusätzlich ist der separate Paritäts-/Startfehlertest verbindlich:
+`gradle/versioning.gradle` setzt `0.0.LOCALBUILD` bzw. `0.0.<BUILD_NUMBER|TRAVIS_BUILD_NUMBER|GITHUB_RUN_NUMBER>` (erste gesetzte Variable in dieser Reihenfolge); den tatsächlich gebauten `build/*-runner` verwenden. `testNative` führt dieselben drei `PackagedCatalogIT`-HTTP-Verträge wie `quarkusIntTest` am echten gebauten Artefakt aus, nicht am In-Process-Testcontainer. Zusätzlich ist der separate Paritäts-/Startfehlertest verbindlich:
 
 ```sh
 # Native-Binary vor einem weiteren Build ausdrücklich an eigenem Artefaktpfad sichern:
@@ -56,19 +56,19 @@ Zuerst aktuelles JVM-Artefakt samt Pflichtgates, dann JVM-Image sichern, **danac
 ./gradlew clean test quarkusBuild quarkusIntTest playwrightTest
 # Auf Linux bei Bedarf: -PplaywrightWithDeps=true
 
-docker build -f src/main/docker/Dockerfile.jvm -t kartenkatalog:p4-jvm .
+docker build -f src/main/docker/Dockerfile.jvm -t kartenkatalog:local-jvm .
 ./gradlew quarkusBuild \
   -Dquarkus.native.enabled=true -Dquarkus.package.jar.enabled=false \
   -Dquarkus.native.container-build=true -Dquarkus.native.container-runtime=docker \
   -Dquarkus.native.builder-image=quay.io/quarkus/ubi9-quarkus-mandrel-builder-image@sha256:29a5078c94489623ef7e554aad2cbff70a4ff872ac6d60a46f5538697ed82a30 \
   -Dquarkus.native.native-image-xmx=4g
 # Auf einem passenden Linux-Host stattdessen testNative für zusätzliche Integrationstests.
-docker build -f src/main/docker/Dockerfile.native -t kartenkatalog:p4-native .
+docker build -f src/main/docker/Dockerfile.native -t kartenkatalog:local-native .
 python3 scripts/p4-distribution-contract.py \
-  --jvm-image kartenkatalog:p4-jvm --native-image kartenkatalog:p4-native
+  --jvm-image kartenkatalog:local-jvm --native-image kartenkatalog:local-native
 ```
 
-Der Test startet **echte getrennte Container** als UID `1000730000:0`, mit read-only RootFS und read-only Daten-Bindmount, ohne Capabilities/Privilege-Escalation oder Indexvolume. Ein auf 64MiB begrenztes flüchtiges `/tmp`-tmpfs dient dem Vert.x-Ressourcencache; sein Inhalt wird separat kopiert und auf Lucene-Dateien geprüft. Er prüft Health, alle fünf API-Formen, HTML-/HTMX-Fragmente, QML/404, gleiche JSON-Payloads und Ranking/Facets für Harvest und Kleinfixtures, Neustartdeterminismus und geänderte XTF. Defekt-XML, XXE, defekte Referenz und echter Lucene-Indexaufbaufehler müssen beide Laufzeiten vor Ready beenden. Er prüft Docker-Mount-/User-/RootFS-Inspektion und `docker diff`, native Logs mit Lucene-Version/Speicherklasse, RSS/Start-/Index-/Suchzeit und räumt eigene Container auf. Rohbelege: `build/reports/p4/distribution/`. Keine vorhandenen Container/Volumes werden gelöscht.
+Der Test startet **echte getrennte Container** als UID `1000730000:0`, mit read-only RootFS und read-only Daten-Bindmount, ohne Capabilities/Privilege-Escalation oder Indexvolume. Ein auf 64MiB begrenztes flüchtiges `/tmp`-tmpfs dient dem Vert.x-Ressourcencache; sein Inhalt wird separat kopiert und auf Lucene-Dateien geprüft. Er prüft Health, alle fünf API-Formen, HTML-/HTMX-Fragmente, QML/404, gleiche JSON-Payloads, exakte QML-Bodies und Ranking/Facets für Harvest und Kleinfixtures, Neustartdeterminismus und geänderte XTF. Eine separate Abschlussfixture prüft XTF → Suchtext über Titel/Beschreibung/Synonym → Mehrfachfilter → JSON/Facets → Vollseite/HTMX/Metadatendetail, auch mit fehlender Organisation/QML und unsicherem Beschreibungs-HTML. Defekt-XML, XXE, defekte Referenz und echter Lucene-Indexaufbaufehler müssen beide Laufzeiten vor Ready beenden. Er prüft Docker-Mount-/User-/RootFS-Inspektion und `docker diff`, native Logs mit Lucene-Version/Speicherklasse, RSS/Start-/Index-/Suchzeit und räumt eigene Container auf. Rohbelege: `build/reports/p4/distribution/`. Keine vorhandenen Container/Volumes werden gelöscht.
 
 Einzelner Betrieb (XTF-Pfad absolut; bewusst Linux-native Image):
 
@@ -79,7 +79,7 @@ docker run --rm --name kartenkatalog -p 127.0.0.1:8080:8080 \
   --tmpfs /tmp:rw,noexec,nosuid,size=64m,mode=1777 \
   --mount type=bind,source=/absoluter/pfad/catalog.xtf,target=/catalog/catalog.xtf,readonly \
   -e CATALOG_XTF_LOCATION=file:/catalog/catalog.xtf \
-  kartenkatalog:p4-native
+  kartenkatalog:local-native
 ```
 
 Daten müssen für die effektive UID/Gruppe lesbar und Elternverzeichnisse durchsuchbar sein. Read-only Mount verhindert Änderungen durch die Anwendung; Quelldateien ausserhalb des Prozesses aktualisieren und Deployment neu starten. Kein administrativer Reload-Endpunkt und keine Index-Synchronisation.
@@ -107,3 +107,30 @@ Neustartablauf: neue valide XTF bereitstellen → Deployment-Rollout → Startup
 - HTTP `400/404/503` bleibt Problem-JSON; Suchindexausfall ist 503, kein `[]`. CORS bevorzugt same-origin Reverse Proxy; lokale QWC2-Freigaben gezielt konfigurieren, nicht pauschal Produktion öffnen.
 
 CI `.github/workflows/main.yml` prüft JVM/T1–T3 und einen separaten Linux-Native-Job mit echtem `testNative` und read-only Containerparität. Lokal ausgeführte Ergebnisse und unabhängig geprüfter SHA werden ausschliesslich in Implementierungs-/Reviewbericht behauptet; ein konfigurierter CI-Job allein ist kein ausgeführter Nachweis.
+
+
+## QWC2-Dev-CORS
+
+Produktion bevorzugt denselben Origin über Reverse Proxy. Für einen lokalen QWC2-Client auf `http://localhost:8081` kann Quarkus Dev gezielt freigegeben werden ([offizielle CORS-Konfiguration](https://quarkus.io/guides/security-cors/)):
+
+```sh
+./gradlew quarkusDev -Dquarkus.http.port=8083 \
+  -Dquarkus.http.cors.enabled=true \
+  -Dquarkus.http.cors.origins=http://localhost:8081 \
+  -Dquarkus.http.cors.methods=GET,HEAD,OPTIONS \
+  -Dquarkus.http.cors.headers=Accept,Content-Type \
+  -Dquarkus.http.cors.access-control-allow-credentials=false
+```
+
+Origin einschliesslich Schema/Hostname/Port an den echten Dev-Client anpassen (`127.0.0.1` ist ein anderer Origin). Diese Optionen gelten nur für diesen Aufruf; die ausgelieferte Konfiguration aktiviert CORS nicht pauschal. Kein `*` und keine Cookie-Freigabe erforderlich. QWC2 sendet normale JSON-GETs, keine HTMX-Header.
+
+```sh
+curl -i -X OPTIONS http://localhost:8083/api/v1/ebenen \
+  -H 'Origin: http://localhost:8081' \
+  -H 'Access-Control-Request-Method: GET' \
+  -H 'Access-Control-Request-Headers: Content-Type'
+curl -i http://localhost:8083/api/v1/themen -H 'Origin: http://localhost:8081'
+curl -i http://localhost:8083/api/v1/themen -H 'Origin: http://localhost:9999'
+```
+
+Erwartung: erlaubter Preflight/GET ist 200 mit exakt `Access-Control-Allow-Origin: http://localhost:8081`; fremder Origin wird mit 403 und ohne Freigabe abgewiesen. `Access-Control-Allow-Credentials: true` darf fehlen. Bei Problemen Origin und Browser-Preflight mit den freigegebenen Methoden/Headern vergleichen; nicht den API-Vertrag ändern.

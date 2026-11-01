@@ -5,7 +5,7 @@ import ch.so.agi.meta.CatalogText;
 import ch.so.agi.meta.Ebene;
 import ch.so.agi.meta.Thema;
 
-/** Public contract independent of JDBC column names and persistence records. */
+/** Public JSON contract independent of the XTF storage representation. */
 public final class CatalogDtos {
     private CatalogDtos() {}
     public record Theme(String identifier, String title, String description, String descriptionHtml,

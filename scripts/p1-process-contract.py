@@ -39,6 +39,12 @@ def launch(location, name, dev=False, expect_failure=False):
     port = free_port()
     env = dict(os.environ, CATALOG_XTF_LOCATION=location)
     props = [f'-Dquarkus.http.port={port}', '-Dquarkus.http.host=127.0.0.1']
+    if dev:
+        props += ['-Dquarkus.http.cors.enabled=true',
+                  '-Dquarkus.http.cors.origins=http://localhost:8081',
+                  '-Dquarkus.http.cors.methods=GET,HEAD,OPTIONS',
+                  '-Dquarkus.http.cors.headers=Accept,Content-Type',
+                  '-Dquarkus.http.cors.access-control-allow-credentials=false']
     command = (['./gradlew', '--console=plain', *props, '-Dquarkus.console.enabled=false', '-Dquarkus.analytics.disabled=true', 'quarkusDev']
                if dev else ['java', *props, '-jar', 'build/quarkus-app/quarkus-run.jar'])
     logpath = REPORTS / f'{name}.log'
@@ -69,6 +75,8 @@ def launch(location, name, dev=False, expect_failure=False):
             run = subprocess.run(['python3', 'scripts/p0-http-contract.py', url], cwd=ROOT, stdout=smoke_log, stderr=subprocess.STDOUT, timeout=60)
         assert run.returncode == 0, (name, (REPORTS / f'{name}-http.log').read_text())
         assert response(url + '/q/health/live')[1]['status'] == 'UP'
+        if dev:
+            verify_dev_cors(url)
         # A completed snapshot never reopens/parses the source per HTTP request.
         if not dev:
             Path(location.removeprefix('file:')).write_text('<invalid/>')
@@ -78,6 +86,29 @@ def launch(location, name, dev=False, expect_failure=False):
         return {'name': name, 'ready': True, 'readySeconds': elapsed, 'httpExit': run.returncode}
     finally:
         stop(process)
+
+def verify_dev_cors(base):
+    """Documented QWC2 dev origin, real preflight/GET and rejected foreign origin."""
+    for origin, method, expected in [('http://localhost:8081', 'OPTIONS', 200),
+                                     ('http://localhost:8081', 'GET', 200),
+                                     ('http://localhost:9999', 'OPTIONS', 403),
+                                     ('http://localhost:9999', 'GET', 403)]:
+        headers = {'Origin': origin}
+        if method == 'OPTIONS':
+            headers.update({'Access-Control-Request-Method': 'GET',
+                            'Access-Control-Request-Headers': 'Content-Type'})
+        request = urllib.request.Request(base + '/api/v1/themen', headers=headers, method=method)
+        try:
+            result = urllib.request.urlopen(request, timeout=5)
+        except urllib.error.HTTPError as error:
+            result = error
+        with result:
+            assert result.status == expected, (origin, method, result.status)
+            allowed = result.headers.get('Access-Control-Allow-Origin')
+            assert allowed == (origin if expected == 200 else None), (origin, method, allowed)
+            assert result.headers.get('Access-Control-Allow-Credentials') != 'true'
+        print('CORS', method, origin, expected, allowed)
+
 
 def main():
     parser = argparse.ArgumentParser()

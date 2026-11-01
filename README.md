@@ -2,7 +2,7 @@
 
 Quarkus **3.40.1.1**, Java **21**, Gradle Wrapper **9.8.2**. Der Katalog wird beim Start aus einer lokalen INTERLIS-2.4-XTF-Datei gelesen, validiert und als unveränderlicher In-Memory-Snapshot bereitgestellt. Keine Datenbank, kein Mock-Fallback, kein Reload-Endpunkt.
 
-Aktueller Migrationsabschnitt **P4**: Quarkus REST/Jackson, typsichere Qute-Seiten im SODATA-Stil, SmallRye Health und **Apache Lucene 10.6.0**. Der Index wird bei jedem Start aus XTF im Java-Heap (`ByteBuffersDirectory`, `GermanAnalyzer`) neu aufgebaut. Kein persistierter Suchindex oder Index-Volume. Die Startseite bietet aufklappbare Themen mit lazy geladenen Kartenebenen und No-JS-Themenlinks; Detailseiten zeigen nur vorhandene Metadaten. Suche und Mehrfachfilter arbeiten als normale GET-Form und mit HTMX-Fragmenten, URL-/Back-/Reload-Zustand, Chips, Desktop-Popovern und mobilem Filtersheet. JVM- und Native-Artefakte werden getrennt gebaut und mit echten HTTP-Prozessen auf Parität geprüft; die unabhängige Abnahme gilt ausschliesslich für den im Migrationsstatus genannten SHA.
+Quarkus REST/Jackson, typsichere Qute-Seiten im SODATA-Stil, SmallRye Health und **Apache Lucene 10.6.0**. Der Index wird bei jedem Start aus XTF im Java-Heap (`ByteBuffersDirectory`, `GermanAnalyzer`) neu aufgebaut. Kein persistierter Suchindex oder Index-Volume. Die Startseite bietet aufklappbare Themen mit lazy geladenen Kartenebenen und No-JS-Themenlinks; Detailseiten zeigen nur vorhandene Metadaten. Suche und Mehrfachfilter arbeiten als normale GET-Form und mit HTMX-Fragmenten, URL-/Back-/Reload-Zustand, Chips, Desktop-Popovern und mobilem Filtersheet. JVM- und Native-Artefakte werden getrennt gebaut und mit echten HTTP-Prozessen auf Parität geprüft; die unabhängige Abnahme gilt ausschliesslich für den im Migrationsstatus genannten SHA.
 
 ## Start und Build
 
@@ -56,7 +56,7 @@ Die Listen sind standardmässig nach de-CH-Titel und Kennung sortiert. `sort=tit
 /api/v1/facets?q=wasser&typ=datasetview
 ```
 
-Fehler verwenden weiterhin `application/problem+json` mit `status`, `title`, `detail`, `instance`, ohne Stacktraces. CORS ist nicht pauschal freigeschaltet; für QWC bevorzugt same-origin Reverse Proxy.
+Fehler verwenden weiterhin `application/problem+json` mit `status`, `title`, `detail`, `instance`, ohne Stacktraces. CORS ist nicht pauschal freigeschaltet; für QWC bevorzugt same-origin Reverse Proxy. Eine gezielte, nachprüfbare lokale QWC2-Freigabe steht im [Betriebshandbuch](docs/quarkus-migration/OPERATIONS.md#qwc2-dev-cors).
 
 ## Verifikation
 
@@ -69,13 +69,13 @@ python3 scripts/p1-process-contract.py --dev
 python3 scripts/p2-process-contract.py
 ```
 
-Der P2-Prozesstest prüft Neuaufbau/Determinismus nach Neustart, XTF-Änderungen, Suche/Ranking/Filter/Facets, read-only Quelle/Arbeitsverzeichnis ohne Indexdateien und einen echten Index-Startupfehler. Er protokolliert lokale Startup-/RSS-/Suchzeitwerte unter `build/reports/p2/`. Der P1-JVM-Prozesstest startet das gebaute JAR selbst, prüft die P0-HTTP-Verträge, Health und Snapshot-Lebensdauer sowie echte Startabbrüche für ungültige Quellen. `--dev` prüft einen separaten `quarkusDev`-Prozess. Beide räumen ihre Prozessgruppen auf; Rohlogs liegen unter `build/reports/p1/`. Der weiterhin nutzbare `scripts/p0-http-contract.py <Basis-URL>` prüft einen bereits laufenden Prozess. JUnit-Rohreports: `build/test-results/test/`; HTML: `build/reports/tests/test/`.
+Der P2-Prozesstest prüft Neuaufbau/Determinismus nach Neustart, XTF-Änderungen, Suche/Ranking/Filter/Facets, read-only Quelle/Arbeitsverzeichnis ohne Indexdateien und einen echten Index-Startupfehler. Er protokolliert lokale Startup-/RSS-/Suchzeitwerte unter `build/reports/p2/`. Der P1-JVM-Prozesstest startet das gebaute JAR selbst, prüft die P0-HTTP-Verträge, Health und Snapshot-Lebensdauer sowie echte Startabbrüche für ungültige Quellen. `--dev` prüft einen separaten `quarkusDev`-Prozess und die dokumentierte QWC2-CORS-Freigabe samt erlaubtem/abgewiesenem Preflight und GET. Beide räumen ihre Prozessgruppen auf; Rohlogs liegen unter `build/reports/p1/`. Der weiterhin nutzbare `scripts/p0-http-contract.py <Basis-URL>` prüft einen bereits laufenden Prozess. JUnit-Rohreports: `build/test-results/test/`; HTML: `build/reports/tests/test/`.
 
 Die synthetische `with-qml.xml` dient nur Tests für QML und Sanitization; sie wird nicht in den Harvest gemischt. CI prüft JVM/T1–T3 sowie einen separaten Linux-Native-Build mit realen Integrationstests und read-only Containerparität. Die alten Boot-Native-/Docker-Publishing-Tasks wurden entfernt. Kein Push/Release als versteckter Buildschritt.
 
 Migrationsplan, Status und unabhängige Abnahmen: [docs/quarkus-migration](docs/quarkus-migration/STATUS.md). Frühere Notizen: [docs/legacy-notes.md](docs/legacy-notes.md).
 
-## Oberfläche und Browserprüfung (P3a + P3b)
+## Oberfläche und Browserprüfung
 
 `/` und `/thema` liefern dieselbe Startseite. Native `details`-Themenzeilen laden ihre Ebenen einmalig als HTMX-Fragment; ohne JavaScript bleibt der normale Themenlink nutzbar. Die Themenübersicht bleibt A–Z; die Ebenen folgen der ausgewählten Titel-/Relevanzsortierung.
 
@@ -90,12 +90,12 @@ Metadatenlinks sind auf absolute HTTP(S)-URLs ohne Zugangsdaten begrenzt; Beschr
 Browserberichte: `build/reports/tests/playwrightTest/`; Screenshots und JVM-Logs unter `build/reports/p3a/` (kumulative Basis) und `build/reports/p3b/` (Filtermatrix). Der normale `test`-Task prüft alle Unit-/HTTP-Tests; CI ruft **beide** Pflichttasks auf und installiert Linux-Systembibliotheken mit `-PplaywrightWithDeps=true`. `clean` ersetzt diese Rohreports. Herkunft und Reproduktion der tatsächlichen Referenzbilder: [docs/quarkus-migration/reference](docs/quarkus-migration/reference/README.md).
 
 
-## Native Image und Betrieb (P4)
+## Native Image und Betrieb
 
 Java-21-Toolchain bleibt unverändert. **GraalVM/Mandrel25** ist als Native-Compiler für Quarkus3.40.1.1 erforderlich; GraalVM21 wird vom Plugin abgewiesen. `quarkusIntTest` prüft das tatsächliche JVM-Paket, `testNative` dieselben HTTP-Verträge an einem echten Native-Binary. Native-Paketwahl: `-Dquarkus.native.enabled=true -Dquarkus.package.jar.enabled=false`; JVM separat ohne diese Optionen bauen.
 
 Vollständige reproduzierbare Befehle, Compiler-/Runtime-Digests, Linux-/Architekturgrenzen, read-only XTF-Mount, OpenShift-Vorlage, Health/Restart und Fehlerdiagnose: [Betriebshandbuch](docs/quarkus-migration/OPERATIONS.md). Das Handbuch erläutert auch den durch einen echten Native-Startfehler begründeten gezielten Lucene-Reflection-Hint; kein Versionsdowngrade, kein Dateisystemindex.
 
-`scripts/p4-distribution-contract.py --native-executable /abs/pfad/application` prüft getrennte lokale JVM-/Native-Prozesse. `--jvm-image <image> --native-image <image>` prüft echte Linux-Container mit beliebiger UID, read-only RootFS/Daten und ohne Indexvolume. Beide prüfen identische JSON-Payloads, Treffer-/Ranking-/Facet-Parität, Neustarts, geänderte XTF, HTML/HTMX/QML und fehlschlagenden Start bei XML-/XXE-/Referenz-/Indexfehlern. Rohbelege: `build/reports/p4/`.
+`scripts/p4-distribution-contract.py --native-executable /abs/pfad/application` prüft getrennte lokale JVM-/Native-Prozesse. `--jvm-image <image> --native-image <image>` prüft echte Linux-Container mit beliebiger UID, read-only RootFS/Daten und ohne Indexvolume. Beide prüfen identische JSON-Payloads, Treffer-/Ranking-/Facet-Parität, Neustarts, geänderte XTF, HTML/HTMX/exakte QML-Bodies, einen Cross-Layer-Fall mit fehlenden Metadaten und Mehrfachfiltern sowie fehlschlagenden Start bei XML-/XXE-/Referenz-/Indexfehlern. Rohbelege: `build/reports/p4/`.
 
 Die Images unter `src/main/docker/` verwenden UBI9 und laufen ohne Root; `deploy/openshift.yaml` ist eine anzupassende Vorlage, kein bereits ausgeführtes Clusterdeployment. Kein automatischer Push/Release. Native-/Linux-Nachweise und tatsächlich geprüfte Architektur stehen im [P4-Implementierungsbericht](docs/quarkus-migration/implementation/P4.md) und im unabhängigen Reviewbericht.
