@@ -40,7 +40,7 @@ mkdir -p build/native-local
 cp build/*-runner build/native-local/application
 # Aktuelles JVM-JAR erzeugen:
 ./gradlew quarkusBuild quarkusIntTest
-python3 scripts/p4-distribution-contract.py \
+python3 scripts/distribution-contract.py \
   --native-executable "$PWD/build/native-local/application"
 # Optional auch die gesamte Browsermatrix am echten lokalen Native-Prozess:
 ./gradlew playwrightTest -PcatalogExecutable="$PWD/build/native-local/application"
@@ -64,11 +64,11 @@ docker build -f src/main/docker/Dockerfile.jvm -t kartenkatalog:local-jvm .
   -Dquarkus.native.native-image-xmx=4g
 # Auf einem passenden Linux-Host stattdessen testNative für zusätzliche Integrationstests.
 docker build -f src/main/docker/Dockerfile.native -t kartenkatalog:local-native .
-python3 scripts/p4-distribution-contract.py \
+python3 scripts/distribution-contract.py \
   --jvm-image kartenkatalog:local-jvm --native-image kartenkatalog:local-native
 ```
 
-Der Test startet **echte getrennte Container** als UID `1000730000:0`, mit read-only RootFS und read-only Daten-Bindmount, ohne Capabilities/Privilege-Escalation oder Indexvolume. Ein auf 64MiB begrenztes flüchtiges `/tmp`-tmpfs dient dem Vert.x-Ressourcencache; sein Inhalt wird separat kopiert und auf Lucene-Dateien geprüft. Er prüft Health, alle fünf API-Formen, HTML-/HTMX-Fragmente, QML/404, gleiche JSON-Payloads, exakte QML-Bodies und Ranking/Facets für Harvest und Kleinfixtures, Neustartdeterminismus und geänderte XTF. Eine separate Abschlussfixture prüft XTF → Suchtext über Titel/Beschreibung/Synonym → Mehrfachfilter → JSON/Facets → Vollseite/HTMX/Metadatendetail, auch mit fehlender Organisation/QML und unsicherem Beschreibungs-HTML. Defekt-XML, XXE, defekte Referenz und echter Lucene-Indexaufbaufehler müssen beide Laufzeiten vor Ready beenden. Er prüft Docker-Mount-/User-/RootFS-Inspektion und `docker diff`, native Logs mit Lucene-Version/Speicherklasse, RSS/Start-/Index-/Suchzeit und räumt eigene Container auf. Rohbelege: `build/reports/p4/distribution/`. Keine vorhandenen Container/Volumes werden gelöscht.
+Der Test startet **echte getrennte Container** als UID `1000730000:0`, mit read-only RootFS und read-only Daten-Bindmount, ohne Capabilities/Privilege-Escalation oder Indexvolume. Ein auf 64MiB begrenztes flüchtiges `/tmp`-tmpfs dient dem Vert.x-Ressourcencache; sein Inhalt wird separat kopiert und auf Lucene-Dateien geprüft. Er prüft Health, alle fünf API-Formen, HTML-/HTMX-Fragmente, QML/404, gleiche JSON-Payloads, exakte QML-Bodies und Ranking/Facets für Harvest und Kleinfixtures, Neustartdeterminismus und geänderte XTF. Eine separate Abschlussfixture prüft XTF → Suchtext über Titel/Beschreibung/Synonym → Mehrfachfilter → JSON/Facets → Vollseite/HTMX/Metadatendetail, auch mit fehlender Organisation/QML und unsicherem Beschreibungs-HTML. Defekt-XML, XXE, defekte Referenz und echter Lucene-Indexaufbaufehler müssen beide Laufzeiten vor Ready beenden. Er prüft Docker-Mount-/User-/RootFS-Inspektion und `docker diff`, native Logs mit Lucene-Version/Speicherklasse, RSS/Start-/Index-/Suchzeit und räumt eigene Container auf. Rohbelege: `build/reports/distribution/`. Keine vorhandenen Container/Volumes werden gelöscht.
 
 Einzelner Betrieb (XTF-Pfad absolut; bewusst Linux-native Image):
 

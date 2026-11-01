@@ -30,11 +30,11 @@ jobs:
       - name: Chromium and Firefox desktop/mobile UI gate
         run: ./gradlew playwrightTest -PplaywrightWithDeps=true
       - name: Real JVM HTTP and startup contracts
-        run: python3 scripts/p1-process-contract.py
+        run: python3 scripts/runtime-process-contract.py
       - name: Quarkus Dev and targeted QWC2 CORS contract
-        run: python3 scripts/p1-process-contract.py --dev
+        run: python3 scripts/runtime-process-contract.py --dev
       - name: Real RAM-index rebuild and search contracts
-        run: python3 scripts/p2-process-contract.py
+        run: python3 scripts/search-index-contract.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -72,7 +72,7 @@ jobs:
           docker build --platform linux/amd64 \
             --build-arg VERSION="$APP_VERSION" --build-arg REVISION="$GITHUB_SHA" \
             -f src/main/docker/Dockerfile.native -t kartenkatalog:ci-native .
-          python3 scripts/p4-distribution-contract.py \
+          python3 scripts/distribution-contract.py \
             --jvm-image kartenkatalog:ci-jvm --native-image kartenkatalog:ci-native \
             --expected-version "$APP_VERSION" --expected-revision "$GITHUB_SHA" \
             --expected-platform linux/amd64
@@ -99,7 +99,7 @@ jobs:
           python3 scripts/verify-published-images.py --version "$APP_VERSION"
           docker pull --platform linux/amd64 "sogis/kartenkatalog:$APP_VERSION"
           docker pull --platform linux/amd64 "sogis/kartenkatalog:$APP_VERSION-jvm"
-          python3 scripts/p4-distribution-contract.py \
+          python3 scripts/distribution-contract.py \
             --jvm-image "sogis/kartenkatalog:$APP_VERSION-jvm" \
             --native-image "sogis/kartenkatalog:$APP_VERSION" \
             --expected-version "$APP_VERSION" --expected-revision "$GITHUB_SHA" \

@@ -49,7 +49,7 @@ footer { border-top:1px solid var(--line); background:#fafbfc; } .footer-inner {
   .theme-title { font-size:17px; } .theme-layers { padding:0 12px 0 44px; } .layer-row { grid-template-columns:minmax(0,1fr); gap:12px; } .layer-actions { justify-content:start; }
   .detail-heading { align-items:start; flex-direction:column; gap:24px; margin-bottom:36px; } .detail-grid { grid-template-columns:minmax(0,1fr); gap:12px; } .primary-action { white-space:normal; }
 }
-/* P3b: SODATA filter/popover/sheet concepts adapted to one accessible native GET form. */
+/* SODATA filter/popover/sheet concepts adapted to one accessible native GET form. */
 .catalog-search { margin-bottom:28px; }
 .search-clear { padding:10px; font-size:26px; text-decoration:none; }
 .filter-toolbar { margin-top:24px; }

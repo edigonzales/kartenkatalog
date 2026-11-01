@@ -15,7 +15,7 @@ import urllib.parse
 import urllib.request
 
 ROOT = Path(__file__).resolve().parents[1]
-REPORTS = ROOT / 'build/reports/p2'
+REPORTS = ROOT / 'build/reports/search-index'
 
 def request(base, path):
     with urllib.request.urlopen(base + path, timeout=3) as reply:
@@ -81,7 +81,7 @@ def run(source, cwd, label, failure=False, harvest=False):
 
 def main():
     REPORTS.mkdir(parents=True,exist_ok=True)
-    with tempfile.TemporaryDirectory(prefix='catalog-p2-') as tmp:
+    with tempfile.TemporaryDirectory(prefix='catalog-search-index-') as tmp:
         directory=Path(tmp);source=directory/'catalog.xml'
         original=(ROOT/'src/test/resources/search/catalog.xml').read_text()
         source.write_text(original);source.chmod(0o444)
@@ -100,6 +100,6 @@ def main():
             (REPORTS/'summary.json').write_text(json.dumps({'harvest':harvest,'first':first,'second':second,'changed':changed,'broken':broken},indent=2)+'\n')
         finally:
             directory.chmod(0o755);source.chmod(0o644);harvest_source.chmod(0o644)
-    print('All P2 process assertions succeeded; no persisted index files.')
+    print('All search-index process assertions succeeded; no persisted index files.')
 
 if __name__=='__main__':main()

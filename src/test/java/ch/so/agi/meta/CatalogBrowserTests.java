@@ -11,7 +11,7 @@ import java.time.Duration;
 import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-/** Actual packaged JVM and actual Chromium; intentionally separate from the Quarkus test container. */
+/** Actual packaged JVM and actual Chromium and Firefox; intentionally separate from the Quarkus test container. */
 @Tag("playwright")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CatalogBrowserTests {
@@ -20,7 +20,7 @@ class CatalogBrowserTests {
     Playwright playwright;
     Browser browser;
     Browser firefox;
-    final Path reports=Path.of("build/reports/p3a/screenshots");
+    final Path reports=Path.of("build/reports/browser/catalog/screenshots");
     @BeforeAll void start() throws Exception {
         Files.createDirectories(reports);
         int port;
@@ -31,7 +31,7 @@ class CatalogBrowserTests {
             ? new ProcessBuilder("java","-Dquarkus.http.host=127.0.0.1","-Dquarkus.http.port="+port,"-jar","build/quarkus-app/quarkus-run.jar")
             : new ProcessBuilder(executable,"-Dquarkus.http.host=127.0.0.1","-Dquarkus.http.port="+port);
         command.environment().put("CATALOG_XTF_LOCATION","file:"+Path.of("data/kartenkatalog-harvest-ohne-qml.xtf").toAbsolutePath());
-        app=command.redirectErrorStream(true).redirectOutput(Path.of("build/reports/p3a/browser-jvm.log").toFile()).start();
+        app=command.redirectErrorStream(true).redirectOutput(Path.of("build/reports/browser/catalog/browser-jvm.log").toFile()).start();
         var client=HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(2)).build();
         long deadline=System.nanoTime()+Duration.ofSeconds(30).toNanos();
         boolean ready=false;

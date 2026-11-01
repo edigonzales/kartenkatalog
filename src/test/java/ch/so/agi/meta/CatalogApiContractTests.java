@@ -14,12 +14,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /** Real HTTP contract, deliberately independent of controller and DTO implementation. */
 @QuarkusTest
-class BaselineContractTests {
+class CatalogApiContractTests {
     @TestHTTPResource URI base;
     final ObjectMapper json = new ObjectMapper();
     final JsonNode contract = contract();
     private JsonNode contract() {
-        try (var input = getClass().getResourceAsStream("/contract/baseline.json")) { return json.readTree(input); }
+        try (var input = getClass().getResourceAsStream("/contract/public-api.json")) { return json.readTree(input); }
         catch (java.io.IOException e) { throw new java.io.UncheckedIOException(e); }
     }
     final HttpClient client = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NEVER).build();

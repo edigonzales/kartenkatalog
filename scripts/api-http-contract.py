@@ -8,7 +8,7 @@ import urllib.request
 from pathlib import Path
 
 BASE = sys.argv[1] if len(sys.argv) > 1 else 'http://127.0.0.1:8083'
-CONTRACT = json.loads((Path(__file__).resolve().parents[1] / 'src/test/resources/contract/baseline.json').read_text())
+CONTRACT = json.loads((Path(__file__).resolve().parents[1] / 'src/test/resources/contract/public-api.json').read_text())
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, headers, newurl):
@@ -65,13 +65,13 @@ def main():
         assert actual['instance'] == expected['path'].split('?')[0]
         assert 'trace' not in actual and 'exception' not in actual
     body, headers = request('/', 200, 'text/html')
-    assert '<h1>Kartenkatalog</h1>' in body  # P3a replaces the legacy redirect with the full start page.
+    assert '<h1>Kartenkatalog</h1>' in body  # The root serves the complete catalog start page.
     for path, title in [('/thema', 'Hoheitsgrenzen'), ('/themen/harvest-hoheitsgrenzen/ebenen', 'Gemeindegrenzen'), ('/ebene/ch.so.agi.gemeindegrenzen', 'Gemeindegrenzen')]:
         assert title in request(path, mime='text/html')[0]
     for path in ['/ebene/unknown', '/themen/unknown/ebenen', '/ebene/unknown/style']:
         request(path, 404, 'application/problem+json')
     assert request('/ping', mime='text/plain')[0] == 'kartenkatalog'
-    print('All P0 process contract assertions succeeded.')
+    print('All API HTTP contract assertions succeeded.')
 
 if __name__ == '__main__':
     main()

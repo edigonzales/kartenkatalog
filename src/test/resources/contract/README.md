@@ -1,39 +1,32 @@
-# Spring/XTF baseline (P0)
+# Öffentlicher API-Vertrag
 
-`baseline.json` was captured from real HTTP responses on base commit
-`eabbb24ab73aad21ed108c13ed8893e6cb8848a5`, using the versioned incomplete
-169-theme / 886-layer harvest. The SHA-256 pins this fixture only, not production.
-One complete Layer and Theme payload protects field names, scalar types, explicit
-nulls, empty arrays, plain/HTML descriptions and source ID vs published QWC ID.
-Three additional focused products cover every other harvested product type.
-Error cases protect status, title, detail, instance path and problem MIME type;
-dynamic headers and request ports are deliberately excluded.
+`public-api.json` schützt die öffentlichen JSON-Feldnamen, Typen, expliziten
+null-Werte, leeren Arrays, Klartext-/HTML-Beschreibungen und die publizierte
+QWC-Kennung gegenüber der Quell-UUID. Vier fokussierte Produkte decken die
+Produkttypen der mitgelieferten unvollständigen Harvest-Fixture ab; fünf
+Fehlerfälle prüfen Status, Titel, Detail, Instanzpfad und Problem-JSON.
+Der SHA256 und die 169 Themen/886 Ebenen gelten ausschliesslich für diese Fixture.
 
-`BaselineContractTests` now sends real HTTP to a random-port Quarkus server (ported in P1). It
-also checks catalog membership/counts, de-CH ordering, all five API forms, search
-boundaries, errors and canonical HTML links. `BaselineQmlTests` loads the separate
-synthetic `with-qml.xml` through the real XTF parser and Quarkus REST/Qute stack; it does
-not add metadata to the harvest. It checks exact XML bytes, MIME, attachment
-filename and sanitized descriptions.
-
-Reproduce:
+`CatalogApiContractTests` prüft echte HTTP-Antworten eines Quarkus-Servers,
+Katalogmitgliedschaft, de-CH-Sortierung, API-Formen, Suchgrenzen und HTML-Links.
+`CatalogQmlContractTests` lädt `with-qml.xml` mit eigenem Quarkus-Testprofil und
+prüft exakte QML-Bytes, MIME, Attachmentnamen und HTML-Sanitization. Die kleine
+synthetische Fixture verändert den Harvest nicht.
 
 ```sh
 ./gradlew test
 ./gradlew quarkusDev -Dquarkus.http.host=127.0.0.1 -Dquarkus.http.port=8083
-# In a second terminal, Python 3 standard library; assertions must remain enabled:
-python3 scripts/p0-http-contract.py http://127.0.0.1:8083
+# In einem zweiten Terminal; braucht den bereits laufenden Server:
+python3 scripts/api-http-contract.py http://127.0.0.1:8083
 ```
 
-The standalone smoke checks the same fixture against a separately started process
-without Spring dependencies, so it remains usable after the migration. Keep the
-JSON contract stable; the JUnit infrastructure was ported in P1 without changing the JSON fixture. The observed root
-redirect may become a full page as explicitly allowed by the plan; fragment-only
-theme HTML, broken relative detail links and missing no-JS navigation were legacy
-defects corrected by the minimal P1 Qute pages (see implementation/P0.md).
+Der eigenständige HTTP-Harness verwendet dieselben unveränderten Golden-Bytes.
+`runtime-process-contract.py` startet seine JVM-/Dev-Prozesse selbst und ruft
+ihn über den tatsächlich laufenden Python-Interpreter auf. Python-Assertions
+müssen aktiviert bleiben; kein `python -O` oder `PYTHONOPTIMIZE=1`.
 
-Mutation check actually executed in P0: renamed the public DTO record component
-`qwcLayerName` to `publishedLayerName`; the focused HTTP contract test failed
-(Gradle exit 1, one assertion failure). The source was restored before the final
-complete test run. See `build/reports/p0/canary.*`; repeat this probe only outside
-an immutable review checkout, e.g. in a disposable copy.
+Ein Mutationscanary in einer temporären Kopie muss etwa ein absichtlich falsches
+`qwcLayerName` oder eine falsche Feldmenge mit Exit ungleich 0 erkennen.
+Kandidatenquellen und Golden-Bytes bleiben dabei unverändert.
+Die [historische Entstehung](../../../../docs/quarkus-migration/implementation/P0.md)
+ist separat dokumentiert; frühere Ergebnisse gelten nur für ihre damaligen SHAs.

@@ -7,8 +7,8 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
 @QuarkusTest
-@TestProfile(BaselineQmlTests.QmlProfile.class)
-class BaselineQmlTests {
+@TestProfile(CatalogQmlContractTests.QmlProfile.class)
+class CatalogQmlContractTests {
     public static class QmlProfile implements QuarkusTestProfile {
         @Override public Map<String, String> getConfigOverrides() {
             return Map.of("catalog.xtf-location", "classpath:contract/with-qml.xml");

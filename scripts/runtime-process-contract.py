@@ -7,13 +7,14 @@ from pathlib import Path
 import signal
 import socket
 import subprocess
+import sys
 import tempfile
 import time
 import urllib.error
 import urllib.request
 
 ROOT = Path(__file__).resolve().parents[1]
-REPORTS = ROOT / 'build/reports/p1'
+REPORTS = ROOT / 'build/reports/runtime'
 
 def free_port():
     with socket.socket() as sock:
@@ -72,7 +73,7 @@ def launch(location, name, dev=False, expect_failure=False):
         elapsed = round(time.monotonic() - started, 3)
         assert not expect_failure
         with (REPORTS / f'{name}-http.log').open('w') as smoke_log:
-            run = subprocess.run(['python3', 'scripts/p0-http-contract.py', url], cwd=ROOT, stdout=smoke_log, stderr=subprocess.STDOUT, timeout=60)
+            run = subprocess.run([sys.executable, 'scripts/api-http-contract.py', url], cwd=ROOT, stdout=smoke_log, stderr=subprocess.STDOUT, timeout=60)
         assert run.returncode == 0, (name, (REPORTS / f'{name}-http.log').read_text())
         assert response(url + '/q/health/live')[1]['status'] == 'UP'
         if dev:
@@ -116,7 +117,7 @@ def main():
     args = parser.parse_args()
     REPORTS.mkdir(parents=True, exist_ok=True)
     results = []
-    with tempfile.TemporaryDirectory(prefix='kartenkatalog-p1-') as temp:
+    with tempfile.TemporaryDirectory(prefix='kartenkatalog-runtime-') as temp:
         directory = Path(temp)
         source = directory / 'catalog.xml'
         source.write_bytes((ROOT / 'data/kartenkatalog-harvest-ohne-qml.xtf').read_bytes())
@@ -137,7 +138,7 @@ def main():
             for name, location in [('missing-file', 'file:' + str(directory / 'missing.xml')), ('missing-classpath', 'classpath:missing.xml'), ('http-source', 'https://example.invalid/catalog.xtf')]:
                 results.append(launch(location, name, expect_failure=True))
     (REPORTS / ('dev-summary.json' if args.dev else 'process-summary.json')).write_text(json.dumps(results, indent=2) + '\n')
-    print('All P1 process assertions succeeded.')
+    print('All runtime process assertions succeeded.')
 
 if __name__ == '__main__':
     main()

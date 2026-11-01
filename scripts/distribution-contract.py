@@ -65,7 +65,7 @@ class Runner:
         with socket.socket() as sock:
             sock.bind(('127.0.0.1', 0))
             port = sock.getsockname()[1]
-        name = 'kartenkatalog-p4-' + uuid.uuid4().hex[:12]
+        name = 'kartenkatalog-distribution-' + uuid.uuid4().hex[:12]
         logpath = self.reports / (self.kind + '-' + label + '.log')
         props = ['-Dquarkus.http.host=127.0.0.1', f'-Dquarkus.http.port={port}']
         env = dict(os.environ, CATALOG_XTF_LOCATION='file:' + str(source))
@@ -233,7 +233,7 @@ def verify(base, label):
 
 
 def verify_cross(base, query, results, facets):
-    """Final XTF/search/filter/API/Qute chain, including absent optional metadata."""
+    """Cross-layer XTF/search/filter/API/Qute chain, including absent optional metadata."""
     assert {e['id'] for e in results} == {'ch.final.gewaesser', 'ch.final.karte'}
     missing = next(e for e in results if e['id'] == 'ch.final.karte')
     assert missing['organization'] is None and missing['descriptionHtml'] is None
@@ -274,7 +274,7 @@ def main():
     parser.add_argument('--expected-version')
     parser.add_argument('--expected-revision')
     parser.add_argument('--expected-platform')
-    parser.add_argument('--report-dir', type=Path, default=ROOT / 'build/reports/p4/distribution')
+    parser.add_argument('--report-dir', type=Path, default=ROOT / 'build/reports/distribution')
     args = parser.parse_args()
     if args.native_executable:
         args.native_executable = args.native_executable.resolve(strict=True)
@@ -290,12 +290,12 @@ def main():
     runners = [Runner('jvm', reports, image=args.jvm_image, **expected),
                Runner('native', reports, executable=args.native_executable, image=args.native_image, **expected)]
     summary, parity = {}, {}
-    with tempfile.TemporaryDirectory(prefix='catalog-p4-') as temp:
+    with tempfile.TemporaryDirectory(prefix='catalog-distribution-') as temp:
         directory = Path(temp)
         directory.chmod(0o755)
         fixtures = {name: (ROOT / path).read_text() for name, path in [
             ('harvest', 'data/kartenkatalog-harvest-ohne-qml.xtf'), ('search', 'src/test/resources/search/catalog.xml'),
-            ('qml', 'src/test/resources/contract/with-qml.xml'), ('cross', 'src/test/resources/final/catalog.xml')]}
+            ('qml', 'src/test/resources/contract/with-qml.xml'), ('cross', 'src/test/resources/integration/catalog.xml')]}
         for runner in runners:
             summary[runner.kind] = {}
             for label in ['harvest', 'search', 'restart', 'qml', 'cross']:
@@ -319,9 +319,9 @@ def main():
                         summary[runner.kind][label] = metrics
                         print(runner.kind, label, json.dumps(metrics), flush=True)
                         if label == 'harvest':
-                            with (reports / (runner.kind + '-p0-http.log')).open('w') as log:
-                                smoke = subprocess.run([sys.executable, str(ROOT / 'scripts/p0-http-contract.py'), base], stdout=log, stderr=subprocess.STDOUT, timeout=60)
-                            assert smoke.returncode == 0, 'P0 HTTP contract failed'
+                            with (reports / (runner.kind + '-api-http.log')).open('w') as log:
+                                smoke = subprocess.run([sys.executable, str(ROOT / 'scripts/api-http-contract.py'), base], stdout=log, stderr=subprocess.STDOUT, timeout=60)
+                            assert smoke.returncode == 0, 'API HTTP contract failed'
                 finally:
                     directory.chmod(0o755)
                     source.chmod(0o644)
