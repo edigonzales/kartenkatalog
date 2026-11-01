@@ -30,6 +30,7 @@ class PackagedCatalogIT {
     }
     @Test void packagedTemplatesAssetsAndControlledErrorsWork() {
         given().get("/").then().statusCode(200).contentType("text/html").body(containsString("<!doctype html>"),containsString("catalog-state"));
+        given().get("/").then().body(not(containsString("class=\"provenance\"")),not(containsString("Der mitgelieferte Harvest ist unvollständig")));
         given().header("HX-Request",true).queryParam("q","Gemeindegrenzen").get("/").then().statusCode(200)
             .body(not(containsString("<!doctype html>")),containsString("catalog-state"));
         given().get("/ebene/ch.so.agi.gemeindegrenzen").then().statusCode(200).body(containsString("https://geo.so.ch/map?l=ch.so.agi.gemeindegrenzen"));

@@ -25,6 +25,8 @@ CATALOG_XTF_LOCATION=file:/absoluter/pfad/katalog.xtf \
 
 **Datenherkunft:** Der mitgelieferte Harvest hat 169 Themen und 886 Ebenen; dies ist eine Fixture-Eigenschaft, keine Produktionsgrenze. Er ist `INCOMPLETE`, enthält synthetische UUIDs/`harvest-*`-Themen und keine Keywords, Synonyme, Organisationen, Permissions oder QML. Fehlende Metadaten werden nicht erfunden. Siehe [data/README.md](data/README.md).
 
+Ein optionaler Laufzeithinweis wird ausschliesslich über `catalog.provenance-notice` / `CATALOG_PROVENANCE_NOTICE` gesetzt, zum Beispiel `CATALOG_PROVENANCE_NOTICE='Datenhinweis: Der mitgelieferte Harvest ist unvollständig.'`. Standardmässig bleibt er leer; dann erscheint kein Provenienzabsatz. Gesetzter Text wird auf Start-, Themen- und Detailseiten als HTML-escaped Text ausgegeben. Aus XTF-Pfad oder Dateiname wird keine Vollständigkeit abgeleitet; die dokumentierte Unvollständigkeit der mitgelieferten Fixture bleibt unverändert wahr.
+
 ## HTTP-Vertrag
 
 | GET | Antwort |

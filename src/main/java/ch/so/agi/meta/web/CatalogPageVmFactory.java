@@ -12,7 +12,8 @@ import static ch.so.agi.meta.web.CatalogViewModels.*;
 public class CatalogPageVmFactory {
     private final CatalogService catalog;
     private final CatalogSearchService search;
-    public CatalogPageVmFactory(CatalogService catalog, CatalogSearchService search) { this.catalog=catalog; this.search=search; }
+    private final CatalogConfig config;
+    public CatalogPageVmFactory(CatalogService catalog, CatalogSearchService search, CatalogConfig config) { this.catalog=catalog; this.search=search; this.config=config; }
 
     public CatalogPage catalog(CatalogQuery query) {
         var result=search.search(query);
@@ -60,14 +61,14 @@ public class CatalogPageVmFactory {
             e.service_download()==null?null:(e.service_download()?"Download verfügbar":"Kein Download verfügbar"),t.title(),themeHref,
             CatalogUrlFactory.external(t.further_info_url()));
     }
-    private static Chrome chrome(String current, Crumb theme) {
+    private Chrome chrome(String current, Crumb theme) {
         var crumbs=new ArrayList<Crumb>();
         crumbs.add(new Crumb("so.ch","https://so.ch")); crumbs.add(new Crumb("Verwaltung","https://so.ch/verwaltung/"));
         crumbs.add(new Crumb("Amt für Geoinformation","https://so.ch/verwaltung/bau-und-justizdepartement/amt-fuer-geoinformation/"));
         crumbs.add(new Crumb("Kartenkatalog",current==null?null:"/"));
         if(theme!=null)crumbs.add(theme);
         if(current!=null)crumbs.add(new Crumb(current,null));
-        return new Chrome(List.copyOf(crumbs));
+        return new Chrome(List.copyOf(crumbs),config.provenanceNotice().orElse(null));
     }
     private static RawString safe(String source) {
         String clean=CatalogText.html(source);

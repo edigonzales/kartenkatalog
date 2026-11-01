@@ -57,6 +57,7 @@ class CatalogBrowserTests {
             page.navigate(base+"/", new Page.NavigateOptions().setWaitUntil(com.microsoft.playwright.options.WaitUntilState.DOMCONTENTLOADED));page.waitForFunction("() => customElements.get('so-header') !== undefined");
             page.evaluate("() => document.fonts.ready");
             assertEquals(169,page.locator("details.theme-row").count());
+            assertEquals(0,page.locator(".provenance").count());
             assertEquals(0,page.locator(".layer-row").count());
             assertTrue(page.locator("so-header").isVisible());assertTrue(page.locator("so-breadcrumb").isVisible());
             page.screenshot(new Page.ScreenshotOptions().setPath(reports.resolve(engine+"-catalog-desktop.png")));

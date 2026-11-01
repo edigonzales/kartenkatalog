@@ -17,6 +17,7 @@ class CatalogWebTests {
         for(String path:new String[]{"/","/thema","/themen/security/ebenen","/ebene/ch.test.security"}) {
             String html=given().get(path).then().statusCode(200).contentType("text/html").extract().asString();
             var doc=Jsoup.parse(html);
+            assertTrue(doc.select(".provenance").isEmpty());
             assertTrue(doc.select("script:not([src])").isEmpty());
             assertTrue(doc.select("[onerror],[onclick],a[href^=javascript],img[src=x]").isEmpty());
             assertFalse(html.contains("href=\"javascript:"));

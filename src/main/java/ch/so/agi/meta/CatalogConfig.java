@@ -1,10 +1,10 @@
 package ch.so.agi.meta;
 
 import io.smallrye.config.ConfigMapping;
-import io.smallrye.config.WithDefault;
+import java.util.Optional;
 
 @ConfigMapping(prefix = "catalog")
 public interface CatalogConfig {
-    @WithDefault("file:./data/kartenkatalog-harvest-ohne-qml.xtf")
     String xtfLocation();
+    Optional<String> provenanceNotice();
 }

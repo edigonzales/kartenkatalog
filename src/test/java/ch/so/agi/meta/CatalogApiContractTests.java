@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @QuarkusTest
 class CatalogApiContractTests {
     @TestHTTPResource URI base;
+    @jakarta.inject.Inject CatalogConfig config;
     final ObjectMapper json = new ObjectMapper();
     final JsonNode contract = contract();
     private JsonNode contract() {
@@ -39,6 +40,15 @@ class CatalogApiContractTests {
     void fields(JsonNode actual, String key) {
         var expected = new TreeSet<String>(); contract.get(key).forEach(n -> expected.add(n.asText()));
         assertEquals(expected, names(actual));
+    }
+    @Test void defaultSourceHasNoImplicitProvenanceNotice() throws Exception {
+        assertEquals("file:./data/kartenkatalog-harvest-ohne-qml.xtf",config.xtfLocation());
+        assertTrue(config.provenanceNotice().isEmpty());
+        for (String path : List.of("/","/thema","/themen/harvest-hoheitsgrenzen/ebenen","/ebene/ch.so.agi.gemeindegrenzen")) {
+            var response=request(path); assertEquals(200,response.statusCode());
+            assertTrue(Jsoup.parse(response.body()).select(".provenance").isEmpty());
+            assertFalse(response.body().contains("Der mitgelieferte Harvest ist unvollständig"));
+        }
     }
     @Test void harvestFacetsExposeOnlyRealTypesAndNoFictionalOrganization() throws Exception {
         var f=api("/api/v1/facets");
