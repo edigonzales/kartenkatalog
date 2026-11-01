@@ -55,3 +55,36 @@ Der Reviewer bestätigt den byteidentischen Produktbaum gegenüber `fbf8e93` (ge
 Beide unabhängigen Berichte **byteidentisch** archiviert: `../reviews/RELEASE-initial-review.md` (ursprüngliches R7-FAIL) und `../reviews/RELEASE-review.md` (abschliessendes Implementierungs-PASS). Rohbelege unter `/Users/stefan/sources/kartenkatalog-release-review-evidence/<jeweiliger SHA>/`. Dieser Archivierungscommit enthält nur Dokumentation, keine Produkt-/Build-/Teständerung nach PASS.
 
 Nächster Schritt gemäss Auftrag: gesamte Lieferung nach Main pushen, echten GitHub-amd64-Lauf bis erfolgreich begleiten, alle acht Tags/Registry-Digests und erneute Pull-/HTTP-Tests tatsächlich prüfen. Der erste kombinierte Push enthält seit `8be37f0` auch Nicht-Markdown-Dateien und löst den bestehenden Workflow aus; ein späterer ausschliesslicher Doku-Push allein würde wegen `paths-ignore` keinen Release-Lauf starten. Veröffentlichung weiterhin **nicht** vorgetäuscht; endgültiger Nachweis folgt erst nach realer CI/Registry-Ausführung.
+
+
+## Tatsächliche Veröffentlichung abgeschlossen: 0.2.73
+
+**GitHub-Lauf73**, Workflow `JVM checks`, Push-Commit **`19300afaa36546fa1972b0cbd5d450a7f57a7467`**: [vollständig erfolgreich](https://github.com/edigonzales/kartenkatalog/actions/runs/41289361002). Kein geplanter, sondern tatsächlich ausgeführter Release. Dieser Commit enthält gegenüber dem unabhängig freigegebenen `96e266d` ausschliesslich unveränderte Reviewberichte und Status-/Implementierungsdokumentation; Produktbaum identisch.
+
+Veröffentlichte Plattform **linux/amd64**, Repository **docker.io/sogis/kartenkatalog**:
+
+| Variante | Tatsächlich veröffentlichte Tags | Registry-Digest (alle vier Tags identisch) |
+|---|---|---|
+| Native | `0.2.73`, `latest`, `0`, `0.2` | `sha256:e9af3500af679393b01ae06920193c783e834f9f52aaec637ebb09c8be34c753` |
+| JVM | `0.2.73-jvm`, `latest-jvm`, `0-jvm`, `0.2-jvm` | `sha256:e86dfd5c197c6f9d35530620a71cb8459cd3f67c98b373ad994c9ead4b40d37e` |
+
+Die Version **0.2.73** stammt aus der echten GitHub-Laufnummer73. OCI-Version **0.2.73**, Revision **19300afaa36546fa1972b0cbd5d450a7f57a7467**, Quelle GitHub-Repository und Defaultbenutzer **1001:0** wurden an beiden Images vor dem Push und nach erneutem Registry-Pull tatsächlich geprüft. Die Registry-Digests sind Manifest-/Indexdigests, nicht mit den abweichenden Docker-Config-Image-IDs zu verwechseln.
+
+### Frische echte GitHub-amd64-Nachweise
+
+Aus heruntergeladenen `TEST-*.xml` selbst gezählt (jeweils Tests/Failures/Errors/Skips):
+
+- JVM-Job: **62/0/0/0** Unit/HTTP, **3/0/0/0** JVM-Paket, **14/0/0/0** Chromium/Firefox; Version-/Registryvertrag, P1/P1-dev-CORS/P2 ebenfalls erfolgreich.
+- Native-Job: **62/0/0/0** Unit/HTTP, **3/0/0/0** JVM-Paket und nun auch der echte Linux-amd64-**testNative 3/0/0/0**, frischer Mandrel25-Build.
+- **20/20 echte JVM-/Native-Containerfälle vor Veröffentlichung**; daraufhin Login und alle acht `docker push` erfolgreich.
+- **20/20 echte Containerfälle nach erneutem `docker pull --platform linux/amd64` beider Versionstags**, einschliesslich Health, XTF-/Lucene10.6.0-Heap-Indexaufbau, P0-API, Liste/Detail/Suche/Ranking/Facets, HTML/HTMX/QML, Neustart/Quelländerung und harten Startfehlern.
+- Read-only RootFS/XTF, beliebige UID **1000730000:0**, nur begrenztes RAM-Scratch, keine Indexdateien; Versions-/Revisions-/Plattform-/Default-User-Gates erfolgreich. Beide Laufzeiten liefern Harvest-Payloadhash `80a7d59f710dc9794fb3da72275c1653f19c0b229090165cc35abb23094642d9` vor und nach Veröffentlichung.
+- Separater Mirror-Lauf [34](https://github.com/edigonzales/kartenkatalog/actions/runs/41289360988) ebenfalls grün.
+
+Zusätzlich **ausserhalb GitHub Actions** die öffentlichen acht Manifeste erneut gelesen: `python3 scripts/verify-published-images.py --version 0.2.73 --report build/reports/release/public-registry-tags.json`, **Exit0**; alle Aliasdigests je Variante identisch, Varianten verschieden. Das Ergebnis ist byteinhaltlich/JSON-semantisch mit dem CI-Registryreport gleich. Keine Publikationsbehauptung aus einem Trockenlauf abgeleitet.
+
+CI-Rohartefakte: `jvm-reports` (ID13076771100, Digest `sha256:8288390d468da809da26212a699b96e269b0b8653c5e348cc12359908fb6331a`), `linux-native-reports` (ID13077370366, Digest `sha256:9394a4d2ad0320466c526a13c65027a986fd4bb7c48a192b27bdf27c539a14fc`). Lokal heruntergeladen nach `build/reports/release/github-73/`; dort `test-results/`, `reports/p4/distribution/summary.json`, `reports/release/pulled/summary.json`, `reports/release/registry-tags.json`. Die Digests oben sind dauerhaft hier dokumentiert; CI-Artefakte unterliegen GitHubs Aufbewahrungsfrist.
+
+Pull-Beispiele: `docker pull --platform linux/amd64 sogis/kartenkatalog:0.2.73` und `docker pull --platform linux/amd64 sogis/kartenkatalog:0.2.73-jvm`. XTF weiterhin extern read-only einbinden und `/tmp` flüchtig bereitstellen, siehe Betriebshandbuch. Kein OpenShift-Clusterdeployment und keine ARM-Image-Veröffentlichung.
+
+**Auftrag vollständig abgeschlossen:** unabhängig abgenommene Implementierung, Findings behoben, echte amd64-CI grün, beide Images mit allen acht Tags veröffentlicht, Digests und Post-Pull-HTTP-/Index-/Suchverhalten verifiziert. Dieser abschliessende Nachweiscommit ist reine Dokumentation und löst wegen `paths-ignore` keine erneute Image-Veröffentlichung aus.

@@ -16,7 +16,13 @@
 
 ## Nachgelagerter Auftrag: Version 0.2 / Docker Hub
 
-- Zustand: **IN_PROGRESS** – Implementierung unabhängig mit **PASS (Pre-Publication)** auf `96e266d332a91456ff80e885dea03cac9b074ef6` abgenommen; tatsächliche Veröffentlichung steht noch aus. Die historische P5-Abnahme oben bleibt unverändert SHA-bezogen.
-- Basis: `8be37f0a4ceed9d8f6db357f177d81dd0cd7f61c`.
-- Ziel: Linux/amd64 Native unter `sogis/kartenkatalog:{0.2.N,latest,0,0.2}`, JVM mit entsprechenden `-jvm`-Tags; N ist die GitHub-Laufnummer. Vorhandene Docker-Secrets, kein Clusterdeployment.
-- Versionierung/OCI-Labels/Tests/Workflow umgesetzt und eigene frische Tests erfolgreich (62 Unit/HTTP, 3 Paket, 14 Browser, 20 Containerfälle, 9 Versionsfälle, 6 Registrytests). [Implementierungsbericht](implementation/RELEASE.md). Unabhängiger OpenCode-/DeepSeek-Review abgeschlossen, R1–R7 PASS. [Finaler Bericht](reviews/RELEASE-review.md), [erster Review mit behobenen Doku-Findings](reviews/RELEASE-initial-review.md). Noch ausstehend: echte amd64-CI, Docker-Hub-Tags/Digests und Post-Pull-Prozessmatrix.
+- Zustand: **PASS – abgeschlossen und tatsächlich veröffentlicht**.
+- Version **0.2.73**, echte GitHub-Laufnummer73, Plattform **linux/amd64**, Repository **sogis/kartenkatalog**.
+- Unabhängige Pre-Publication-Freigabe: **96e266d332a91456ff80e885dea03cac9b074ef6**, OpenCode2.1.4 / `deepseek/deepseek-flash` direkt via DeepSeek API, Sitzung `ses_e69c92d6cffeUa5eTY3BSJ0HfL`, R1–R7 PASS. Zwei anfängliche Doku-Findings behoben; historische P5-Abnahme oben unverändert SHA-bezogen.
+- Tatsächlich veröffentlichter Commit: **19300afaa36546fa1972b0cbd5d450a7f57a7467** (nur Doku-Archivierung nach der Freigabe, Produktbaum identisch).
+- [Release-CI73](https://github.com/edigonzales/kartenkatalog/actions/runs/41289361002) und [Mirror34](https://github.com/edigonzales/kartenkatalog/actions/runs/41289360988) vollständig grün. Frische JVM-/Browser-/Native-Tests ohne Fehler/Skips; echter Linux-amd64-testNative **3/0/0/0**; **20 Containerfälle vor Push und 20 nach erneutem Pull** erfolgreich.
+- Native-Tags **0.2.73, latest, 0, 0.2** → `sha256:e9af3500af679393b01ae06920193c783e834f9f52aaec637ebb09c8be34c753`.
+- JVM-Tags **0.2.73-jvm, latest-jvm, 0-jvm, 0.2-jvm** → `sha256:e86dfd5c197c6f9d35530620a71cb8459cd3f67c98b373ad994c9ead4b40d37e`.
+- Alle acht öffentlichen Registry-Manifeste zusätzlich ausserhalb CI geprüft; Digestgleichheit je Variante bestätigt. OCI-Version/Revision/Quelle, Default-USER1001:0, beliebige UID, read-only RootFS/XTF und Heap-Index tatsächlich geprüft.
+- [Implementierung, Tests und Veröffentlichungsnachweis](implementation/RELEASE.md), [finaler unabhängiger Review](reviews/RELEASE-review.md), [erster Review mit behobenen Doku-Findings](reviews/RELEASE-initial-review.md).
+- Kein Clusterdeployment und keine ARM-Veröffentlichung. Keine offene Pflichtprüfung. Dieser Nachweiscommit enthält nur Dokumentation; Imageversion/-Digests bleiben unverändert.
