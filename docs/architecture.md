@@ -58,4 +58,3 @@ Die Listen sind standardmässig nach de-CH-Titel und Kennung sortiert. `sort=tit
 ```
 
 Fehler verwenden weiterhin `application/problem+json` mit `status`, `title`, `detail`, `instance`, ohne Stacktraces. CORS ist nicht pauschal freigeschaltet; für QWC bevorzugt same-origin Reverse Proxy. Eine gezielte, nachprüfbare lokale QWC2-Freigabe steht im [Betriebshandbuch](operations.md#qwc2-dev-cors).
-
