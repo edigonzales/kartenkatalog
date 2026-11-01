@@ -16,7 +16,7 @@
 
 ## Nachgelagerter Auftrag: Version 0.2 / Docker Hub
 
-- Zustand: **AWAITING_REVIEW**; die historische P5-Abnahme oben bleibt unverändert SHA-bezogen.
+- Zustand: **IN_PROGRESS** – Implementierung unabhängig mit **PASS (Pre-Publication)** auf `96e266d332a91456ff80e885dea03cac9b074ef6` abgenommen; tatsächliche Veröffentlichung steht noch aus. Die historische P5-Abnahme oben bleibt unverändert SHA-bezogen.
 - Basis: `8be37f0a4ceed9d8f6db357f177d81dd0cd7f61c`.
 - Ziel: Linux/amd64 Native unter `sogis/kartenkatalog:{0.2.N,latest,0,0.2}`, JVM mit entsprechenden `-jvm`-Tags; N ist die GitHub-Laufnummer. Vorhandene Docker-Secrets, kein Clusterdeployment.
-- Versionierung/OCI-Labels/Tests/Workflow umgesetzt und eigene frische Tests erfolgreich (62 Unit/HTTP, 3 Paket, 14 Browser, 20 Containerfälle, 9 Versionsfälle, 6 Registrytests). [Implementierungsbericht](implementation/RELEASE.md). Unabhängiger OpenCode-/DeepSeek-Review vor GitHub-Push/Veröffentlichung noch ausstehend.
+- Versionierung/OCI-Labels/Tests/Workflow umgesetzt und eigene frische Tests erfolgreich (62 Unit/HTTP, 3 Paket, 14 Browser, 20 Containerfälle, 9 Versionsfälle, 6 Registrytests). [Implementierungsbericht](implementation/RELEASE.md). Unabhängiger OpenCode-/DeepSeek-Review abgeschlossen, R1–R7 PASS. [Finaler Bericht](reviews/RELEASE-review.md), [erster Review mit behobenen Doku-Findings](reviews/RELEASE-initial-review.md). Noch ausstehend: echte amd64-CI, Docker-Hub-Tags/Digests und Post-Pull-Prozessmatrix.
