@@ -1,12 +1,18 @@
 # Cleanup-Status
 
 - Lieferung: **C1 – Root-Artefakte und projektspezifische Ignore-Regeln**.
-- Zustand: **AWAITING_REVIEW**, noch keine unabhängige C1-Abnahme.
-- BASE_SHA: `dd0e1a871db7e124487d02c1a4742b2653f0c51c` (rein dokumentarische Archivierung nach C0-PASS).
-- Letzter unabhängig bestätigter Cleanup-PASS: **C0, `1378d3f5b2bb7a210efa5f704c94a4e43ba23643`**, [originalgetreuer C0-Review](reviews/C0-review.md).
-- [C1-Implementierungsbericht](implementation/C1.md), [verbindlicher Reviewprompt](OPENCODE_REVIEW_PROMPT.md).
-- C1 implementiert: drei nach erneuter Consumerprüfung unbenutzte Root-ZIP/PNG-Artefakte entfernt; `.gitignore` projektspezifisch reduziert und um lokale Environment-/Credential-/Python-Regeln ergänzt. Aktive XTF, Daten-README, sämtliche Testfixtures/Lizenzen, Source, Scripts, Build, CI und `.dockerignore` unverändert.
-- Frisch erfolgreich: **62/0/0/0** Unit/HTTP, **3/0/0/0** JVM-Paket; bestehende JVM-/Dev-CORS-/RAM-Indexprozesse samt XML-/Source-/Indexfehlstarts; 32 Ignorefälle, Audit aller 135 verbliebenen getrackten Dateien und reale temporäre XTF/XML-Gegenprobe.
-- Rohbelege: `/Users/stefan/sources/kartenkatalog-C1-evidence/dd0e1a871db7e124487d02c1a4742b2653f0c51c/`.
-- Offen: unabhängiger OpenCode-2.x-/DeepSeek-4.1-Flash-1017-Review des nach diesem Bericht erzeugten lokalen Kandidatencommits, AC1-01..AC1-05 mit eigenen Tests und eigener neuer Gegenprobe. Codex startet den Review selbständig und wartet auf PASS/FAIL/BLOCKED; bei FAIL nacharbeiten/erneut prüfen, bei BLOCKED stoppen.
-- **C2 nicht begonnen**. Kein Push, Merge, Tag, Workflow-Dispatch, Registry-Upload oder Release. Native-/Container-Gesamtgate bleibt für C4 fällig; für C1 nicht als ausgeführt behauptet.
+- Zustand: **PASS**, unabhängig durch OpenCode/DeepSeek bestätigt; alle fünf C1-Muss-Kriterien erfüllt, keine Muss-Abweichung und kein Blocker.
+- BASE_SHA: `dd0e1a871db7e124487d02c1a4742b2653f0c51c`.
+- Letzter unabhängig bestätigter Cleanup-PASS / geprüfter Kandidat: **`b3df50894a40e672612b213de01094685062db76`**.
+- Vorheriger unabhängiger PASS: C0, `1378d3f5b2bb7a210efa5f704c94a4e43ba23643`, [C0-Review](reviews/C0-review.md).
+- [C1-Implementierungsbericht](implementation/C1.md), [bytegleich archivierter unabhängiger C1-Review](reviews/C1-review.md), [verbindlicher Reviewprompt](OPENCODE_REVIEW_PROMPT.md).
+- C1 abgeschlossen: drei erneut als unbenutzt geprüfte Root-ZIP/PNG-Artefakte mit `git rm` entfernt; `.gitignore` projektspezifisch reduziert und um lokale Environment-/Credential-/Python-Regeln ergänzt. Aktive XTF, Daten-README, sämtliche Testfixtures/Lizenzen, Source, Scripts, Build, CI und `.dockerignore` unverändert.
+- Reviewer: OpenCode-GUI **2.1.4**, Sitzung `ses_e697d58c4ffeRRBBRq0fObUy6s`, direkter Provider **`deepseek`**, Modell **`deepseek-flash`**, Variante `high`, API `api.deepseek.com`. Aktueller Providerkatalog: **DeepSeek V4.1 Flash 1017**, `canonical_model_id deepseek/deepseek-v4.1-flash-1017`, Release 2026-10-17; Identität unabhängig aus Session-/App-/Provider-Metadaten verifiziert.
+- Unabhängig frisch auf dem Kandidaten: **62/0/0/0** Unit/HTTP, **3/0/0/0** JVM-Paket; JVM-/Dev-CORS-/RAM-Indexprozesse samt acht Source-/XML-Fehlstarts und echtem Indexfehlstart erfolgreich. Eigene Gegenproben: reale untracked XTF/XML-Dateien mit unterschiedlichem Status/Ignore-Verhalten, isolierter BASE-/Kandidatenvergleich der Ignore-Regeln sowie echter Default-JVM-/API-Start ohne Root-Artefakte mit 169/886-Fixturewerten. HEAD und tracked Tree im separaten Review-Worktree vor/nach sauber und unverändert.
+- Nicht blockierende Reviewbeobachtung O1: Der ursprüngliche SHA256-Zwischencheck lag vor dem Schreiben der Doku. Implementierungsbericht rein dokumentarisch präzisiert: fertiger Kandidat mit 133 bytegleichen Bestandsdateien, 3 Löschungen, 2 Änderungen und 1 neuer Datei. Keine Produkt-/Test-/Datenänderung nach PASS.
+- Originalbericht: `/Users/stefan/sources/kartenkatalog-C1-review-b3df508.md`. Original und Archivkopie bei Übernahme per SHA256 auf Bytegleichheit geprüft.
+- Archivhygiene: Der unveränderte Originalbericht enthält in seinen letzten drei Metadatenzeilen je zwei Markdown-Hardbreak-Leerzeichen. Der rohe Archivdiff meldet dafür drei Whitespace-Hinweise; sie bleiben wegen der geforderten Byteidentität erhalten. Der Kandidatendiff und die übrigen Archivierungsdokumente bestehen `git diff --check`.
+- Implementierungsevidenz: `/Users/stefan/sources/kartenkatalog-C1-evidence/dd0e1a871db7e124487d02c1a4742b2653f0c51c/`. Unabhängige Rohbelege aus `/tmp/kartenkatalog-c1-review-b3df508/` dauerhaft kopiert nach `/Users/stefan/sources/kartenkatalog-C1-review-evidence/b3df50894a40e672612b213de01094685062db76/` (gleiche relative Pfade, Originalreport unverändert).
+- **C2 nicht begonnen** und wartet auf ausdrücklichen Nutzerauftrag. Künftige unabhängige Reviews startet Codex selbständig; bei FAIL nacharbeiten/erneut prüfen, bei BLOCKED stoppen.
+- Kein Push, Merge, Tag, Workflow-Dispatch, Registry-Upload oder Release. Browser-/Native-/Container-/Release-Gesamtmatrix war für C1 nicht fällig und wird nicht als ausgeführt behauptet.
+- Dieser nachgelagerte lokale Archivierungscommit enthält ausschliesslich den originalgetreuen Reviewbericht, die Berichtspräzisierung zu O1 und diese Statusaktualisierung. Der abgenommene Kandidaten-SHA bleibt der oben genannte.
