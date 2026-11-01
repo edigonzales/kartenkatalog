@@ -1,119 +1,55 @@
 # Kartenkatalog
 
-Quarkus **3.40.1.1**, Java **21**, Gradle Wrapper **9.8.2**. Der Katalog wird beim Start aus einer lokalen INTERLIS-2.4-XTF-Datei gelesen, validiert und als unveränderlicher In-Memory-Snapshot bereitgestellt. Keine Datenbank, kein Mock-Fallback, kein Reload-Endpunkt.
+Der Kartenkatalog liest beim Start eine lokale INTERLIS-2.4-XTF und bietet eine such- und filterbare SODATA-Oberfläche sowie die JSON-API für das separate [QWC2-Plugin](https://github.com/edigonzales/qwc-kartenkatalog).
 
-Quarkus REST/Jackson, typsichere Qute-Seiten im SODATA-Stil, SmallRye Health und **Apache Lucene 10.6.0**. Der Index wird bei jedem Start aus XTF im Java-Heap (`ByteBuffersDirectory`, `GermanAnalyzer`) neu aufgebaut. Kein persistierter Suchindex oder Index-Volume. Die Startseite bietet aufklappbare Themen mit lazy geladenen Kartenebenen und No-JS-Themenlinks; Detailseiten zeigen nur vorhandene Metadaten. Suche und Mehrfachfilter arbeiten als normale GET-Form und mit HTMX-Fragmenten, URL-/Back-/Reload-Zustand, Chips, Desktop-Popovern und mobilem Filtersheet. JVM- und Native-Artefakte werden getrennt gebaut und mit echten HTTP-Prozessen auf Parität geprüft; die unabhängige Abnahme gilt ausschliesslich für den im Migrationsstatus genannten SHA.
+Java **21**, Quarkus **3.40.1.1**, Gradle Wrapper **9.8.2**, Lucene **10.6.0**, Qute und HTMX. Ein unveränderlicher Snapshot mit `ByteBuffersDirectory`/`GermanAnalyzer` liegt im RAM. Keine Datenbank, kein persistierter Suchindex, kein Mock-Fallback und kein Reload-Endpunkt.
 
-## Start und Build
+## Lokal starten
 
-JDK 21 muss verfügbar sein; der Gradle-Wrapper bleibt unverändert.
+Mit JDK 21 im Repository:
 
 ```sh
 ./gradlew quarkusDev
-./gradlew test quarkusBuild
-java -jar build/quarkus-app/quarkus-run.jar
 ```
 
-Standardport: 8080. Andere Datei/Port, z.B.:
+Oberfläche: [http://localhost:8080/](http://localhost:8080/). JVM-Paket alternativ:
 
 ```sh
-CATALOG_XTF_LOCATION=file:/absoluter/pfad/katalog.xtf \
-  java -Dquarkus.http.port=8083 -jar build/quarkus-app/quarkus-run.jar
+./gradlew test quarkusBuild quarkusIntTest
+CATALOG_XTF_LOCATION=file:/absoluter/pfad/catalog.xtf \
+  java -jar build/quarkus-app/quarkus-run.jar
 ```
 
-`catalog.xtf-location` / `CATALOG_XTF_LOCATION` akzeptiert ausschliesslich `file:` oder `classpath:`. Default: `file:./data/kartenkatalog-harvest-ohne-qml.xtf`, relativ zum Arbeitsverzeichnis. Keine HTTP-Quelle und keine Datenbank-/Spring-Profile mehr. Für eine Änderung der XTF Anwendung neu starten. Fehlerhafte/fehlende Dateien, doppelte Kennungen/TIDs/UUIDs, ungültige Pflichtfelder, Modell-/Referenzfehler und DTD/XXE verhindern den Start. Der DOM-Leser ist modellbezogen und kein vollständiger INTERLIS-Schemavalidator.
+Ohne Override gilt `file:./data/kartenkatalog-harvest-ohne-qml.xtf`, relativ zum Arbeitsverzeichnis. Nur `file:` und `classpath:` sind erlaubt. Fehlende/ungültige Quellen verhindern den Start; Quelländerungen erfordern Neustart.
 
-**Datenherkunft:** Der mitgelieferte Harvest hat 169 Themen und 886 Ebenen; dies ist eine Fixture-Eigenschaft, keine Produktionsgrenze. Er ist `INCOMPLETE`, enthält synthetische UUIDs/`harvest-*`-Themen und keine Keywords, Synonyme, Organisationen, Permissions oder QML. Fehlende Metadaten werden nicht erfunden. Siehe [data/README.md](data/README.md).
+**Die mitgelieferte Fixture ist INCOMPLETE.** Ihre 169 Themen/886 Ebenen sind keine Produktionsgrenze. Synthetische Kennungen sind keine originalen SIMI-Schlüssel; Metadaten werden nicht erfunden. [Datenherkunft und Hash](data/README.md).
 
-Ein optionaler Laufzeithinweis wird ausschliesslich über `catalog.provenance-notice` / `CATALOG_PROVENANCE_NOTICE` gesetzt, zum Beispiel `CATALOG_PROVENANCE_NOTICE='Datenhinweis: Der mitgelieferte Harvest ist unvollständig.'`. Standardmässig bleibt er leer; dann erscheint kein Provenienzabsatz. Gesetzter Text wird auf Start-, Themen- und Detailseiten als HTML-escaped Text ausgegeben. Aus XTF-Pfad oder Dateiname wird keine Vollständigkeit abgeleitet; die dokumentierte Unvollständigkeit der mitgelieferten Fixture bleibt unverändert wahr.
+`CATALOG_PROVENANCE_NOTICE` / `catalog.provenance-notice` ist optional und standardmässig leer. Ohne explizite Konfiguration kein Provenienzabsatz; gesetzter Text erscheint auf allen Vollseiten HTML-escaped. Beispiel: `CATALOG_PROVENANCE_NOTICE='Datenhinweis: Der mitgelieferte Harvest ist unvollständig.'`. Der XTF-Dateiname begründet keine Vollständigkeitsannahme.
 
-## HTTP-Vertrag
+## Oberfläche und API
 
-| GET | Antwort |
-|---|---|
-| `/api/v1/catalog` | `{ "themes": [{ "theme": {…}, "layers": […] }] }` |
-| `/api/v1/themen` | Themen mit Beschreibung und Ebenenanzahl |
-| `/api/v1/themen/{identifier}/ebenen` | Ebenen des Themas |
-| `/api/v1/ebenen` | alle Ebenen; `q` und optional `thema` |
-| `/api/v1/ebenen/{id}` | einzelne Ebene per `ident_part` |
-| `/api/v1/facets` | dynamische Facets; gleiche Query-/Filterparameter wie `/api/v1/ebenen` |
-| `/` | vollständige Katalog-Startseite, `200 text/html` |
-| `/thema` | kompatibler Alias zur Katalog-Startseite |
-| `/themen/{identifier}/ebenen` | vollständige Themenseite; mit `HX-Request: true` nur Ebenenfragment |
-| `/ebene/{id}` | Qute-Detailseite mit Metadaten, Themen- und sicherem Kartenlink |
-| `/ebene/{id}/style` | XML/QML-Attachment, nur bei tatsächlich vorhandenem QML |
-| `/ping` | `200 text/plain`, `kartenkatalog` |
-| `/q/health/live`, `/q/health/ready` | SmallRye Health; Readiness setzt vollständigen Snapshot und offenen Suchindex voraus |
+`/` und `/thema` zeigen Themen, lazy geladene Ebenen, Suche, Mehrfachfilter, dynamische Facets und Chips. GET-Formulare/Themenlinks funktionieren ohne JavaScript. Browser-History, Reload und kopierte URLs erhalten den Zustand; Desktop-Popover und mobiles Filtersheet unterstützen Tastatur/Fokus. Details unter `/ebene/{id}`, QML bei vorhandenem Inhalt unter `/ebene/{id}/style`.
 
-Die API bleibt für das separate [QWC2-Plugin](https://github.com/edigonzales/qwc-kartenkatalog) kompatibel. `id` und `qwcLayerName` sind der publizierte `ident_part`; `sourceId` ist die separate Quell-UUID. Optionale Skalare werden als `null`, Keywords/Synonyme als Arrays ausgegeben. Öffentliche Theme-/Layer-Felder sind durch `src/test/resources/contract/public-api.json` geschützt. Beschreibungen verwenden weiterhin Beschreibung → Override → Modellbeschreibung; Klartext und mit Jsoup bereinigtes HTML sind getrennt. QML, Remarks und Berechtigungsrohwerte gehören nicht zum DTO.
+Öffentliche GET-Endpunkte: `/api/v1/catalog`, `/api/v1/themen`, `/api/v1/themen/{identifier}/ebenen`, `/api/v1/ebenen`, `/api/v1/ebenen/{id}`, `/api/v1/facets`. `id == qwcLayerName` ist der publizierte `ident_part`, `sourceId` die Quell-UUID. JSON-Feldnamen, null/Arrays, Suche/Filter/Sortierung und Problem-JSON sind geschützt. [HTTP-Vertrag und Architektur](docs/architecture.md#http-vertrag).
 
-Die Listen sind standardmässig nach de-CH-Titel und Kennung sortiert. `sort=title-desc` kehrt nur die Titelrichtung um; Kennungen lösen Gleichstände weiterhin A–Z auf. `sort=relevance` ist nur mit Suchtext erlaubt. Die Suche verwendet AND über Wörter und OR über Felder (Kennung, Titel, Keywords, Synonyme, Thema, Organisation, Beschreibung). Kennung/Titel/Keywords/Synonyme unterstützen Teilstrings; Beschreibungen deutsche Wortstämme. Gross-/Kleinschreibung, Akzente, Umlaute und ß/ss werden normalisiert. Interpunktion trennt Wörter; Lucene-Querysyntax wird nicht interpretiert. Mindestens ein Wort muss zwei Zeichen haben; alleinige Einzeichen-/Sonderzeichensuche ist 400. `q` bleibt auf 200 Zeichen begrenzt, auch bei Leerzeichen. Der GermanAnalyzer verwendet eine leere Stopwortliste, damit AND-Wörter nicht still verschwinden. Rangstufen: exakte Kennung > exakter Titel > Titelpräfix > Titelteilstring > Keyword/Synonym > Thema/Organisation > Beschreibung; bei Gleichstand Titel/Kennung.
-
-`thema`, `typ`, `organisation` dürfen mehrfach vorkommen: OR innerhalb, AND zwischen Gruppen. Werte sind echte, unveränderte Quellkennungen/-werte. Unbekanntes Thema bleibt aus Kompatibilitätsgründen **404**; unbekannter Typ/Organisation und ungültige Sortierung sind **400**. Kein Treffer ist `200 []`; unbekannter Layer/fehlendes QML **404**; ausgefallener Suchindex **503**, niemals eine leere Erfolgsliste. Detail-/Metadatenabfragen lesen Maps unabhängig vom Index.
-
-`GET /api/v1/facets` liefert `{thema: […], typ: […], organisation: […]}`. Eintrag: `{value, label, count, selected}`. Jede Gruppe zählt unter Suchtext und allen **anderen** Filtergruppen; der eigene Gruppenfilter wird beim Zählen ausgelassen. Auch 0-Treffer-Optionen behalten ihren Auswahlstatus. Organisationswerte fehlen im Harvest, deshalb ist dessen `organisation`-Array leer. Die Suchfixture mit Organisationen/Keywords/Synonymen liegt getrennt unter `src/test/resources/search/`; im Harvest wird nichts erfunden. Beispiel:
-
-```text
-/api/v1/ebenen?q=wasser&thema=harvest-hoheitsgrenzen&typ=datasetview&sort=relevance
-/api/v1/facets?q=wasser&typ=datasetview
-```
-
-Fehler verwenden weiterhin `application/problem+json` mit `status`, `title`, `detail`, `instance`, ohne Stacktraces. CORS ist nicht pauschal freigeschaltet; für QWC bevorzugt same-origin Reverse Proxy. Eine gezielte, nachprüfbare lokale QWC2-Freigabe steht im [Betriebshandbuch](docs/quarkus-migration/OPERATIONS.md#qwc2-dev-cors).
-
-## Verifikation
+## Tests, Betrieb und Veröffentlichung
 
 ```sh
 ./gradlew clean test quarkusBuild quarkusIntTest
 ./gradlew playwrightTest
-./gradlew dependencies --configuration runtimeClasspath
 python3 scripts/runtime-process-contract.py
 python3 scripts/runtime-process-contract.py --dev
 python3 scripts/search-index-contract.py
+python3 scripts/versioning-contract.py
+python3 scripts/release-contract.py
 ```
 
-Der RAM-Index-Prozesstest prüft Neuaufbau/Determinismus nach Neustart, XTF-Änderungen, Suche/Ranking/Filter/Facets, read-only Quelle/Arbeitsverzeichnis ohne Indexdateien und einen echten Index-Startupfehler. Er protokolliert lokale Startup-/RSS-/Suchzeitwerte unter `build/reports/search-index/`. Der JVM-Prozesstest startet das gebaute JAR selbst, prüft die HTTP-/API-Verträge, Health und Snapshot-Lebensdauer sowie echte Startabbrüche für ungültige Quellen. `--dev` prüft einen separaten `quarkusDev`-Prozess und die dokumentierte QWC2-CORS-Freigabe samt erlaubtem/abgewiesenem Preflight und GET. Beide räumen ihre Prozessgruppen auf; Rohlogs liegen unter `build/reports/runtime/`. Der weiterhin nutzbare `scripts/api-http-contract.py <Basis-URL>` prüft einen bereits laufenden Prozess. JUnit-Rohreports: `build/test-results/test/`; HTML: `build/reports/tests/test/`.
+[Testmatrix und Rohreports](docs/testing.md), [JVM-/Native-/Linux-/OpenShift-Betrieb](docs/operations.md), [Architektur und Sicherheitsgrenzen](docs/architecture.md). GraalVM/Mandrel **25** kompiliert Native Image bei unveränderter Java-21-Toolchain. JVM- und Native-Artefakte separat bauen und wirklich starten; Architektur eines getesteten Binaries/Image ausdrücklich prüfen.
 
-Die synthetische `with-qml.xml` dient nur Tests für QML und Sanitization; sie wird nicht in den Harvest gemischt. CI prüft JVM/T1–T3 sowie einen separaten Linux-Native-Build mit realen Integrationstests und read-only Containerparität. Die alten Boot-Native-/Docker-Publishing-Tasks wurden entfernt. Kein Push/Release als versteckter Buildschritt.
+Die Releasepipeline baut Linux/amd64 und veröffentlicht nach JVM-, Browser-, Prozess-, Native- und Container-Gates **acht Tags** unter `sogis/kartenkatalog`: Native `0.2.N`, `latest`, `0`, `0.2`; JVM jeweils mit `-jvm`. N ist die GitHub-Laufnummer, lokal gilt `0.2.LOCALBUILD`. Ein erfolgreicher **Push auf main oder manueller Dispatch auf main publiziert automatisch**; Pull Requests nicht. Reine Markdown-Pushes sind im Hauptworkflow ausgenommen. Der Mirror-Workflow spiegelt Pushes nach Codeberg. Lokale Builds/Commits veröffentlichen nichts. [Releasebedingungen und Pull-/Startbefehle](docs/operations.md#docker-hub-veröffentlichung).
 
-Migrationsplan, Status und unabhängige Abnahmen: [docs/quarkus-migration](docs/quarkus-migration/STATUS.md). Frühere Notizen: [docs/legacy-notes.md](docs/legacy-notes.md).
+## Dokumentation und Nachweise
 
-## Oberfläche und Browserprüfung
-
-`/` und `/thema` liefern dieselbe Startseite. Native `details`-Themenzeilen laden ihre Ebenen einmalig als HTMX-Fragment; ohne JavaScript bleibt der normale Themenlink nutzbar. Die Themenübersicht bleibt A–Z; die Ebenen folgen der ausgewählten Titel-/Relevanzsortierung.
-
-Die GET-Form bietet Mehrfachwahl für Thema, Produkttyp und bei echten Quellwerten Organisation. Facetzahlen berücksichtigen Suchtext und jeweils andere Kategorien. Desktop-Popover öffnen per Klick/Enter, schliessen mit Escape/Aussenklick; mobil öffnet derselbe Formularinhalt als natives modales Filtersheet mit Fokusbegrenzung und Rückkehr zum Auslöser. Ohne JS bleiben native Checkboxgruppen und Submit nutzbar. Chips entfernen genau einen Wert und erhalten andere Filter; Suchtext löschen erhält die Filter, Zurücksetzen entfernt die gesamte Auswahl. Keine Datums-/Dummyfilter.
-
-HTMX ersetzt bei Suche/Filter/Sortierung nur `#catalog-state`, aktualisiert die URL und lädt weiterhin passende geöffnete Themen neu. `Vary: HX-Request, HX-History-Restore-Request` unterscheidet das Fragment von der Vollseite. Der HTMX-DOM-Verlaufscache ist deaktiviert: Browser-Back lädt den gültigen Zustand aus der jeweiligen URL, statt noch nicht angewendete Formfelder aus einem Snapshot wiederherzustellen. Reload und kopierte URLs bleiben serverseitig vollständig nutzbar. Bei HTTP-/Netzfehlern bleiben bisherige Ergebnisse und ein sichtbarer Fehlerhinweis erhalten.
-
-Metadatenlinks sind auf absolute HTTP(S)-URLs ohne Zugangsdaten begrenzt; Beschreibungs-HTML wird vor Qute-RawString mit Jsoup saniert. QML und optionale Felder werden nur mit echtem Quellinhalt angezeigt.
-
-`./gradlew playwrightTest` installiert bei Bedarf die gepinnten Chromium- und Firefox-Versionen für Playwright **1.60.0** (Task `installPlaywrightBrowsers`). Beide Engines prüfen reale, selbst gestartete JVM-Prozesse: Harvest sowie getrennte Such-/Organisationsfixture, 1440×900 und 390×844, lokale Assets, Tastatur/Skip-Link, Aufklappen, No-JS, Mehrfachfilter/Facets/JSON-Parität, Back/Reload/Deep-Link, Reset/Chips, Popover/Sheet/Fokus/Overflow, Fehler und sichere HTML-Ausgabe. Fehlende Browser verursachen einen Fehler, keinen Skip.
-
-Browserberichte: `build/reports/tests/playwrightTest/`; Screenshots und JVM-Logs unter `build/reports/browser/catalog/` (kumulative Basis) und `build/reports/browser/filters/` (Filtermatrix). Der normale `test`-Task prüft alle Unit-/HTTP-Tests; CI ruft **beide** Pflichttasks auf und installiert Linux-Systembibliotheken mit `-PplaywrightWithDeps=true`. `clean` ersetzt diese Rohreports. Herkunft und Reproduktion der tatsächlichen Referenzbilder: [docs/quarkus-migration/reference](docs/quarkus-migration/reference/README.md).
-
-
-## Native Image und Betrieb
-
-Java-21-Toolchain bleibt unverändert. **GraalVM/Mandrel25** ist als Native-Compiler für Quarkus3.40.1.1 erforderlich; GraalVM21 wird vom Plugin abgewiesen. `quarkusIntTest` prüft das tatsächliche JVM-Paket, `testNative` dieselben HTTP-Verträge an einem echten Native-Binary. Native-Paketwahl: `-Dquarkus.native.enabled=true -Dquarkus.package.jar.enabled=false`; JVM separat ohne diese Optionen bauen.
-
-Vollständige reproduzierbare Befehle, Compiler-/Runtime-Digests, Linux-/Architekturgrenzen, read-only XTF-Mount, OpenShift-Vorlage, Health/Restart und Fehlerdiagnose: [Betriebshandbuch](docs/quarkus-migration/OPERATIONS.md). Das Handbuch erläutert auch den durch einen echten Native-Startfehler begründeten gezielten Lucene-Reflection-Hint; kein Versionsdowngrade, kein Dateisystemindex.
-
-`scripts/distribution-contract.py --native-executable /abs/pfad/application` prüft getrennte lokale JVM-/Native-Prozesse. `--jvm-image <image> --native-image <image>` prüft echte Linux-Container mit beliebiger UID, read-only RootFS/Daten und ohne Indexvolume. Beide prüfen identische JSON-Payloads, Treffer-/Ranking-/Facet-Parität, Neustarts, geänderte XTF, HTML/HTMX/exakte QML-Bodies, einen Cross-Layer-Fall mit fehlenden Metadaten und Mehrfachfiltern sowie fehlschlagenden Start bei XML-/XXE-/Referenz-/Indexfehlern. Rohbelege: `build/reports/distribution/`.
-
-Die Images unter `src/main/docker/` verwenden UBI9 und laufen ohne Root; `deploy/openshift.yaml` ist eine anzupassende Vorlage, kein bereits ausgeführtes Clusterdeployment. Lokale Builds pushen nicht automatisch. Main-Push/Workflow-Dispatch auf Main veröffentlicht nach den Testgates die unten beschriebenen Docker-Hub-Tags. Native-/Linux-Nachweise und tatsächlich geprüfte Architektur stehen im [historischen Distributionsbericht](docs/quarkus-migration/implementation/P4.md) und im unabhängigen Reviewbericht.
-
-
-## Version und Docker Hub
-
-GitHub Actions verwendet **0.2.N** mit N = Laufnummer des Workflows `JVM checks`; lokal gilt `0.2.LOCALBUILD`. `./gradlew -q printVersion` zeigt die tatsächliche Version. Alte Jenkins-/Travis-Variablen werden ignoriert.
-
-Beide Varianten erscheinen unter `sogis/kartenkatalog` für **Linux/amd64**:
-
-| Variante | Tags |
-|---|---|
-| Native | `0.2.N`, `latest`, `0`, `0.2` |
-| JVM | `0.2.N-jvm`, `latest-jvm`, `0-jvm`, `0.2-jvm` |
-
-Nur erfolgreiche Main-Builds veröffentlichen nach allen JVM-/Browser-/Native-/Containerprüfungen; Pull Requests veröffentlichen nichts. OCI-Labels nennen Version, Commit und Quellrepository. Nach dem Push werden alle acht Tags auf Digestgleichheit je Variante geprüft und beide versionierten Images erneut gepullt und gestartet. Aktuelle Version/Digests stehen im CI-Report.
-
-Beide Images laufen standardmässig als **UID1001, Gruppe0**, unterstützen beliebige OpenShift-UIDs und read-only RootFS. XTF read-only einbinden, `/tmp` als begrenztes flüchtiges tmpfs bereitstellen; kein DB-/Indexvolume. [Pull-/Startbefehle und Veröffentlichung](docs/quarkus-migration/OPERATIONS.md#docker-hub-veröffentlichung).
+- [Architektur](docs/architecture.md), [Betrieb](docs/operations.md), [Tests](docs/testing.md).
+- [Historisches Archiv mit Herkunft und Pfadzuordnung](docs/history/README.md): frühere Implementierungen, unabhängige Reviews und SODATA-Referenzbilder; deren Aussagen gelten ausschliesslich für ihre damaligen SHAs.
+- [Cleanup-Status und unabhängige Abnahmen](docs/cleanup/STATUS.md).

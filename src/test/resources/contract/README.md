@@ -28,5 +28,5 @@ müssen aktiviert bleiben; kein `python -O` oder `PYTHONOPTIMIZE=1`.
 Ein Mutationscanary in einer temporären Kopie muss etwa ein absichtlich falsches
 `qwcLayerName` oder eine falsche Feldmenge mit Exit ungleich 0 erkennen.
 Kandidatenquellen und Golden-Bytes bleiben dabei unverändert.
-Die [historische Entstehung](../../../../docs/quarkus-migration/implementation/P0.md)
+Die [historische Entstehung](../../../../docs/history/quarkus-migration/implementation/P0.md)
 ist separat dokumentiert; frühere Ergebnisse gelten nur für ihre damaligen SHAs.
