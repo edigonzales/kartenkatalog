@@ -1,12 +1,15 @@
 # Cleanup-Status
 
 - Lieferung: **C0 – tatsächliche Baseline und Consumerinventur**.
-- Zustand: **AWAITING_REVIEW**; Implementierung und lokale Baselineprüfungen durchgeführt, keine unabhängige Abnahme behauptet.
+- Zustand: **PASS**, unabhängig durch OpenCode/DeepSeek bestätigt; alle fünf C0-Muss-Kriterien erfüllt, keine Muss-Abweichung und kein Blocker.
 - BASE_SHA: `377fa52bbfcb3026ce77c64c7db78e6163be0b4c`.
-- Letzter unabhängig bestätigter Cleanup-PASS: **none**.
-- [Implementierungsbericht](implementation/C0.md), [verbindlicher Reviewprompt](OPENCODE_REVIEW_PROMPT.md).
+- Letzter unabhängig bestätigter Cleanup-PASS / geprüfter Kandidat: **`1378d3f5b2bb7a210efa5f704c94a4e43ba23643`**.
+- [Implementierungsbericht](implementation/C0.md), [unverändert archivierter unabhängiger Review](reviews/C0-review.md), [verbindlicher Reviewprompt](OPENCODE_REVIEW_PROMPT.md).
 - Frisch ausgeführt: 62 Unit-/HTTP-, 3 JVM-Paket- und 14 Chromium-/Firefox-Browsertests, jeweils ohne Fehler oder Skips; JVM-/Dev-CORS-/RAM-Indexprozesse, neun Versionierungsfälle und sechs Fake-Registry-Tests erfolgreich. Ein durch überlappenden Paketbau verursachter Index-Fehlversuch ist im Bericht offengelegt und anschliessend erfolgreich wiederholt.
-- Offen: unabhängiger OpenCode-2.x-/DeepSeek-4.1-Flash-1017-Review am nach diesem Bericht erzeugten Kandidatencommit, einschliesslich eigener Tests und neuer Gegenprobe (AC0-05). Vollständige SHAs werden nach Commit im Handoff übergeben.
+- Reviewer: OpenCode-GUI **2.1.4**, Sitzung `ses_e69905fe2ffekFoiydSmF5Mhwj`, direkter Provider **`deepseek`**, Modell **`deepseek-flash`**, Variante `high`, API `api.deepseek.com`. Die GUI-Auswahl zeigte **DeepSeek V4.1 Flash 1017**; der Reviewer verifizierte Provider-/Session-/App-Metadaten und hielt deren nicht separat exponierte Endung „1017“ transparent als Beobachtung O1 fest.
+- Unabhängig frisch auf dem Kandidaten: **62/0/0/0** Unit/HTTP, **3/0/0/0** JVM-Paket, **14/0/0/0** Chromium-/Firefox-Browser; JVM-/Dev-CORS-/RAM-Indexprozesse, neun Versionierungsfälle, sechs Fake-Registry-Tests und Runtime-Abhängigkeiten erfolgreich. Eigene neue Golden-Feldmengenmutation gegen echte JVM (Original Exit 0, mutiert Exit 1) und Referenzketten-/Mutationsankerprüfung mit absichtlich kaputtem Scriptpfad (Kandidat Exit 0, Canary Exit 1). HEAD und tracked Tree im separaten Review-Worktree vor/nach unverändert sauber.
+- Originalbericht: `/Users/stefan/sources/kartenkatalog-C0-review-1378d3f.md`; SHA256 von Original und bytegleicher Archivkopie: `32d7d998a20a6ae3ab676c6a9c8acaa8fd19b13bed8f6e44d44563db6082bbd6`. Rohbelege aus `/tmp/kartenkatalog-c0-review-1378d3f/` dauerhaft kopiert nach `/Users/stefan/sources/kartenkatalog-C0-review-evidence/1378d3f5b2bb7a210efa5f704c94a4e43ba23643/` (gleiche relative Pfade; die ursprünglichen Reportverweise bleiben unverändert).
 - Native-/Container-Gesamtgate in C0 nicht ausgeführt und nicht als bestanden ausgewiesen; C4 bleibt dafür verbindlich.
-- Nächster Schritt: C0 prüfen. Bei FAIL C0 nacharbeiten; bei BLOCKED stoppen. **Kein C1 vor unabhängigem PASS und Rückmeldung des Nutzers.**
+- C0 ist abgeschlossen. **C1 ist nicht begonnen und bleibt auf ausdrücklichen Nutzerauftrag ausgesetzt.** Künftige fällige unabhängige Reviews startet Codex gemäss Nutzeranweisung selbständig; bei FAIL nacharbeiten und erneut prüfen, bei BLOCKED stoppen.
 - Keine Produktänderung, Löschung, Umbenennung, Veröffentlichung, Push, Merge oder Release im Rahmen C0.
+- Dieser nachgelagerte lokale Archivierungscommit enthält ausschliesslich den originalgetreuen Reviewbericht und diese Statusaktualisierung. Der tatsächlich abgenommene Kandidaten-SHA bleibt der oben genannte; keine Produkt-/Test-/Buildänderung nach PASS.
