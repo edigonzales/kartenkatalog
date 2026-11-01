@@ -7,7 +7,7 @@ Anwendung: **Java 21**, Quarkus **3.40.1.1**, Gradle **9.8.2**, Lucene **10.6.0*
 - JDK21 und bei lokalem Native-Build zusätzlich GraalVM25 mit `native-image` und C-Toolchain.
 - Für Linux-Build/Prüfung Docker oder ein entsprechend konfiguriertes Podman. Die folgenden tatsächlich genutzten Befehle verwenden Docker.
 - Native-Build benötigt mindestens ca. 4GiB Compilerheap plus Build-/Container-Overhead; keine parallelen Native-Builds in einer kleinen VM. Im lokalen Bericht stehen echte Build-/Runtime-Messwerte.
-- Die getestete lokale Linux-Architektur und unabhängige Nachweise stehen in `implementation/P5.md`/`reviews/P5-review.md`. Für eine andere Zielarchitektur erneut bauen **und dort ausführen**, keinen macOS-/arm64-Test als amd64-Nachweis ausgeben. CI baut auf der Architektur ihres Linux-Runners, ohne Push/Release.
+- Die getestete lokale Linux-Architektur und unabhängige Nachweise stehen in `implementation/P5.md`/`reviews/P5-review.md`. Für eine andere Zielarchitektur erneut bauen **und dort ausführen**, keinen macOS-/arm64-Test als amd64-Nachweis ausgeben. Der Release-Workflow baut und testet Linux/amd64. Lokale Builds pushen nicht automatisch; Main-Push/Workflow-Dispatch auf Main veröffentlicht nach den JVM-/Browser-/Native-/Container-Gates die unten beschriebenen Docker-Hub-Tags.
 
 Offizielle Grundlagen: [Quarkus Native](https://quarkus.io/guides/building-native-image/), [Gradle/Integrationstests](https://quarkus.io/guides/gradle-tooling/). Die tatsächliche Version 3.40.1.1 verlangt getrennte Paketwahl: Native mit `-Dquarkus.native.enabled=true -Dquarkus.package.jar.enabled=false`; JVM ohne diese beiden Optionen. Ein gleichzeitiges Native-/JAR-Paket lehnt das Plugin ab.
 

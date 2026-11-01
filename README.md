@@ -98,7 +98,7 @@ Vollständige reproduzierbare Befehle, Compiler-/Runtime-Digests, Linux-/Archite
 
 `scripts/p4-distribution-contract.py --native-executable /abs/pfad/application` prüft getrennte lokale JVM-/Native-Prozesse. `--jvm-image <image> --native-image <image>` prüft echte Linux-Container mit beliebiger UID, read-only RootFS/Daten und ohne Indexvolume. Beide prüfen identische JSON-Payloads, Treffer-/Ranking-/Facet-Parität, Neustarts, geänderte XTF, HTML/HTMX/exakte QML-Bodies, einen Cross-Layer-Fall mit fehlenden Metadaten und Mehrfachfiltern sowie fehlschlagenden Start bei XML-/XXE-/Referenz-/Indexfehlern. Rohbelege: `build/reports/p4/`.
 
-Die Images unter `src/main/docker/` verwenden UBI9 und laufen ohne Root; `deploy/openshift.yaml` ist eine anzupassende Vorlage, kein bereits ausgeführtes Clusterdeployment. Kein automatischer Push/Release. Native-/Linux-Nachweise und tatsächlich geprüfte Architektur stehen im [P4-Implementierungsbericht](docs/quarkus-migration/implementation/P4.md) und im unabhängigen Reviewbericht.
+Die Images unter `src/main/docker/` verwenden UBI9 und laufen ohne Root; `deploy/openshift.yaml` ist eine anzupassende Vorlage, kein bereits ausgeführtes Clusterdeployment. Lokale Builds pushen nicht automatisch. Main-Push/Workflow-Dispatch auf Main veröffentlicht nach den Testgates die unten beschriebenen Docker-Hub-Tags. Native-/Linux-Nachweise und tatsächlich geprüfte Architektur stehen im [P4-Implementierungsbericht](docs/quarkus-migration/implementation/P4.md) und im unabhängigen Reviewbericht.
 
 
 ## Version und Docker Hub

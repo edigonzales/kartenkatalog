@@ -35,3 +35,12 @@ Rohbelege: `/tmp/kartenkatalog-release-*.log`, `build/reports/release/`, JUnit `
 Status **AWAITING_REVIEW**: unabhängiger neuer OpenCode-/DeepSeek-Review des konkreten lokalen Commits folgt vor jedem GitHub-/Docker-Push. Der Reviewer muss Versions-/Tag-/Trigger-/Dependency-/Metadaten-/OpenShift-Verhalten eigenständig prüfen, T1–T4 frisch ausführen und eigene Negativproben entwickeln. Keine Registry-Zugangsdaten lesen/ausgeben, keine Veröffentlichung durch den Reviewer.
 
 Noch ausstehend, bewusst nach dem Review: tatsächlicher GitHub-amd64-Lauf, Docker-Hub-Push und Nachweis aller acht öffentlichen Tags/Digests plus erneuter Pull-/HTTP-Tests. Diese externen Nachweise werden erst nach wirklicher Ausführung dokumentiert. P5-Prüfbericht bleibt historisch unverändert; keine neue Produktfreigabe aus altem PASS abgeleitet.
+
+
+## Nacharbeit aus dem ersten unabhängigen Review
+
+OpenCode/DeepSeek-Sitzung `ses_e69d9f482ffeFSP2l2NbXukhdw` prüfte `fbf8e93d1f55cc5a4c4a0c7cbff3bf1ac9335e77`: **R1–R6 PASS**, **R7 FAIL** wegen zwei überholter „kein automatischer Push/Release“-Sätze in README/Runbook. Beide Sätze auf die neue Trennung lokaler Build / Veröffentlichung auf Main korrigiert. Ausschliesslich Dokumentation geändert; kein Code-/Test-/Build-/Workflow-/Dockerfile-Diff gegenüber dem bereits vollständig geprüften Kandidaten.
+
+Unabhängig frisch auf dem ersten Kandidaten: 9 Versionsfälle, 6 Registrytests, 62/3/14 JVM-/Paket-/Browsertests, eigener Mandrel25-Linux/arm64-Build, 20/20 Containerfälle, eigene andere/default-UID-Läufe, 7 negative Image-Gegenfälle, 11 HTTP-Registry-Harnessgruppen, 16 zusätzliche Versionsfälle, 27 Workflowchecks und Publisher-Trockenlauf mit acht Tags plus sechs Triggerfällen. Der zusätzlich versuchte direkte `testNative`-Start eines Linux-ELF auf macOS scheiterte erwartungsgemäss (Exit126, ein Failure/zwei Skips); die verpflichtende Linux-Container-T4-Alternative bestand vollständig. Echte amd64-Pakettests bleiben vor dem Push der Images in CI verbindlich. Dieser optionale lokale Fehlversuch wird nicht als erfolgreicher Lauf behauptet.
+
+Neuer Docs-Kandidat folgt und benötigt ausdrückliches unabhängiges PASS. Die funktionsbezogenen Belege bleiben exakt als Belege für den ursprünglichen SHA gekennzeichnet; keine vorgetäuschte frische Ausführung auf einem anderen SHA. Tatsächliche GitHub-/Docker-Hub-Veröffentlichung weiterhin ausstehend.
