@@ -5,6 +5,11 @@ on:
   push:
     paths-ignore:
       - '**.md'
+concurrency:
+  group: kartenkatalog-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  APP_VERSION: 0.2.${{ github.run_number }}
 jobs:
   jvm:
     runs-on: ubuntu-22.04
@@ -16,6 +21,10 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
+      - name: Version contract
+        run: |
+          python3 scripts/versioning-contract.py
+          python3 scripts/release-contract.py
       - name: Test and package Quarkus JVM
         run: ./gradlew clean test quarkusBuild quarkusIntTest
       - name: Chromium and Firefox desktop/mobile UI gate
@@ -34,6 +43,7 @@ jobs:
             build/reports/
             build/test-results/
   linux-native:
+    needs: jvm
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -46,7 +56,10 @@ jobs:
       - name: Package and test actual JVM artifact
         run: ./gradlew test quarkusBuild quarkusIntTest
       - name: Preserve JVM runtime image before native packaging
-        run: docker build -f src/main/docker/Dockerfile.jvm -t kartenkatalog:p4-jvm .
+        run: >-
+          docker build --platform linux/amd64
+          --build-arg VERSION="$APP_VERSION" --build-arg REVISION="$GITHUB_SHA"
+          -f src/main/docker/Dockerfile.jvm -t kartenkatalog:ci-jvm .
       - name: Build Linux native and execute packaged integration tests
         run: >-
           ./gradlew testNative
@@ -56,8 +69,42 @@ jobs:
           -Dquarkus.native.native-image-xmx=4g
       - name: Build Linux runtime and verify actual JVM/native parity with read-only mounts
         run: |
-          docker build -f src/main/docker/Dockerfile.native -t kartenkatalog:p4-native .
-          python3 scripts/p4-distribution-contract.py --jvm-image kartenkatalog:p4-jvm --native-image kartenkatalog:p4-native
+          docker build --platform linux/amd64 \
+            --build-arg VERSION="$APP_VERSION" --build-arg REVISION="$GITHUB_SHA" \
+            -f src/main/docker/Dockerfile.native -t kartenkatalog:ci-native .
+          python3 scripts/p4-distribution-contract.py \
+            --jvm-image kartenkatalog:ci-jvm --native-image kartenkatalog:ci-native \
+            --expected-version "$APP_VERSION" --expected-revision "$GITHUB_SHA" \
+            --expected-platform linux/amd64
+      - name: Log in to Docker Hub
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Publish the tested images
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        run: |
+          for tag in "$APP_VERSION" latest 0 0.2; do
+            docker tag kartenkatalog:ci-native "sogis/kartenkatalog:$tag"
+            docker push "sogis/kartenkatalog:$tag"
+          done
+          for tag in "$APP_VERSION-jvm" latest-jvm 0-jvm 0.2-jvm; do
+            docker tag kartenkatalog:ci-jvm "sogis/kartenkatalog:$tag"
+            docker push "sogis/kartenkatalog:$tag"
+          done
+      - name: Verify registry tags and pull the published versions
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        run: |
+          python3 scripts/verify-published-images.py --version "$APP_VERSION"
+          docker pull --platform linux/amd64 "sogis/kartenkatalog:$APP_VERSION"
+          docker pull --platform linux/amd64 "sogis/kartenkatalog:$APP_VERSION-jvm"
+          python3 scripts/p4-distribution-contract.py \
+            --jvm-image "sogis/kartenkatalog:$APP_VERSION-jvm" \
+            --native-image "sogis/kartenkatalog:$APP_VERSION" \
+            --expected-version "$APP_VERSION" --expected-revision "$GITHUB_SHA" \
+            --expected-platform linux/amd64 --report-dir build/reports/release/pulled
+          cat build/reports/release/registry-tags.json >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         if: always()
         with:

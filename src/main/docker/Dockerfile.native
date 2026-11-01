@@ -1,5 +1,10 @@
 # UBI9 runtime matches the Mandrel UBI9 builder; no Java runtime or writable index volume.
 FROM quay.io/quarkus/ubi9-quarkus-micro-image:2.0@sha256:2d26b888cf6d12cf44db9ff2777381838d98c50185f256f503b13e4748b9eb25
+ARG VERSION=0.2.LOCALBUILD
+ARG REVISION=unknown
+LABEL org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.revision="${REVISION}" \
+      org.opencontainers.image.source="https://github.com/edigonzales/kartenkatalog"
 WORKDIR /catalog
 WORKDIR /work
 COPY --chown=1001:0 --chmod=0555 build/*-runner /work/application

@@ -12,3 +12,11 @@
 - Tatsächlich geprüfte Linux-Architektur **arm64**; kein amd64-, Clusterdeployment- oder Remote-CI-Erfolg behauptet. OpenShift-Manifest bleibt Vorlage. Kein Push/Merge/Release.
 - Rohbelege: `/Users/stefan/sources/kartenkatalog-P5-review-evidence/a6ded992019cedce3d448f996518cadeeb3defbc/`; sauberer separater Review-Worktree: `/Users/stefan/sources/kartenkatalog-review-P5`.
 - Dieser nachgelagerte Commit archiviert ausschliesslich Dokumentation; seit Produkt-PASS keine Code-/Test-/Buildänderung. **Kein weiterer Lieferabschnitt offen.**
+
+
+## Nachgelagerter Auftrag: Version 0.2 / Docker Hub
+
+- Zustand: **AWAITING_REVIEW**; die historische P5-Abnahme oben bleibt unverändert SHA-bezogen.
+- Basis: `8be37f0a4ceed9d8f6db357f177d81dd0cd7f61c`.
+- Ziel: Linux/amd64 Native unter `sogis/kartenkatalog:{0.2.N,latest,0,0.2}`, JVM mit entsprechenden `-jvm`-Tags; N ist die GitHub-Laufnummer. Vorhandene Docker-Secrets, kein Clusterdeployment.
+- Versionierung/OCI-Labels/Tests/Workflow umgesetzt und eigene frische Tests erfolgreich (62 Unit/HTTP, 3 Paket, 14 Browser, 20 Containerfälle, 9 Versionsfälle, 6 Registrytests). [Implementierungsbericht](implementation/RELEASE.md). Unabhängiger OpenCode-/DeepSeek-Review vor GitHub-Push/Veröffentlichung noch ausstehend.

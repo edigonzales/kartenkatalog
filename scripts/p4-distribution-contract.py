@@ -44,8 +44,21 @@ def get_json(base, path):
 
 
 class Runner:
-    def __init__(self, kind, reports, executable=None, image=None):
+    def __init__(self, kind, reports, executable=None, image=None,
+                 expected_version=None, expected_revision=None, expected_platform=None):
         self.kind, self.reports, self.executable, self.image = kind, reports, executable, image
+        self.expected_version = expected_version
+        if image:
+            metadata = json.loads(subprocess.check_output(['docker', 'image', 'inspect', image], text=True))[0]
+            assert metadata['Config']['User'] == '1001:0', 'Image must default to the non-root OpenShift user'
+            if expected_platform:
+                assert metadata['Os'] + '/' + metadata['Architecture'] == expected_platform, metadata
+            labels = metadata['Config'].get('Labels') or {}
+            for key, expected in [('version', expected_version), ('revision', expected_revision)]:
+                if expected:
+                    assert labels.get('org.opencontainers.image.' + key) == expected, (image, key, labels)
+            if expected_version or expected_revision:
+                assert labels.get('org.opencontainers.image.source') == 'https://github.com/edigonzales/kartenkatalog', labels
 
     @contextlib.contextmanager
     def start(self, source, cwd, label, failure=None):
@@ -99,6 +112,8 @@ class Runner:
             text = logpath.read_text()
             assert 'Lucene 10.6.0 ByteBuffersDirectory GermanAnalyzer' in text, text
             assert 'Quarkus 3.40.1.1' in text, text
+            if self.expected_version:
+                assert 'kartenkatalog ' + self.expected_version + ' ' in text, 'Application version differs from image label: ' + text
             expected_runtime = ' native (powered by' if self.kind == 'native' else ' on JVM (powered by'
             assert expected_runtime in text, 'Wrong runtime identity: expected ' + self.kind
             result = {'readySeconds': round(time.monotonic() - started, 3),
@@ -256,6 +271,9 @@ def main():
     native.add_argument('--native-executable', type=Path)
     native.add_argument('--native-image')
     parser.add_argument('--jvm-image')
+    parser.add_argument('--expected-version')
+    parser.add_argument('--expected-revision')
+    parser.add_argument('--expected-platform')
     parser.add_argument('--report-dir', type=Path, default=ROOT / 'build/reports/p4/distribution')
     args = parser.parse_args()
     if args.native_executable:
@@ -264,10 +282,13 @@ def main():
     for image in [args.native_image, args.jvm_image]:
         if image is not None and not image.strip():
             parser.error('Container image must not be blank; no JVM fallback permitted')
+    if (args.expected_revision or args.expected_platform) and not (args.jvm_image and args.native_image):
+        parser.error('Revision/platform checks require both container images')
     reports = args.report_dir.resolve()
     reports.mkdir(parents=True, exist_ok=True)
-    runners = [Runner('jvm', reports, image=args.jvm_image),
-               Runner('native', reports, executable=args.native_executable, image=args.native_image)]
+    expected = dict(expected_version=args.expected_version, expected_revision=args.expected_revision, expected_platform=args.expected_platform)
+    runners = [Runner('jvm', reports, image=args.jvm_image, **expected),
+               Runner('native', reports, executable=args.native_executable, image=args.native_image, **expected)]
     summary, parity = {}, {}
     with tempfile.TemporaryDirectory(prefix='catalog-p4-') as temp:
         directory = Path(temp)

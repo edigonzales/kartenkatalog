@@ -99,3 +99,19 @@ Vollständige reproduzierbare Befehle, Compiler-/Runtime-Digests, Linux-/Archite
 `scripts/p4-distribution-contract.py --native-executable /abs/pfad/application` prüft getrennte lokale JVM-/Native-Prozesse. `--jvm-image <image> --native-image <image>` prüft echte Linux-Container mit beliebiger UID, read-only RootFS/Daten und ohne Indexvolume. Beide prüfen identische JSON-Payloads, Treffer-/Ranking-/Facet-Parität, Neustarts, geänderte XTF, HTML/HTMX/exakte QML-Bodies, einen Cross-Layer-Fall mit fehlenden Metadaten und Mehrfachfiltern sowie fehlschlagenden Start bei XML-/XXE-/Referenz-/Indexfehlern. Rohbelege: `build/reports/p4/`.
 
 Die Images unter `src/main/docker/` verwenden UBI9 und laufen ohne Root; `deploy/openshift.yaml` ist eine anzupassende Vorlage, kein bereits ausgeführtes Clusterdeployment. Kein automatischer Push/Release. Native-/Linux-Nachweise und tatsächlich geprüfte Architektur stehen im [P4-Implementierungsbericht](docs/quarkus-migration/implementation/P4.md) und im unabhängigen Reviewbericht.
+
+
+## Version und Docker Hub
+
+GitHub Actions verwendet **0.2.N** mit N = Laufnummer des Workflows `JVM checks`; lokal gilt `0.2.LOCALBUILD`. `./gradlew -q printVersion` zeigt die tatsächliche Version. Alte Jenkins-/Travis-Variablen werden ignoriert.
+
+Beide Varianten erscheinen unter `sogis/kartenkatalog` für **Linux/amd64**:
+
+| Variante | Tags |
+|---|---|
+| Native | `0.2.N`, `latest`, `0`, `0.2` |
+| JVM | `0.2.N-jvm`, `latest-jvm`, `0-jvm`, `0.2-jvm` |
+
+Nur erfolgreiche Main-Builds veröffentlichen nach allen JVM-/Browser-/Native-/Containerprüfungen; Pull Requests veröffentlichen nichts. OCI-Labels nennen Version, Commit und Quellrepository. Nach dem Push werden alle acht Tags auf Digestgleichheit je Variante geprüft und beide versionierten Images erneut gepullt und gestartet. Aktuelle Version/Digests stehen im CI-Report.
+
+Beide Images laufen standardmässig als **UID1001, Gruppe0**, unterstützen beliebige OpenShift-UIDs und read-only RootFS. XTF read-only einbinden, `/tmp` als begrenztes flüchtiges tmpfs bereitstellen; kein DB-/Indexvolume. [Pull-/Startbefehle und Veröffentlichung](docs/quarkus-migration/OPERATIONS.md#docker-hub-veröffentlichung).

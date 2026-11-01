@@ -29,10 +29,10 @@ GRAALVM_HOME=/pfad/zu/graalvm-25 ./gradlew testNative \
   -Dquarkus.native.enabled=true -Dquarkus.package.jar.enabled=false \
   -Dquarkus.native.native-image-xmx=4g
 CATALOG_XTF_LOCATION=file:/absoluter/pfad/catalog.xtf \
-  ./build/kartenkatalog-0.0.LOCALBUILD-runner
+  ./build/kartenkatalog-0.2.LOCALBUILD-runner
 ```
 
-`gradle/versioning.gradle` setzt `0.0.LOCALBUILD` bzw. `0.0.<BUILD_NUMBER|TRAVIS_BUILD_NUMBER|GITHUB_RUN_NUMBER>` (erste gesetzte Variable in dieser Reihenfolge); den tatsächlich gebauten `build/*-runner` verwenden. `testNative` führt dieselben drei `PackagedCatalogIT`-HTTP-Verträge wie `quarkusIntTest` am echten gebauten Artefakt aus, nicht am In-Process-Testcontainer. Zusätzlich ist der separate Paritäts-/Startfehlertest verbindlich:
+`gradle/versioning.gradle` setzt lokal `0.2.LOCALBUILD` und in GitHub Actions ausschliesslich `0.2.<GITHUB_RUN_NUMBER>`; alte Jenkins-/Travis-Buildnummern werden ignoriert; den tatsächlich gebauten `build/*-runner` verwenden. `testNative` führt dieselben drei `PackagedCatalogIT`-HTTP-Verträge wie `quarkusIntTest` am echten gebauten Artefakt aus, nicht am In-Process-Testcontainer. Zusätzlich ist der separate Paritäts-/Startfehlertest verbindlich:
 
 ```sh
 # Native-Binary vor einem weiteren Build ausdrücklich an eigenem Artefaktpfad sichern:
@@ -134,3 +134,29 @@ curl -i http://localhost:8083/api/v1/themen -H 'Origin: http://localhost:9999'
 ```
 
 Erwartung: erlaubter Preflight/GET ist 200 mit exakt `Access-Control-Allow-Origin: http://localhost:8081`; fremder Origin wird mit 403 und ohne Freigabe abgewiesen. `Access-Control-Allow-Credentials: true` darf fehlen. Bei Problemen Origin und Browser-Preflight mit den freigegebenen Methoden/Headern vergleichen; nicht den API-Vertrag ändern.
+
+
+## Docker-Hub-Veröffentlichung
+
+Der Workflow `JVM checks` vergibt **0.2.N**, wobei N seine GitHub-Laufnummer ist (kein Git-Tag und keine Jenkins-/Travis-Nummer). Ein erneuter Versuch desselben GitHub-Laufs behält N. Ohne `GITHUB_RUN_NUMBER` ist die lokale Version `0.2.LOCALBUILD`; ungültige gesetzte Laufnummern werden abgewiesen.
+
+Repository: `docker.io/sogis/kartenkatalog`, Plattform **linux/amd64**. Native: `0.2.N`, `latest`, `0`, `0.2`; JVM: `0.2.N-jvm`, `latest-jvm`, `0-jvm`, `0.2-jvm`. Alle vier Tags einer Variante müssen denselben Registry-Digest haben. Für reproduzierbare Deployments konkrete Version oder Digest verwenden; Aliase werden bei erfolgreichen Veröffentlichungen aktualisiert.
+
+Der Native-Job wartet auf die JVM-/API-/Browser-/CORS-/Prozessgates. Er baut und prüft beide Images samt Non-Root-Standardbenutzer, Plattform, OCI-Version/Revision/Quelle und tatsächlicher Startversion, bevor genau diese Images getaggt/gepusht werden. Docker-Hub-Login nutzt ausschliesslich vorhandene Actions-Secrets `DOCKER_USERNAME`/`DOCKER_PASSWORD`. Nur Push auf `main` und manuelles `workflow_dispatch` auf `main` veröffentlichen; Pull Requests nicht. Branchbezogene Concurrency bricht ältere Workflowausführungen zugunsten neuer ab.
+
+Nach dem Push prüft `scripts/verify-published-images.py --version 0.2.N` sämtliche acht öffentlichen Registry-Manifeste und schreibt `build/reports/release/registry-tags.json`. Beide versionierten Images werden erneut gepullt und durch die vollständige read-only JVM-/Native-Prozessmatrix geprüft. Registry-Digests und Reports werden als CI-Artefakte/Job-Summary gesichert. Bei Fehlern ist der Lauf rot; bereits erfolgte Pushes werden nicht als vollständige Freigabe ausgegeben.
+
+Beispielstart mit veröffentlichtem Native-Alias (für feste Version `0.2` durch `0.2.N` ersetzen):
+
+```sh
+docker pull --platform linux/amd64 sogis/kartenkatalog:0.2
+docker run --rm -p 127.0.0.1:8080:8080 --read-only \
+  --user 1000730000:0 --cap-drop=ALL --security-opt=no-new-privileges \
+  --tmpfs /tmp:rw,noexec,nosuid,size=64m,mode=1777 \
+  --mount type=bind,source="$PWD/data/kartenkatalog-harvest-ohne-qml.xtf",target=/catalog/catalog.xtf,readonly \
+  sogis/kartenkatalog:0.2
+```
+
+JVM analog mit `0.2-jvm`. Die Images enthalten keine XTF; Quelle muss eingebunden werden. Beide verwenden `USER 1001:0` (kein Root-Benutzer), unterstützen OpenShift-UIDs und benötigen nur flüchtiges Scratch für Vert.x, kein Indexvolume. Auf ARM-Hosts emuliert Docker diese **amd64**-Images; es wird keine zusätzliche ARM-Laufzeit veröffentlicht. Ein OCI-Index kann neben der amd64-Laufzeit BuildKit-Provenienz enthalten. Ein echtes Clusterdeployment bleibt separat.
+
+Manuelle Image-Builds erhalten Labels über `--build-arg VERSION=<Gradle-Version> --build-arg REVISION=$(git rev-parse HEAD)`; vor einem JVM-Image `quarkusBuild` ausführen, vor einem nativen Image das passende Linux-Native-Artefakt bauen. Die Label-Prüfung allein ersetzt nicht den Startversions-/HTTP-Test.
