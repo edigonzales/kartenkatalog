@@ -196,6 +196,10 @@ def verify(base, label):
     if label == 'cross':
         queries = ['q=GEW%C3%84SSER%20Bach&thema=natur&typ=datasetview&typ=extwms&sort=relevance']
     elif label == 'harvest':
+        theme = next(e['theme'] for e in catalog['themes'] if e['theme']['identifier'] == 'harvest-hoheitsgrenzen')
+        assert theme['contact'] == 'mailto:agi@bd.so.ch'
+        assert theme['dataOwner'] == 'Amt für Geoinformation'
+        assert all(e['organization'] for e in layers)
         queries = ['q=wasser&sort=relevance']
     elif label == 'qml':
         queries = ['q=QML']

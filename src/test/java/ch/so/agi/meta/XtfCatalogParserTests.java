@@ -37,6 +37,32 @@ class XtfCatalogParserTests {
         assertEquals("contract", ch.so.agi.meta.api.CatalogDtos.Layer.from(e, snapshot.findThema("contract").orElseThrow()).themeIdentifier());
         }
     }
+    @Test void optionalContactIsPreservedInEveryThemeDtoAndMissingContactStaysNull() throws Exception {
+        try (var snapshot = parse(fixture())) {
+            var theme = snapshot.findThema("contract").orElseThrow();
+            assertNull(theme.contact());
+            assertNull(ch.so.agi.meta.api.CatalogDtos.Theme.from(theme).contact());
+        }
+        String xml = fixture().replace("</k:Thema>", "<k:contact>mailto:agi@bd.so.ch</k:contact></k:Thema>");
+        try (var snapshot = parse(xml)) {
+            var theme = snapshot.findThema("contract").orElseThrow();
+            assertEquals("mailto:agi@bd.so.ch", theme.contact());
+            assertEquals("mailto:agi@bd.so.ch", ch.so.agi.meta.api.CatalogDtos.Theme.from(theme).contact());
+        }
+        try (var snapshot = parse(fixture().replace("</k:Thema>", "<k:contact> </k:contact></k:Thema>"))) {
+            assertNull(snapshot.findThema("contract").orElseThrow().contact());
+        }
+    }
+    @Test void contactRejectsOtherSchemesMultipleRecipientsHeadersAndMalformedAddresses() throws Exception {
+        for (String value : List.of("agi@bd.so.ch", "https://so.ch", "javascript:alert(1)", "mailto:",
+                "mailto:a@so.ch,b@so.ch", "mailto:a@so.ch?subject=hi", "mailto:a@so.ch%0Abcc:b@so.ch",
+                "mailto:a@-invalid.ch", "mailto:a@so..ch", "mailto:a b@so.ch")) {
+            String xml = fixture().replace("</k:Thema>", "<k:contact>" + value + "</k:contact></k:Thema>");
+            assertThrows(IllegalArgumentException.class, () -> parse(xml), value);
+        }
+        assertThrows(IllegalArgumentException.class, () -> parse(fixture().replace("</k:Thema>",
+            "<k:contact>mailto:a@so.ch</k:contact><k:contact>mailto:b@so.ch</k:contact></k:Thema>")));
+    }
     static Stream<String> malformed() throws IOException {
         String xml = fixture();
         String layer = xml.substring(xml.indexOf("    <k:Ebene"), xml.indexOf("    </k:Ebene>") + "    </k:Ebene>".length());

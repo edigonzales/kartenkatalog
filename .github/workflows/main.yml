@@ -21,6 +21,10 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
+      - name: Verify reviewed catalog enrichment
+        run: |
+          python3 scripts/enrich-catalog.py
+          python3 scripts/enrich-catalog-tests.py
       - name: Version contract
         run: |
           python3 scripts/versioning-contract.py

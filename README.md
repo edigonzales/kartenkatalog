@@ -22,7 +22,7 @@ CATALOG_XTF_LOCATION=file:/absoluter/pfad/catalog.xtf \
 
 Ohne Override gilt `file:./data/kartenkatalog-harvest-ohne-qml.xtf`, relativ zum Arbeitsverzeichnis. Nur `file:` und `classpath:` sind erlaubt. Fehlende/ungültige Quellen verhindern den Start; Quelländerungen erfordern Neustart.
 
-**Die mitgelieferte Fixture ist INCOMPLETE.** Ihre 169 Themen/886 Ebenen sind keine Produktionsgrenze. Synthetische Kennungen sind keine originalen SIMI-Schlüssel; Metadaten werden nicht erfunden. [Datenherkunft und Hash](data/README.md).
+**Die mitgelieferte Fixture ist INCOMPLETE.** Ihre 169 Themen/886 Ebenen sind keine Produktionsgrenze. Synthetische Kennungen sind keine originalen SIMI-Schlüssel; Organisationen und Kontakte sind nachvollziehbar angereichert; andere fehlende Metadaten werden nicht ergänzt. [Datenherkunft und Hash](data/README.md).
 
 `CATALOG_PROVENANCE_NOTICE` / `catalog.provenance-notice` ist optional und standardmässig leer. Ohne explizite Konfiguration kein Provenienzabsatz; gesetzter Text erscheint auf allen Vollseiten HTML-escaped. Beispiel: `CATALOG_PROVENANCE_NOTICE='Datenhinweis: Der mitgelieferte Harvest ist unvollständig.'`. Der XTF-Dateiname begründet keine Vollständigkeitsannahme.
 

@@ -18,10 +18,12 @@ class PackagedCatalogIT {
         given().get("/api/v1/themen").then().statusCode(200).body("size()",equalTo(169));
         given().get("/api/v1/catalog").then().statusCode(200).body("themes.size()",equalTo(169));
         given().get("/api/v1/ebenen/ch.so.agi.gemeindegrenzen").then().statusCode(200)
-            .body("qwcLayerName",equalTo("ch.so.agi.gemeindegrenzen")).body("keywords",notNullValue()).body("organization",nullValue());
+            .body("qwcLayerName",equalTo("ch.so.agi.gemeindegrenzen")).body("keywords",notNullValue()).body("organization",equalTo("Amt für Geoinformation"));
+        given().get("/api/v1/themen").then().statusCode(200)
+            .body("find {it.identifier == 'harvest-hoheitsgrenzen'}.contact",equalTo("mailto:agi@bd.so.ch"));
         List<String> hits=given().queryParam("q","wasser").queryParam("sort","relevance").get("/api/v1/ebenen").then().statusCode(200).extract().jsonPath().getList("id");
         assertFalse(hits.isEmpty());assertEquals(hits.size(),hits.stream().distinct().count());
-        given().get("/api/v1/facets").then().statusCode(200).body("organisation.size()",equalTo(0));
+        given().get("/api/v1/facets").then().statusCode(200).body("organisation.size()",greaterThan(0));
     }
     @Test void httpsDescriptionLinksSurviveNativeSanitization() {
         // Real harvest link: native must support the HTTPS URL handler used internally by Jsoup.

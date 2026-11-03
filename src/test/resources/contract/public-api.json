@@ -2,7 +2,7 @@
   "fixture": {
     "themes": 169,
     "layers": 886,
-    "sha256": "de40f025368ae6fc70f5858ab42592488bca837c6942cb6ff8759e6c8803de86"
+    "sha256": "330dcba8d59a692236c3f99630642f6c8edd5cae01eaa194370c565e2d9ecb9c"
   },
   "layerFields": [
     "id",
@@ -31,6 +31,7 @@
     "synonyms",
     "furtherInfoUrl",
     "dataOwner",
+    "contact",
     "layerCount"
   ],
   "layer": {
@@ -47,7 +48,7 @@
     "transparency": 0,
     "themeIdentifier": "harvest-hoheitsgrenzen",
     "themeTitle": "Hoheitsgrenzen",
-    "organization": null,
+    "organization": "Amt für Geoinformation",
     "publicationScope": null,
     "downloadAvailable": null
   },
@@ -59,8 +60,9 @@
     "keywords": [],
     "synonyms": [],
     "furtherInfoUrl": "https://so.ch/verwaltung/bau-und-justizdepartement/amt-fuer-geoinformation/amtliche-vermessung/hoheitsgrenzen/",
-    "dataOwner": null,
-    "layerCount": 7
+    "dataOwner": "Amt für Geoinformation",
+    "layerCount": 7,
+    "contact": "mailto:agi@bd.so.ch"
   },
   "products": [
     {

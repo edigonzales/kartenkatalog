@@ -76,7 +76,7 @@ public final class XtfCatalogParser {
                 themeTids.add(tid);
                 int count = (int) layers.stream().filter(layer -> tid.equals(layer.thema_r())).count();
                 themes.add(new Thema(tid, identifier, required(e, "title"), text(e, "description"), text(e, "keywords"),
-                    text(e, "synonyms"), text(e, "further_info_url"), text(e, "data_owner"), count));
+                    text(e, "synonyms"), text(e, "further_info_url"), text(e, "data_owner"), contact(e), count));
             }
             for (var layer : layers) if (!themeTids.contains(layer.thema_r()))
                 throw invalid("Unresolved theme reference for " + layer.ident_part() + ": " + layer.thema_r());
@@ -84,6 +84,12 @@ public final class XtfCatalogParser {
         } catch (Exception error) {
             throw new IllegalArgumentException("Invalid catalog XTF: " + error.getMessage(), error);
         }
+    }
+    private static String contact(Element theme) {
+        String value = text(theme, "contact");
+        if (value != null && !value.matches("mailto:[A-Za-z0-9.!#$%&'*+/=^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\\.[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?)+"))
+            throw invalid("Invalid contact: expected a single mailto email address");
+        return value;
     }
     private static boolean is(Element element, String ns, String name) {
         return ns.equals(element.getNamespaceURI()) && name.equals(element.getLocalName());

@@ -83,7 +83,7 @@ class CatalogSearchTests {
         var expected=ids("atlas"); java.util.stream.IntStream.range(0,100).parallel().forEach(i -> assertEquals(expected,ids("atlas")));
     }
     @Test void sameScoreAndCollationTieAlwaysUsesIdentifierIncludingDescendingTitleSort() {
-        var theme=new Thema("t", "t", "Hydrologie", null, null, null, null, null, 2);
+        var theme=new Thema("t", "t", "Hydrologie", null, null, null, null, null, null, 2);
         var a=new Ebene("00000000-0000-0000-0000-000000000001", "datasetview", null,null,null,null,"Atlas","ch.test.a",null,null,null,null,null,null,null,null,null,null,null,"t");
         var z=new Ebene("00000000-0000-0000-0000-000000000002", "datasetview", null,null,null,null,"Ätlas","ch.test.z",null,null,null,null,null,null,null,null,null,null,null,"t");
         try(var tied=new CatalogSnapshot(List.of(theme),List.of(z,a))) {

@@ -10,10 +10,10 @@ public final class CatalogDtos {
     private CatalogDtos() {}
     public record Theme(String identifier, String title, String description, String descriptionHtml,
                         List<String> keywords, List<String> synonyms, String furtherInfoUrl,
-                        String dataOwner, int layerCount) {
+                        String dataOwner, String contact, int layerCount) {
         public static Theme from(Thema t) {
             return new Theme(t.identifier(), t.title(), CatalogText.plain(t.adescription()), CatalogText.html(t.adescription()),
-                    CatalogText.terms(t.keywords()), CatalogText.terms(t.synonyms()), t.further_info_url(), t.data_owner(), t.ebenen_count());
+                    CatalogText.terms(t.keywords()), CatalogText.terms(t.synonyms()), t.further_info_url(), t.data_owner(), t.contact(), t.ebenen_count());
         }
     }
     public record Layer(String id, String sourceId, String type, String title, String description,

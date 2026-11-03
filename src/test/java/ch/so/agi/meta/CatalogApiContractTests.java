@@ -50,9 +50,14 @@ class CatalogApiContractTests {
             assertFalse(response.body().contains("Der mitgelieferte Harvest ist unvollständig"));
         }
     }
-    @Test void harvestFacetsExposeOnlyRealTypesAndNoFictionalOrganization() throws Exception {
+    @Test void harvestFacetsExposeEnrichedOrganizationsAndRealTypes() throws Exception {
         var f=api("/api/v1/facets");
-        assertEquals(0,f.get("organisation").size()); assertEquals(4,f.get("typ").size());
+        assertTrue(f.get("organisation").size() > 0); assertEquals(4,f.get("typ").size());
+        int organizations = 0; for (var org : f.get("organisation")) organizations += org.get("count").asInt();
+        assertEquals(886, organizations);
+        var agi = api("/api/v1/ebenen?organisation=Amt%20f%C3%BCr%20Geoinformation");
+        assertFalse(agi.isEmpty());
+        for (var layer : agi) assertEquals("Amt für Geoinformation", layer.get("organization").asText());
         int count=0; for (var type:f.get("typ")) count+=type.get("count").asInt(); assertEquals(886,count);
     }
     @Test void publicPayloadsRetainNamesTypesNullsListsAndPublishedQwcIdentifier() throws Exception {

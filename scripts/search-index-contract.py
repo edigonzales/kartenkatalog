@@ -56,7 +56,7 @@ def run(source, cwd, label, failure=False, harvest=False):
         assert hits
         if harvest:
             assert request(base,'/api/v1/ebenen/ch.so.agi.gemeindegrenzen')['qwcLayerName']=='ch.so.agi.gemeindegrenzen'
-            assert request(base,'/api/v1/facets')['organisation']==[]
+            assert sum(org['count'] for org in request(base,'/api/v1/facets')['organisation']) == 886
         else:
             assert hits[0]['id']=='atlas'
             assert [e['id'] for e in request(base,'/api/v1/ebenen?q=WASSERKARTE%20B%C3%A4che')]==['ch.test.cross']

@@ -1,0 +1,59 @@
+{
+  "themes": 169,
+  "layers": 886,
+  "layerMethods": {
+    "legacy-exact": 465,
+    "researched": 421
+  },
+  "organizations": 30,
+  "themesWithOwnerAndContact": 166,
+  "mixedThemes": [
+    {
+      "identifier": "harvest-geschaefstkontrolle-afu-baugk",
+      "title": "Geschäfstkontrolle AfU (BauGK)",
+      "organizations": [
+        "Bundesamt für Verkehr BAV",
+        "Bundesamt für Zivilluftfahrt BAZL",
+        "Eidgenössisches Departement für Verteidigung, Bevölkerungsschutz und Sport VBS"
+      ]
+    },
+    {
+      "identifier": "harvest-nicht-zugeordnet-kein-thema-im-quelltext",
+      "title": "Nicht zugeordnet (kein Thema im Quelltext)",
+      "organizations": [
+        "Amt für Geoinformation",
+        "Amt für Geoinformation Basel-Landschaft",
+        "Amt für Landwirtschaft",
+        "Amt für Militär und Bevölkerungsschutz",
+        "Amt für Raumplanung",
+        "Amt für Umwelt",
+        "Amt für Verkehr und Tiefbau",
+        "Amt für Wald, Jagd und Fischerei",
+        "Bundesamt für Energie BFE",
+        "Bundesamt für Kultur BAK",
+        "Bundesamt für Landestopografie swisstopo",
+        "Bundesamt für Landwirtschaft BLW",
+        "Bundesamt für Statistik BFS",
+        "Bundesamt für Strassen ASTRA",
+        "Bundesamt für Umwelt BAFU",
+        "Bundesamt für Verkehr BAV",
+        "Bundesamt für Zivilluftfahrt BAZL",
+        "Eidgenössisches Nuklearsicherheitsinspektorat ENSI",
+        "Polizei Kanton Solothurn",
+        "Pro Natura"
+      ]
+    },
+    {
+      "identifier": "harvest-tigermueckenausbreitung",
+      "title": "Tigermückenausbreitung",
+      "organizations": [
+        "Amt für Umweltschutz und Energie Basel-Landschaft",
+        "Gesundheitsamt",
+        "Kantonales Laboratorium Basel-Stadt",
+        "Koordinationsstelle Neobiota, Kanton Aargau"
+      ]
+    }
+  ],
+  "sha256": "330dcba8d59a692236c3f99630642f6c8edd5cae01eaa194370c565e2d9ecb9c",
+  "legacySha256": "9777d5561de03530f3082826bee25f1f6c62ab06aaa9b717ca9c326741f233e2"
+}
