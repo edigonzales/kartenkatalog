@@ -2,7 +2,7 @@
 
 Die Basis ist der am 29.10.2026 gelieferte, unvollständige Harvest im Modell `SO_AGI_Kartenkatalog_Publikation_20251210` (INTERLIS XTF 2.4): 169 Themen und 886 Ebenen.
 
-Am 03.11.2026 wurden Organisationen, Datenherren und Kontakte ergänzt. Basis-SHA-256: `de40f025368ae6fc70f5858ab42592488bca837c6942cb6ff8759e6c8803de86`. Aktuelle SHA-256: `330dcba8d59a692236c3f99630642f6c8edd5cae01eaa194370c565e2d9ecb9c`.
+Am 03.11.2026 wurden Organisationen, Datenherren und Kontakte ergänzt. Basis-SHA-256: `de40f025368ae6fc70f5858ab42592488bca837c6942cb6ff8759e6c8803de86`. Aktuelle SHA-256: `9590ddc6c6b3f4cbcc228782f98b96f7437a1d1f22526ce18524a9b94a9e203e`.
 
 ## Zuordnung und Quellen
 

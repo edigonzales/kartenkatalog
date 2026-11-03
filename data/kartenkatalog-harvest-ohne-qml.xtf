@@ -1874,7 +1874,7 @@ Konsultationsbereich Eisenbahn (gemäss StFV) (Gefahrenhinweiskarte Störfälle)
         <k:ident_part>ch.bl.agi.lidar_2018.ndsm</k:ident_part>
         <k:transparency>0</k:transparency>
         <k:Thema_R ili:ref="28c551ed-9b3e-57c6-9c6f-575d002c4065" />
-        <k:org_name>Amt für Geoinformation Basel-Landschaft</k:org_name>
+        <k:org_name>Amt für Geoinformation</k:org_name>
       </k:Ebene>
       <k:Ebene ili:tid="b624b925-ae9e-5e82-8f0b-2e651346e726">
         <k:id>bee529fb-616a-586d-b070-cb223c70a13c</k:id>

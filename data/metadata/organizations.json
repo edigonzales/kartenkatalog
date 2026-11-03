@@ -131,11 +131,6 @@
       "source": "https://www.pronatura.ch/de/naturschutzgebiete",
       "checked": "2026-11-03"
     },
-    "Amt für Geoinformation Basel-Landschaft": {
-      "contact": "mailto:geoinformation@bl.ch",
-      "source": "https://www.cadastre.ch/de/kontakt",
-      "checked": "2026-11-03"
-    },
     "Amt für Umweltschutz und Energie Basel-Landschaft": {
       "contact": null,
       "source": "https://www.baselland.ch/politik-und-behorden/direktionen/bau-und-umweltschutzdirektion/medienmitteilungen/asiatische-tigermuecken-melden-und-brutstaetten-vermeiden-2",
@@ -353,10 +348,10 @@
       "evidence": "kartenkatalog.xtf: p_ident_part/c_ident_part and p_org_name/c_org_name"
     },
     "ch.bl.agi.lidar_2018.ndsm": {
-      "organization": "Amt für Geoinformation Basel-Landschaft",
+      "organization": "Amt für Geoinformation",
       "method": "researched",
-      "source": "https://www.cadastre.ch/de/kontakt",
-      "evidence": "Product publisher / responsible office; reviewed identifier family, not an API fallback"
+      "source": "https://data.geo.so.ch/",
+      "evidence": "Normalised raster in the same 2018 LiDAR product family as legacy parent dsm/dtm: retain documented local AGI stewardship; identifier prefix alone is not ownership evidence"
     },
     "ch.bl.agi.lidar_2018.ndsm_buildings": {
       "organization": "Amt für Geoinformation",
